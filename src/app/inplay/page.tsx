@@ -3,9 +3,9 @@
 import { useState } from "react";
 import "../../styles/inplay.css";
 
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
-import Marquee from "../../components/layout/Marquee";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
+import Marquee from "../../components/Layout/Marquee";
 
 import {
     CricketSection,

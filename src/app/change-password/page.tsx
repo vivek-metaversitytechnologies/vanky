@@ -4,9 +4,9 @@ import "../../styles/customStyle.css";
 import "../../styles/header.css";
 import "../../styles/password.css"; // <-- create this file for styling
 
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-import Marquee from "../../components/layout/Marquee";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import Marquee from "../../components/Layout/Marquee";
 
 export default function PasswordPage() {
   return (

@@ -5,9 +5,8 @@ import { useState } from "react";
 import "../../styles/customStyle.css";
 import "../../styles/header.css";
 import Marquee from "../../components/Layout/Marquee";
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
 import RulesModal from "../../components/home/RulesModal";
 import {
   CricketSection,

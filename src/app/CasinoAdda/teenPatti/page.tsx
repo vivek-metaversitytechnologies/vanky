@@ -58,8 +58,8 @@ const Page = () => {
                         <table className="w-full text-center text-sm border-collapse">
                             <thead>
                             <tr className="bg-[#2d4131]">
-                                <th className="py-2" width='2000px'>Main</th>
-                                <th className="py-2" width='2000px'>Back</th>
+                                <th className="py-2">Main</th>
+                                <th className="py-2">Back</th>
                             </tr>
                             </thead>
                             <tbody>

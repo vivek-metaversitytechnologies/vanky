@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { menuIcons } from "../data";
 
 export function MobileMenuSection() {
@@ -7,7 +8,13 @@ export function MobileMenuSection() {
         <div key={item.title} className="flex flex-col items-center text-center">
           <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#255f00] shadow-[0_10px_25px_rgba(0,0,0,0.2)]">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white text-3xl">
-              {item.icon}
+              <Image
+                src={item.image}
+                alt={item.title}
+                width={48}
+                height={48}
+                className="h-12 w-12 object-contain"
+              />
             </div>
           </div>
           <span
