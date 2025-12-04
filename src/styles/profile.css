@@ -1,0 +1,92 @@
+/* TOTAL WRAPPER */
+.profile-wrapper {
+      margin:20px 0px 10px !important;
+    border: 3px solid #289ab1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* GREEN SECTION TITLES */
+.title_new_at {
+ width: 100%;
+    display: block;
+    text-align: center;
+    background: #255f00;
+    padding: 5px;
+    color: #fff;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+.middle-col{
+    text-align: center;
+}
+
+/* TABLE STYLING */
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.profile-table td {
+  border: 1px solid #98abe8;
+      padding: 7px 5px;
+}
+
+/* LEFT COLUMN */
+.left-col {
+  width: 50%;
+  color: #000;
+}
+
+/* RIGHT COLUMN */
+.right-col {
+  color: #000;
+}
+
+/* COMPANY NUMBER BLUE */
+.company-number {
+  color: #007bff;
+}
+
+/* RATE DIFF SELECT */
+#rateDiff {
+  padding: 2px 5px;
+    border: solid 1px #eee;
+    color: #000;
+    height: 28px;
+    margin:0 auto;
+}
+
+/* UPDATE BUTTON */
+.update-btn {
+  background: #0d9a23c9;
+  color: #fcce34;
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+
+.center-table td {
+  text-align: center;       
+  vertical-align: middle; 
+}
+
+.center-table select,
+.center-table button {
+  margin: 0 auto; 
+  display: block;  
+
+}
+.center-table button {
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.profile-footer td{
+    padding: 10px;
+    font-size: 18px;
+    color: #007bff;
+}
+

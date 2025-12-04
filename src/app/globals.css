@@ -1,13 +1,30 @@
+/* ------------------------------------------- */
+/*  GLOBAL FONT SETUP                          */
+/* ------------------------------------------- */
+
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Set global font */
+:root {
+  --default-font-family: "Roboto Condensed", sans-serif;
+}
+
+html, body {
+  font-family: "Roboto Condensed", sans-serif !important;
+}
+
+/* ------------------------------------------- */
+/*  THEME VARIABLE SETUP                       */
+/* ------------------------------------------- */
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -78,6 +95,54 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Set global font */
+:root {
+  --default-font-family: "Roboto Condensed", sans-serif;
+}
+
+html, body {
+  font-family: "Roboto Condensed", sans-serif !important;
+}
+
+:root{
+--yellow:#fcce34;
+--hard-green:#255f00;
+--medium-green:#398439;
+--light-green:#419641;
+--soft-green:#5cb85c;
+--font-color:#333333;
+--btn-gradient:linear-gradient(to bottom,var(--soft-green) 0,var(--light-green) 100%);
+--btn-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
+}
+
+
+::-webkit-scrollbar
+ {
+    width: 5px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #F90;
+    background-color: rgba(0, 0, 0, .6) !important;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.btn{
+   padding: 6px 12px;
+   cursor: pointer;
+}
+
+/* ------------------------------------------- */
+/* DARK MODE                                  */
+/* ------------------------------------------- */
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -112,31 +177,18 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ------------------------------------------- */
+/* TAILWIND BASE OVERRIDES (SAFE)             */
+/* ------------------------------------------- */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
-@layer utilities {
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    gap: 2rem;
-    white-space: nowrap;
-    will-change: transform;
-    animation: marquee-scroll 14s linear infinite;
-  }
-}
-
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
+/* ------------------------------------------- */

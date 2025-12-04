@@ -1,19 +1,25 @@
+import Image from "next/image";
 import { menuIcons } from "../data";
 
 export function DesktopMenuSection() {
   return (
-    <div className="mb-8 flex flex-wrap justify-center gap-7">
-      {menuIcons.map((icon) => (
-        <div key={icon.title} className="flex w-[135px] flex-col items-center">
-          <div className="mb-1 flex h-[110px] w-[110px] items-center justify-center rounded-full bg-[#255f00] shadow-lg">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white text-4xl">
-              {icon.icon}
+    <div className="desktop-menu">
+      {menuIcons.map((item) => (
+        <a key={item.title} className="desktop-menu-item" href="#">
+            <div className="desktop-menu-icon-inner">
+              <Image
+                src={item.image}
+                alt={item.title}
+                width={70}
+                height={70}
+                className="desktop-menu-img"
+              />
             </div>
-          </div>
-          <span className="text-center text-sm font-semibold text-[#255f00]">
-            {icon.title}
+
+          <span className="desktop-menu-title">
+            {item.uppercase ? item.title.toUpperCase() : item.title}
           </span>
-        </div>
+        </a>
       ))}
     </div>
   );

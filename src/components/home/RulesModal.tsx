@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import "../../styles/customStyle.css";
 
 const RULES_HINDI = [
     "लॉग इन करने के बाद अपना पासवर्ड बदलें।",
@@ -52,80 +53,90 @@ export default function RulesModal({ onClose }) {
     const [lang, setLang] = useState("hindi");
 
     return (
-        <div className="fixed inset-0 flex justify-center bg-opacity-50 z-50 h-[55%]">
-            <div
-                className="w-[480px] max-w-full w-[600px]  rounded shadow-lg border border-green-900"
-                style={{background: "#fff"}}
-            >
+        <div className="modal-overlay">
+            <div className="modal-box">
+
                 {/* Header */}
-                <div className="flex flex-col items-center py-3 px-4 bg-[#255f00] rounded-t">
-                    <h2 className="text-lg font-bold text-yellow-300 mt-3 tracking-wide">
-                        VANKY12.COM RULES
-                    </h2>
+                <div className="modal-header">
+                    <h4 className="modal-title">vanky12.com Rules</h4>
                 </div>
-                <div className="flex gap-2 w-full justify-start p-2 border-b-2 border-black">
-                    <button
-                        className={`px-4 py-1 rounded text-base font-semibold border ${"bg-[#255f00] text-white border-white"}`}
-                        onClick={() => setLang("hindi")}
-                    >
-                        Hindi
-                    </button>
-                    <button
-                        className={`px-4 py-1 rounded text-base font-semibold border ${ "bg-[#255f00] text-white border-white"}`}
-                        onClick={() => setLang("english")}
-                    >
-                        English
-                    </button>
-                </div>
-                {/* Content */}
-                <div className="p-6 pt-4 overflow-y-auto max-h-[410px]">
+
+
+                {/* Body */}
+                <div className="modal-body">
+                {/* Tabs */}
+                <ul className="modal-tabs">
+                    <li>
+                        <button
+                            className={`modal-tab-btn btn ${lang === "hindi" ? "active" : ""}`}
+                            onClick={() => setLang("hindi")}
+                        >
+                            Hindi
+                        </button>
+                    </li>
+
+                    <li>
+                        <button
+                            className={`modal-tab-btn btn ${lang === "english" ? "active" : ""}`}
+                            onClick={() => setLang("english")}
+                        >
+                            English
+                        </button>
+                    </li>
+                </ul>
                     {lang === "hindi" ? (
                         <>
-                            <p className="font-semibold mb-4 text-black">
-                                कृपया admin.vanky12.com के नियमों को समझने के लिए यहाँ कुछ मिनट दें, और अपने अनुसार समझ
-                                लें |
-                            </p>
-                            <ol className="list-decimal pl-6 space-y-1 text-black text-base">
-                                {RULES_HINDI.map((rule, idx) => (
-                                    <li key={idx}>{rule}</li>
+                            <h4 className="modal-subtitle">
+                                कृपया admin.vanky12.com के नियमों को समझने के लिए यहाँ कुछ मिनट दें, और अपने अनुसार समझ लें |
+                            </h4>
+
+                            <ol
+                                className="rules-list"
+                                style={{ fontSize: "16px", lineHeight: "1.8" }}
+                            >
+                                {RULES_HINDI.map((r, i) => (
+                                    <li key={i}>{r}</li>
                                 ))}
                             </ol>
-                            <ul className="list-disc ml-5 font-bold text-sm text-gray-700">
+
+
+                            <ul className="note-list">
                                 <li>
-                                    नोट: सर्वर या वेबसाइट में किसी तरह की खराबी आने या बंद हो जाने पर केवल किए गए सौदे ही मान्य होंगे | ऐसी स्तिथि में किसी तरह का वाद-विवाद मान्य नहीं होगा |
+                                    नोट: सर्वर या वेबसाइट में किसी तरह की खराबी आने या बंद हो जाने पर केवल किए गए सौदे ही मान्य होंगे |
+                                    ऐसी स्तिथि में किसी तरह का वाद-विवाद मान्य नहीं होगा |
                                 </li>
                             </ul>
                         </>
                     ) : (
                         <>
-                            <p className="font-semibold mb-4 text-black">
-                                Please take a few minutes here to understand the rules of VANKY12, and understand
-                                accordingly.
-                            </p>
-                            <ol className="list-decimal pl-6 space-y-1 text-black text-base">
-                            {RULES_ENGLISH.map((rule, idx) => (
-                                    <li key={idx}>{rule}</li>
+                            <h4 className="modal-subtitle">
+                                Please take a few minutes here to understand the rules of VANKY12, and understand accordingly.
+                            </h4>
+
+                            <ol className="rules-list">
+                                {RULES_ENGLISH.map((r, i) => (
+                                    <li key={i}>{r}</li>
                                 ))}
                             </ol>
-                            <ul className="list-disc ml-5 font-bold text-sm text-gray-700">
+
+                            <ul className="note-list">
                                 <li>
-                                    Note: Transactions made will be valid only in case of server or website failure or
-                                    shutdown. In such a case, any kind of debate will not be valid.
+                                    Note: Only completed deals are valid in case of server or website failure.
                                 </li>
                             </ul>
                         </>
                     )}
                 </div>
+
                 {/* Footer */}
-                <div className="flex justify-center py-3 bg-[#255f00] rounded-b">
-                    <button
-                        className="px-10 py-1 rounded bg-[#255f00] text-yellow-300 font-bold text-lg shadow border border-[#255f00] hover:bg-[#255f00] transition"
-                        onClick={onClose}
-                    >
-                        CLOSE
+                <div className="modal-footer">
+                    <button className="modal-close-btn btn inset-shadow" onClick={onClose}>
+                        Close
                     </button>
                 </div>
+
             </div>
         </div>
+
     );
 }

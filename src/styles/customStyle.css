@@ -1,0 +1,413 @@
+.red {
+  color: red !important;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.388);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  overflow-y: scroll;
+}
+
+p,
+li {
+  color: var(--font-color);
+}
+
+/* ---------------------- */
+/* Modal Box              */
+/* ---------------------- */
+.modal-box {
+  width: 100%;
+  max-width: 600px;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+}
+
+/* ---------------------- */
+/* Header                 */
+/* ---------------------- */
+.modal-header {
+  background: var(--hard-green);
+  padding: 10px;
+  text-align: center;
+}
+
+.modal-title {
+  color: var(--yellow);
+  width: 100%;
+  font-size: 22px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* ---------------------- */
+/* Tabs                   */
+/* ---------------------- */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #737373;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.modal-tabs li {
+  padding: 5px;
+}
+
+.modal-tab-btn {
+  font-size: 15px;
+  border: 1px solid #204e57;
+  background: var(--btn-gradient);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: "Roboto Condensed", sans-serif;
+
+}
+
+.modal-tab-btn:focus {
+  background: var(--light-green);
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.modal-tab-btn:active {
+  background: var(--medium-green) !important;
+}
+
+.modal-tab-btn:hover {
+  outline: none !important;
+  background: var(--light-green);
+}
+
+/* ---------------------- */
+/* Body                   */
+/* ---------------------- */
+.modal-body {
+  height: 500px;
+  overflow-y: auto;
+}
+
+.modal-subtitle {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 18px;
+  margin: 10px 0;
+  color: var(--font-color);
+  line-height: 1.1;
+}
+
+/* List styling */
+.rules-list {
+  list-style: decimal;
+  padding-left: 38px;
+  font-size: 14px;
+}
+
+.rules-list li {
+  margin-bottom: 0px;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 400;
+}
+
+.note-list {
+  margin-top: 16px;
+  font-weight: bold;
+  padding-left: 38px;
+  list-style: disc;
+  margin-bottom: 10px;
+}
+
+/* ---------------------- */
+/* Footer                 */
+/* ---------------------- */
+.modal-footer {
+  background: var(--hard-green);
+  padding: 5px 9px;
+  text-align: center;
+}
+
+.modal-close-btn {
+  width: 50%;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: var(--yellow);
+  font-size: 20px;
+
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: var(--btn-shadow);
+}
+
+.inset-shadow:active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
+}
+
+.btn:focus {
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.desktop-menu-icon-inner {
+  background: var(--hard-green);
+}
+
+.desktop-menu {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(10px, 2vw, 25px);
+  padding: 20px 0;
+  width: 100%;
+}
+
+/* MOBILE — 2 in a row */
+@media (max-width: 768px) {
+  .desktop-menu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(12px, 3vw, 20px);
+  }
+}
+
+.desktop-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+
+
+.desktop-menu-icon-inner {
+  background: #255f00;
+  width: clamp(90px, 12vw, 170px);
+  height: clamp(90px, 12vw, 170px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 3px gray;
+  overflow: hidden;
+}
+
+
+.desktop-menu-icon-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.desktop-menu-title {
+  font-size: 14px;
+  padding: 5px;
+  color: #4083a9;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 10px;
+
+}
+
+.desktop-menu-item:hover .desktop-menu-title {
+  text-decoration: underline;
+  color: #1d6086;
+}
+
+.vs-wrap {
+  border: 1px solid #333333;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.vs-heading,
+.casino-heading {
+  display: flex;
+  background: var(--hard-green);
+  padding: 7px 5px;
+  gap: 5px;
+  align-items: center;
+  color: #fff;
+}
+
+.casino-heading {
+  border-radius: 5px;
+}
+
+.casino-heading img {
+  height: 30px;
+  width: 30px;
+  object-fit: contain;
+}
+
+.vs-heading .sports-cat {
+  color: #fff;
+}
+
+.match-opponent {
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: space-between;
+  width: 100%;
+  width: 100%;
+
+  padding: 3px 0px;
+  text-decoration: none;
+  font-weight: 600;
+  align-items: center;
+  padding-right: 30px;
+}
+
+.vs-table {
+  width: 100%;
+}
+
+.match-name {
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  color: #007bff;
+  line-height: 15px;
+}
+
+.match-opponent img {
+  width: fit-content;
+  height: clamp(22px, 5vw, 70px);
+  object-fit: contain;
+
+}
+
+.match-time {
+  display: flex;
+  align-items: center;
+  padding-left: 3px;
+}
+
+.match-time i {
+  color: rgb(118, 154, 160);
+}
+
+.vs-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-bottom: 3px solid var(--yellow);
+}
+
+.vs-strip:last-child {
+  border: none;
+}
+
+.match-time span {
+  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
+  margin-left: 0px;
+  color: var(--light-green);
+
+}
+
+.inplay-matches-box .match-time span,
+.inplay-matches-box .match-time i {
+  color: rgb(118, 154, 160);
+
+}
+
+.inplay-matches-box .match-opponent img {
+  height: 35px;
+  width: 35px;
+}
+.vs-main .tv-img{
+  height: 50px;
+  width: 50px;
+}
+.inplay-matches-box .tv-img {
+  height: 28px !important;
+  width: 28px !important;
+}
+
+
+.vs-main .vs-heading img {
+  height: clamp(22px, 4vw, 50px);
+  width: clamp(22px, 4vw, 50px);
+}
+
+.inplay-matches-box .vs-heading img {
+  height: 26px !important;
+  width: 26px !important;
+  object-fit: contain;
+}
+
+/* ========Casino========== */
+.casino-wrapper {
+  margin-top: 20px;
+}
+
+/* GRID — 4 items per row on desktop */
+.casino-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 10px 8px;
+}
+
+/* CARD */
+.casino-card {
+  background: #fff;
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.casino-card img {
+  width: 100%;
+  box-shadow: 3px 3px 3px gray;
+}
+
+.casino-card:hover .casino-card-content span {
+  text-decoration: underline;
+}
+
+/* INNER CONTENT */
+.casino-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(12px, 2vw, 15px);
+  color: #255f00;
+  font-weight: 600;
+}
+
+.casino-card-content span {
+  color: rgb(210, 164, 60);
+  display: block;
+  margin: 4px 0;
+}
+
+/* RESPONSIVE — 2 per row on mobile */
+@media (max-width: 768px) {
+  .casino-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .match-opponent {
+    padding-right: 10px;
+  }
+}

@@ -1,23 +1,34 @@
 import { casinoGames } from "../data";
-
+import Image from "next/image";
 export function DesktopCasinoSection() {
   return (
     <>
-      <div className="mb-4 rounded bg-[#255f00] px-4 py-2 font-bold text-white">
-        Casino Games
-      </div>
-      <div className="grid grid-cols-4 gap-6">
-        {casinoGames.map((game) => (
-          <div
-            className="flex h-[130px] flex-col items-center justify-center rounded-lg bg-[#c8e4af] px-2 py-3 text-center shadow"
-            key={game.title}
-          >
-            <div className="mb-2 text-lg font-bold">{game.title}</div>
-            <div className="mb-1 flex h-16 w-16 items-center justify-center rounded-full bg-gray-300 text-4xl">
-              🎲
+      <div className="casino-wrapper">
+        <div className="casino-heading">
+          <Image src="/assets/images/casino.png" alt="" width={30} height={30} />
+          Casino Games
+        </div>
+        <div className="casino-grid">
+          {casinoGames.map((game) => (
+            <div
+              className="casino-card"
+              key={game.title}
+            >
+              <div className="casino-card-content">
+                <Image
+                  src={game.image}
+                  alt={game.title}
+                  width={70}
+                  height={70}
+                  className="desktop-menu-img"
+                />
+                <span>
+                {game.title}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );
