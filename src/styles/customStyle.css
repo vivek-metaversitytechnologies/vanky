@@ -5,7 +5,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.388);
+  background: rgba(0, 0, 0, 0.747);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -410,4 +410,8 @@ li {
   .match-opponent {
     padding-right: 10px;
   }
+}
+
+.no-radius{
+  border-radius: 0;
 }

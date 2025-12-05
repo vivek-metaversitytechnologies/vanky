@@ -1,0 +1,55 @@
+.stakeModal.modal-header{
+display: flex;
+justify-content: space-between;
+color: #fff;
+background: var(--hard-green);
+}
+.stakeModal.modal-header button{
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    margin-top: -3px;
+    cursor: pointer;
+}
+.editstake-modal{
+    top: 30px;
+}
+
+.editstake-modal .modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 in a row */
+  gap: 0px; /* spacing */
+
+}
+.editstake-modal .modal-form{
+    padding: 10px;
+}
+
+.editstake-modal .modal-grid .form-group {
+  display: flex;
+  align-items: center;
+}
+.editstake-modal .modal-body{
+    height: auto;
+}
+.editstake-modal .modal-grid .form-group input{
+    border: 1px solid;
+        padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    border-radius: 5px;
+}
+.editstake-modal .modal-grid .form-group input,.editstake-modal .modal-grid .form-group label,.editstake-modal .modal-grid .form-group input::placeholder{
+    font-size: 14px;
+    color: #555;
+}
+
+.editstake-modal .btn-wrap{
+    display: flex;
+    justify-content: center;
+}

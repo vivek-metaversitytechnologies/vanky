@@ -1,12 +1,15 @@
 /* ------------------------------------------- */
-/*  GLOBAL FONT SETUP                          */
+/*  GLOBAL IMPORTS (MUST BE AT VERY TOP)       */
 /* ------------------------------------------- */
 
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* Set global font */
+/* ------------------------------------------- */
+/*  GLOBAL FONT SETUP (Google Font removed!)   */
+/*  Font will be loaded from layout.js         */
+/* ------------------------------------------- */
+
 :root {
   --default-font-family: "Roboto Condensed", sans-serif;
 }
@@ -20,11 +23,9 @@ html, body {
 /* ------------------------------------------- */
 
 @custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -95,52 +96,55 @@ html, body {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+/* ------------------------------------------- */
+/* EXTRA COLORS                                */
+/* ------------------------------------------- */
 
-/* Set global font */
 :root {
-  --default-font-family: "Roboto Condensed", sans-serif;
-}
-
-html, body {
-  font-family: "Roboto Condensed", sans-serif !important;
-}
-
-:root{
---yellow:#fcce34;
---hard-green:#255f00;
---medium-green:#398439;
---light-green:#419641;
---soft-green:#5cb85c;
---font-color:#333333;
---btn-gradient:linear-gradient(to bottom,var(--soft-green) 0,var(--light-green) 100%);
---btn-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-
-::-webkit-scrollbar
- {
-    width: 5px;
-    height: 8px;
-    background-color: rgba(0, 0, 0, .6);
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #F90;
-    background-color: rgba(0, 0, 0, .6) !important;
-}
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background-color: #F5F5F5;
-}
-
-.btn{
-   padding: 6px 12px;
-   cursor: pointer;
+  --yellow: #fcce34;
+  --hard-green: #255f00;
+  --medium-green: #398439;
+  --light-green: #419641;
+  --soft-green: #5cb85c;
+  --font-color: #333333;
+  --btn-gradient: linear-gradient(to bottom, var(--soft-green) 0, var(--light-green) 100%);
+  --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
 }
 
 /* ------------------------------------------- */
-/* DARK MODE                                  */
+/* SCROLLBAR                                   */
+/* ------------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: rgba(0, 0, 0, .6);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .6) !important;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+}
+
+/* ------------------------------------------- */
+/* BUTTONS                                     */
+/* ------------------------------------------- */
+
+.btn {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.text-sm{
+  font-size: 14px!important;
+
+}
+
+/* ------------------------------------------- */
+/* DARK MODE                                   */
 /* ------------------------------------------- */
 
 .dark {
@@ -178,7 +182,7 @@ html, body {
 }
 
 /* ------------------------------------------- */
-/* TAILWIND BASE OVERRIDES (SAFE)             */
+/* TAILWIND BASE OVERRIDES                     */
 /* ------------------------------------------- */
 
 @layer base {
@@ -190,5 +194,3 @@ html, body {
     @apply bg-background text-foreground;
   }
 }
-
-/* ------------------------------------------- */

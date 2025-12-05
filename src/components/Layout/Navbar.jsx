@@ -4,7 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import "../../styles/header.css";
 
-export default function Navbar({ isOpen, onClose, onOpenRules }) {
+export default function Navbar({ 
+  isOpen, 
+  onClose, 
+  onOpenRules,
+  onOpenEditStake        // ✅ ADDED HERE
+}) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -61,7 +66,6 @@ export default function Navbar({ isOpen, onClose, onOpenRules }) {
             </Link>
           </li>
 
-          {/* NEW PAGE LINK ADDED HERE */}
           <li>
             <Link href="/rate-information" className="nav-link">
               <i className="fa-solid fa-circle-info"></i>
@@ -78,16 +82,14 @@ export default function Navbar({ isOpen, onClose, onOpenRules }) {
           </li>
 
           <li>
-            <Link href="/commission" className="nav-link">
+            <Link href="/myCommission" className="nav-link">
               <i className="fa-solid fa-book"></i>
               My Commission
             </Link>
           </li>
 
           {/* REPORT DROPDOWN */}
-          <li
-            className={`dropdown-parent ${dropdownOpen ? "active" : ""}`}
-          >
+          <li className={`dropdown-parent ${dropdownOpen ? "active" : ""}`}>
             <span
               className={`nav-link ${dropdownOpen ? "active" : ""}`}
               onClick={(e) => {
@@ -100,7 +102,7 @@ export default function Navbar({ isOpen, onClose, onOpenRules }) {
             </span>
 
             <ul className={`nav-link-dropdown ${dropdownOpen ? "open" : ""}`}>
-              <li><Link href="/account-statement">Account Statement</Link></li>
+              <li><Link href="/accountStatement">Account Statement</Link></li>
               <li><Link href="/ledger">Total Ledger</Link></li>
               <li><Link href="/profit-loss">Profit & Loss</Link></li>
               <li><Link href="/bet-history">Bet History</Link></li>
@@ -115,11 +117,12 @@ export default function Navbar({ isOpen, onClose, onOpenRules }) {
             </Link>
           </li>
 
+          {/* EDIT STAKE POPUP TRIGGER */}
           <li>
-            <Link href="/edit-stake" className="nav-link">
+            <a className="nav-link" onClick={onOpenEditStake}>
               <i className="fa-solid fa-book"></i>
               Edit Stake
-            </Link>
+            </a>
           </li>
 
         </ul>
