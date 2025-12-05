@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import "../../styles/customStyle.css";
 import "../../styles/header.css";
 import "../../styles/table.css";
@@ -9,6 +11,11 @@ import SidebarDesktop from "../../components/layout/SidebarDesktop";
 import Marquee from "../../components/layout/Marquee";
 
 export default function CommissionPage() {
+
+    // ⭐ STATE FOR TABLE DATA
+    const [rows] = useState([]); 
+    const noData = rows.length === 0;
+
     return (
         <div className="dashboard-wrapper">
 
@@ -25,10 +32,8 @@ export default function CommissionPage() {
 
                     <main className="desktop-main commission-wrap">
 
-                        {/* TITLE */}
                         <div className="casino-heading no-radius uppercase " >My Commission</div>
 
-                        {/* FILTER AREA */}
                         <div className="commission-filters">
                             <div className="filter-item">
                                 <input type="date" className="filter-input input-sm form-control" />
@@ -43,7 +48,6 @@ export default function CommissionPage() {
                             </div>
                         </div>
 
-                        {/* TABLE */}
                         <div className="commission-table-wrap">
                             <table className="commission-table table jambo_table">
                                 <thead>
@@ -57,9 +61,21 @@ export default function CommissionPage() {
                                     </tr>
                                 </thead>
 
-                                <tbody>
-                                    {/* dynamic rows will come here */}
-                                </tbody>
+                                {/* ⭐ SHOW TBODY ONLY IF THERE ARE ROWS */}
+                                {rows.length > 0 && (
+                                    <tbody>
+                                        {rows.map((item, i) => (
+                                            <tr key={i}>
+                                                <td>{item.date}</td>
+                                                <td>{item.m}</td>
+                                                <td>{item.s}</td>
+                                                <td>{item.c}</td>
+                                                <td>{item.t}</td>
+                                                <td>{item.name}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                )}
 
                                 <tfoot>
                                     <tr>
@@ -74,24 +90,30 @@ export default function CommissionPage() {
                             </table>
                         </div>
 
-                        {/* PAGINATION */}
+                        {/* ⭐ ORIGINAL PAGINATION — UNCHANGED STRUCTURE */}
                         <div className="pagination-wrap">
                             <ul className="pagination">
-                                <li className="disabled">
+
+                                <li className={noData ? "disabled" : ""}>
                                     <span><i className="fa fa-caret-left" /><i className="fa fa-caret-left" /></span>
                                 </li>
-                                <li className="disabled">
+
+                                <li className={noData ? "disabled" : ""}>
                                     <span><i className="fa fa-caret-left" /></span>
                                 </li>
-                                <li className="disabled">
+
+                                <li className={noData ? "disabled" : ""}>
                                     <span><i className="fa fa-caret-right" /></span>
                                 </li>
-                                <li className="disabled">
+
+                                <li className={noData ? "disabled" : ""}>
                                     <span><i className="fa fa-caret-right" /><i className="fa fa-caret-right" /></span>
                                 </li>
+
                                 <li className="active">
                                     <button>1</button>
                                 </li>
+
                             </ul>
                         </div>
 

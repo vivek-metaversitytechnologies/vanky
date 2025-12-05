@@ -11,47 +11,46 @@ import SidebarDesktop from "../../components/layout/SidebarDesktop";
 import Marquee from "../../components/layout/Marquee";
 import BackButton from "../../components/layout/BackButton";
 
-export default function AccountStatementPage() {
-  // ⭐ STORE TABLE ROW DATA IN STATE
+export default function LedgerPage() {
+  // ⭐ STATE FOR LEDGER ROWS
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    // ⭐ LOAD STATIC DATA (Later you can fetch from API)
+    // SAMPLE STATIC DATA — replace with API later
     const data = [
       {
         date: "26 Nov 2025 23:36 PM",
-        desc: "Cricket / Royal Champs v Aspin Stallions / Match / Royal Champs v Aspin Stallions / 34998526 / Aspin Stallions",
-        prev: 1000,
-        cr: 0,
-        dr: 0,
-        commPlus: 0,
-        commMinus: 0,
-        bal: "1,000.00",
+        name: "Cricket - Royal Champs v Aspin Stallions",
+        debit: "0.00",
+        credit: "0.00",
+        balance: "0.00",
+        type: "-",
+        remark: "User Minus",
       },
       {
         date: "23 Nov 2025 13:24 PM",
-        desc: "Cricket / Bangladesh v Ireland / Match / Bangladesh v Ireland / 34958715 / Bangladesh",
-        prev: 1000,
-        cr: 0,
-        dr: 0,
-        commPlus: 0,
-        commMinus: 0,
-        bal: "1,000.00",
+        name: "Cricket - Bangladesh v Ireland",
+        debit: "0.00",
+        credit: "0.00",
+        balance: "0.00",
+        type: "-",
+        remark: "User Minus",
       }
     ];
 
-    setRows(data); // 👉 REMOVE OR SET EMPTY [] TO TEST PAGINATION DISABLED
+    setRows(data); 
+    // To test disabled pagination → setRows([])
+
   }, []);
 
-  // ⭐ PAGINATION DISABLED WHEN NO ROWS
+  // 👉 DISABLE PAGINATION IF NO ROWS
   const noData = rows.length === 0;
 
   return (
     <div className="dashboard-wrapper">
-      {/* HEADER */}
+
       <HeaderDesktop />
 
-      {/* MOBILE MARQUEE */}
       <div className="marquee-wrap mobile">
         <Marquee />
       </div>
@@ -59,80 +58,101 @@ export default function AccountStatementPage() {
       <div className="desktop-wrapper">
         <div className="desktop-container">
 
-          {/* SIDEBAR */}
           <SidebarDesktop />
 
-          {/* MAIN CONTENT */}
           <main className="desktop-main commission-wrap">
 
-            {/* PAGE TITLE */}
             <div className="casino-heading no-radius uppercase acc-heading">
-              Account Statement
+              Company Lena Dena
               <BackButton />
             </div>
 
-            {/* FILTER AREA */}
             <div className="commission-filters panel-body">
               <div className="filter-item">
-                <input type="date" className="input-sm input-s form-control" />
+                <input type="date" className="dark-text input-s form-control" />
               </div>
 
               <div className="filter-item">
-                <input type="date" className="input-sm input-s form-control" />
+                <input type="date" className="dark-text input-s form-control" />
               </div>
 
-              <div className="filter-buttons-group">
-                <button className="btn btn-s-md btn-success">Search</button>
-                <button className="btn btn-s-md btn-danger">Reset</button>
-                <button className="btn btn-s-md btn-primary">All</button>
-                <button className="btn btn-s-md btn-success">P&amp;L</button>
-                <button className="btn btn-s-md btn-danger">PDC</button>
-                <button className="btn btn-s-md btn-light">Account</button>
+              <div className="filter-item">
+                <select className="dark-text form-control m-0">
+                  <option value="REP">All</option>
+                  <option value="SET">Settlement</option>
+                </select>
+              </div>
+
+              <div className="filter-btn-area">
+                <button className="btn btn-s-md btn-success">
+                  <i className="fa fa-search"></i> Search
+                </button>
               </div>
             </div>
 
-            {/* TABLE */}
+            <div className="ledger-summary-box">
+              <div className="summary-item">
+                <strong>Lena:</strong>
+                <span className="summary-green summary">0.00</span>
+              </div>
+
+              <div className="summary-item">
+                <strong>Dena:</strong>
+                <span className="summary-red summary">0.00</span>
+              </div>
+
+              <div className="summary-item">
+                <strong>Balance:</strong>
+                <span className="summary-neutral summary">0 Dena Hai</span>
+              </div>
+            </div>
+
             <div className="panel panel-default table-panel">
               <div className="table-responsive">
 
-                <table className="table table-bordered table-striped jambo_table account-table ">
-                  <thead className="border-b border-gray-300">
+                <table className="table table-dark table-striped jambo_table account-table">
+                  <thead>
                     <tr>
                       <th className="tablelightblue">Date</th>
-                      <th className="tabledarkblue">Description</th>
-                      <th className="tablelightblue">Prev. Bal</th>
-                      <th className="tabledarkblue">CR</th>
-                      <th className="tablelightblue">DR</th>
-                      <th className="tabledarkblue">Comm+</th>
-                      <th className="tablelightblue">Comm-</th>
-                      <th className="tabledarkblue">Balance</th>
+                      <th className="tabledarkblue">Collection Name</th>
+                      <th className="tablelightblue">Debit</th>
+                      <th className="tabledarkblue">Credit</th>
+                      <th className="tablelightblue">Balance</th>
+                      <th className="tabledarkblue">Payment Type</th>
+                      <th className="tablelightblue">Remark</th>
                     </tr>
                   </thead>
 
                   <tbody id="statements">
                     {rows.length === 0 ? (
                       <tr>
-                        <td className="text-center py-4 text-gray-500">
+                        <td  className="text-center py-4 text-gray-400">
                           No records found
                         </td>
                       </tr>
                     ) : (
-                      rows.map((item, i) => (
-                        <tr key={i}>
+                      rows.map((item, index) => (
+                        <tr key={index}>
                           <td>{item.date}</td>
-                          <td>{item.desc}</td>
-                          <td>{item.prev}</td>
-                          <td>{item.cr}</td>
-                          <td>{item.dr}</td>
-                          <td>{item.commPlus}</td>
-                          <td>{item.commMinus}</td>
-                          <td>{item.bal}</td>
+
+                          <td>
+                            <a href="#" style={{ fontWeight: 600 }}>
+                              {item.name}
+                            </a>
+                          </td>
+
+                          <td className="red"><div>{item.debit}</div></td>
+                          <td className="green"><div>{item.credit}</div></td>
+                          <td className="red"><div>{item.balance}</div></td>
+
+                          <td>{item.type}</td>
+                          <td>{item.remark}</td>
                         </tr>
                       ))
                     )}
                   </tbody>
-
                 </table>
+
               </div>
 
               {/* PAGINATION */}
