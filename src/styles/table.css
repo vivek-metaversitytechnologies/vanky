@@ -511,6 +511,9 @@ background: #f9f9f9;
     .responsive-filter .filter-btn-area{
         width: 100%;
     }
+     .responsive-filter .filter-btn-area.alt{
+        width: 48%;
+     }
     .desktop-main{
         padding: 0;
         overflow: hidden;

@@ -111,7 +111,7 @@ export default function Navbar({
           </li>
 
           <li>
-            <Link href="/live-games" className="nav-link">
+            <Link href="/CasinoAdda" className="nav-link">
               <i className="fa-solid fa-gamepad"></i>
               Live Games
             </Link>

@@ -1,0 +1,145 @@
+/* 🌟 PAGE BACKGROUND */
+:root {
+    --body-bg: linear-gradient(135deg, rgba(30, 47, 35, 0.95), rgba(20, 83, 45, 0.95));
+}
+
+.casino-page {
+    min-height: 100vh;
+    background: var(--body-bg);
+    color: #fff;
+}
+
+/* 🌟 HEADER */
+.casino-page .casino-header {
+    border-bottom: 1px solid #3c444b;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    background: var(--body-bg);
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.casino-page .casino-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.casino-page .casino-balance {
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.casino-page .casino-balance .bal {
+    color: #aaafb5;
+}
+
+/* 🌟 CATEGORY BUTTON BAR */
+.casino-page .casino-category-bar {
+    padding: 10px 30px;
+    z-index: 1;
+    width: 100%;
+    background: var(--body-bg);
+    display: flex;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.casino-page .casino-content {
+    padding: 6px;
+}
+
+/* 🌟 CATEGORY BUTTONS (yellow outline style as screenshot) */
+.casino-page .casino-category-btn {
+
+    border: 2px solid #fdcf13;
+    color: #aaafb5;
+    border-radius: 20px;
+    background-color: transparent;
+    min-height: 41px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    word-spacing: 3px;
+    font-size: 14px;
+}
+.casino-page .casino-category-btn:hover{
+    background: #007bff;
+}
+
+.casino-page .casino-category-btn img {
+    height: 25px;
+    margin-right: 5px;
+}
+
+/* 🌟 GAME GRID */
+.casino-page .casino-grid-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0px;
+    margin-right: 50px;
+}
+
+/* 🌟 GAME CARD WRAPPER */
+.casino-page .casino-card-main {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    animation: slide-down .5s ease-out;
+    position: relative;
+}
+
+.casino-page .casino-card-inner {
+    border: 2px solid #000;
+    display: table;
+    border-radius: 5px;
+}
+
+.casino-page .casino-card-inner img {
+    width: 205px;
+    height: 105px;
+}
+
+.casino-card-main p {
+    margin: 0;
+    padding: 5px;
+    background: #3c444b;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+}
+
+@media (max-width:991px) {
+    .casino-page .casino-grid-main {
+        margin: 0;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .casino-page .casino-card-main {
+        width: 29%;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
+}
+
+@media (max-width:767px) {
+    .casino-page .casino-grid-main {
+        gap: 0px;
+        justify-content: center;
+    }
+
+    .casino-page .casino-card-main {
+        width: 46%;
+    }
+}

@@ -1,11 +1,20 @@
 "use client";
 
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import "../../styles/casino.css";
 
 const CasinoAdda = () => {
+
+    const [tabClicked, setTabClicked] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
+
+    useEffect(() => {
+        // run animation once on page load
+        const timer = setTimeout(() => setInitialLoad(false), 400);
+        return () => clearTimeout(timer);
+    }, []);
+
     const games = [
         { name: "20-20 TeenPatti", code: "ODT20", img: "/assets/images/teen20.jpg" },
         { name: "TeenPatti Day", code: "OD1Day", img: "/assets/images/teen.jpg" },
@@ -19,51 +28,67 @@ const CasinoAdda = () => {
         { name: "Lucky 7 B", code: "ODLucky7b", img: "/assets/images/dtl20.jpg" },
     ];
 
+    const triggerPopAnimation = () => {
+        setTabClicked(true);
+        setTimeout(() => setTabClicked(false), 350);
+    };
+
     return (
-        <div className="min-h-screen bg-[#265236] p-4 text-white">
-            {/* Header Section */}
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-base font-bold">rolex12</h1>
-                <p className="text-xs">Pts: 1262.00</p>
+        <div className="casino-page">
+
+            {/* HEADER */}
+            <header className="casino-header">
+                <h1 className="casino-title">rolex12</h1>
+                <p className="casino-balance">Pts: <span className="bal">1262.00</span></p>
+            </header>
+
+            <div className="casino-content">
+                {/* Tabs */}
+                <ul className="casino-category-bar">
+                    <li>
+                        <button
+                            className="casino-category-btn"
+                            onClick={triggerPopAnimation}
+                        >
+                            <img src="/assets/images/4.png" alt="" className="casino-category-icon" />
+                            Casino Hub
+                        </button>
+                    </li>
+
+                    <li>
+                        <button
+                            className="casino-category-btn"
+                            onClick={triggerPopAnimation}
+                        >
+                            <img src="/assets/images/4.png" alt="" className="casino-category-icon" />
+                            oldDiamond
+                        </button>
+                    </li>
+                </ul>
+
+                {/* Games */}
+                <div className="casino-grid-main">
+                    {games.map((game, index) => (
+                        <motion.div
+                            key={index}
+                            className="casino-card-main"
+                            animate={
+                                (initialLoad || tabClicked)
+                                    ? { scale: [0, 1] }
+                                    : { scale: 1 }
+                            }
+                            transition={{ duration: 0.6, ease: "easeOut" }}
+                        >
+                            <div className="casino-card-inner">
+                                <img src={game.img} alt={game.name} className="casino-card-img" />
+
+                                <p className="casino-card-title">{game.code}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
 
-            {/* Category Buttons */}
-            <div className="flex gap-2 mb-4">
-                <Button
-                    variant="outline"
-                    className="border-yellow-400 bg-transparent text-gray-300 rounded-6 h-8 px-3  flex items-center gap-1"
-                >
-                    <img src="/assets/images/4.png" alt="" width="18" height="18" />
-                    Casino Hub
-                </Button>
-                <Button
-                    variant="outline"
-                    className="border-yellow-400 bg-transparent text-gray-300 rounded-6 h-8 px-3  flex items-center gap-1"
-                >
-                    <img src="/assets/images/4.png" alt="" width="18" height="18" />
-                    oldDiamond
-                </Button>
-            </div>
-
-            {/* Game Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-3">
-                {games.map((game, index) => (
-                    <motion.div key={index} whileHover={{ scale: 1.05 }}>
-                        <Card className="overflow-hidden bg-gray-900 border border-black rounded-none p-0">
-                            <CardContent className="p-0">
-                                <img
-                                    src={game.img}
-                                    alt={game.name}
-                                    className="w-full h-24 object-cover"
-                                />
-                                <div className="bg-[#3c444b] p-1 text-center  uppercase tracking-wide text-white">
-                                    {game.code}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
-            </div>
         </div>
     );
 };
