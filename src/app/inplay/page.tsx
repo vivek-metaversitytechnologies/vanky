@@ -59,7 +59,7 @@ export default function InPlayPage() {
                                         <span>Tennis</span>
                                     </div>
 
-                                    <a href="/casino" className="inplay-tab">
+                                    <a href="/CasinoAdda" className="inplay-tab">
                                         <img src="/assets/images/casino.png" alt="Casino" />
                                         <span>Casino</span>
                                     </a>

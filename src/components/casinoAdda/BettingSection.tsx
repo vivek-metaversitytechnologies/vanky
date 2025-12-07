@@ -8,19 +8,17 @@ export default function BettingSection() {
     const stakeButtons = [1, 5, 10, 50, 100, 500, 1000, 5000];
 
     return (
-        <div className="bg-[#132B16] min-h-screen p-4 text-white flex flex-col gap-4">
-            {/* Last Results */}
-            <div className="bg-[#16191c] rounded-md p-3">
-                <h2 className="font-bold text-lg mb-2 bg-[#434343] p-2 rounded">
-                    LAST RESULTS
-                </h2>
-                <div className="flex gap-2 overflow-x-auto">
+        <div className="betting-section">
+
+            {/* LAST RESULTS */}
+            <div className="betting-box betting-last-results">
+                <h2 className="betting-title">LAST RESULTS</h2>
+
+                <div className="results-list">
                     {results.map((r, i) => (
-                        <div
+                        <div 
                             key={i}
-                            className={`w-8 h-8 flex items-center justify-center rounded bg-[#434343] ${
-                                r === "A" ? "text-red-600" : "text-yellow-500"
-                            } font-bold flex-shrink-0`}
+                            className={`result-item ${r === "A" ? "result-a" : "result-b"}`}
                         >
                             {r}
                         </div>
@@ -28,61 +26,73 @@ export default function BettingSection() {
                 </div>
             </div>
 
-            {/* Place Bet */}
-            <div className="bg-[#16191c] rounded-md p-3 flex flex-col gap-3">
-                <div className="flex justify-between items-center mb-2 p-2 rounded font-bold text-lg mb-2 bg-black p-2 rounded">
-                    <h2 className="font-bold text-lg">PLACE BET</h2>
-                    <span className="text-sm text-gray-300">Range: 100-5000</span>
+
+            {/* PLACE BET */}
+            <div className="betting-box betting-placebet">
+
+                <div className="placebet-header">
+                    <h2 className="betting-title">PLACE BET</h2>
+                    <span className="bet-range">Range: 100-5000</span>
                 </div>
 
-                {/* Bet info */}
-                <div className="grid grid-cols-4 gap-2 text-center font-semibold text-gray-100">
-                    <div>Player A</div>
-                    <div>Odds: {odds}</div>
-                    <div>Stake: {stake}</div>
-                    <div className={`${stake * odds >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                {/* Bet Info */}
+                <div className="bet-info">
+                    <div className="bet-info-item">Player A</div>
+                    <div className="bet-info-item">Odds: {odds}</div>
+                    <div className="bet-info-item">Stake: {stake}</div>
+
+                    <div 
+                        className={`bet-info-item ${
+                            stake * odds >= 0 ? "profit-positive" : "profit-negative"
+                        }`}
+                    >
                         Profit: {(stake * odds).toFixed(2)}
                     </div>
                 </div>
 
-                {/* Stake buttons */}
-                <div className="grid grid-cols-4 gap-2 mt-2">
+                {/* Stake Buttons */}
+                <div className="stake-buttons">
                     {stakeButtons.map((val) => (
                         <button
                             key={val}
                             onClick={() => setStake(val)}
-                            className={`bg-[#243628] hover:bg-[#2f462c] py-2 rounded font-semibold transition-colors`}
+                            className="stake-btn"
                         >
                             {val}
                         </button>
                     ))}
                 </div>
 
-                {/* Action buttons */}
-                <div className="flex gap-2 mt-2">
-                    <button
+                {/* Reset / Submit */}
+                <div className="bet-actions">
+                    <button 
                         onClick={() => setStake(0)}
-                        className="bg-red-500 hover:bg-red-600 flex-1 py-2 rounded font-semibold transition-colors"
+                        className="bet-btn reset-btn"
                     >
                         Reset
                     </button>
-                    <button className="bg-emerald-500 hover:bg-emerald-600 flex-1 py-2 rounded font-semibold transition-colors">
+
+                    <button className="bet-btn submit-btn">
                         Submit
                     </button>
                 </div>
             </div>
 
-            {/* My Bets */}
-            <div className="bg-[#16191c] rounded-md p-3 flex flex-col gap-2">
-                <h2 className="font-bold text-lg mb-2 bg-black p-2 rounded">MY BETS</h2>
-                <div className="grid grid-cols-4 text-gray-300 font-semibold border-b border-gray-700 pb-1 mb-2 bg-[#1f2a21] p-1 rounded">
+
+            {/* MY BETS */}
+            <div className="betting-box betting-mybets">
+                <h2 className="betting-title">MY BETS</h2>
+
+                <div className="mybets-header">
                     <span>Name</span>
                     <span>Odds</span>
                     <span>Stake</span>
                     <span>P/L</span>
                 </div>
-                <div className="text-gray-400 text-sm italic">No bets placed yet.</div>
+
+                <div className="mybets-empty">No bets placed yet.</div>
             </div>
+
         </div>
     );
 }

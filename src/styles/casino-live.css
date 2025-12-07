@@ -1,0 +1,818 @@
+.casino-page.live {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.live-right {
+    display: inline-flex;
+    gap: 10px;
+    position: relative;
+}
+
+.live-right .balance {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    color: #aaafb5;
+    font-size: 13px;
+    position: absolute;
+    left: -80%;
+    top: 8px;
+}
+
+.live-right .balance span {
+    font-weight: 500;
+}
+
+.live-user {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-user .icon {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    padding: 11px 12px;
+    color: #fff;
+}
+
+.live-user .casino-username {
+    color: #aaafb5;
+    font-size: 13px;
+    font-weight: 500;
+    padding-right: 10px;
+}
+
+.mini-wrapper {
+    position: relative;
+}
+
+/* -------------------------------------------------------------------
+      CARDS BOX (TOGGLE SYSTEM FIXED)
+------------------------------------------------------------------- */
+
+.casino-page.live .casino-cards-box {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 5px 30px 5px 5px;
+    overflow: hidden;
+    transition: width 0.35s ease, padding 0.35s ease;
+    border-radius: 0 8px 8px 0;
+    z-index: 999;
+    width: 172px;
+    height: 135px;
+    display: flex;
+    flex-flow: column;
+    gap: 5px;
+}
+
+/* Smooth animation for width + opacity */
+.casino-page.live .casino-cards-box {
+    transition: width 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
+}
+
+/* CLOSED STATE – only width collapses */
+.casino-page.live .casino-cards-box.closed {
+    width: 0px !important;
+    padding-left: 0 !important;
+    opacity: 1;
+    /* keep wrapper visible so animation is smooth */
+}
+
+/* Fade out the rows when closing */
+.casino-page.live .casino-cards-box.closed .cards-row {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+/* OPEN STATE – fade in rows */
+.casino-page.live .casino-cards-box.open .cards-row {
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+
+
+/* Toggle button container */
+.cards-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    z-index: 99;
+    justify-content: center;
+}
+
+/* Icon rotation */
+.cards-toggle i {
+    transform: rotate(90deg);
+    font-size: 30px;
+    transition: transform 0.3s ease;
+}
+
+.cards-row {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.cards-row:last-of-type {
+    margin: 0;
+}
+
+.casino-page.live .cards-row img {
+    width: 42px;
+    object-fit: contain;
+    height: fit-content;
+    border-radius: 0;
+    margin-right: 8px;
+    height: 100%;
+}
+
+.casino-video-box {
+    background-color: black;
+    display: block;
+    height: 480px;
+}
+
+.live-main {
+    display: block !important;
+    background: linear-gradient(135deg, rgba(30, 47, 35, 0.95), rgba(20, 83, 45, 0.95));
+    padding: 6px !important;
+}
+
+.casino-left {
+    background-color: #132b1d;
+    border-radius: 0px;
+    color: #aaafb5;
+    position: relative;
+    transform: translateZ(0);
+    padding: 5px;
+}
+
+.panel-header {
+    display: flex;
+}
+
+.panel-header li {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.panel-header li b {
+    color: #fff;
+}
+
+.live-casino-odds-panel .player-row {
+    display: flex;
+    margin-top: 8px;
+    gap: 1%;
+}
+
+.live-casino-odds-panel .player-row li {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 32%;
+    padding: 4px;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 32px;
+    cursor: pointer;
+}
+
+.live-casino-odds-panel .player-row li:nth-child(1) {
+    background-color: #3c444b85;
+    color: #aaafb5;
+    position: relative;
+}
+
+.live-casino-odds-panel .player-row li.bet-btn {
+    padding: 0;
+}
+
+.live-casino-odds-panel .player-row li button {
+    flex-grow: 1;
+    text-align: center;
+    display: block;
+    height: 100%;
+    border-width: 2px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.player-name,
+.player-score {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.player-b li button:nth-child(1) {
+    display: none;
+}
+
+.bet-back-btn button {
+    background-color: #72bBEF40;
+    border: 2px solid #72BBEF;
+}
+
+.bet-lay-btn button {
+    background-color: #f994BA40;
+    border: 2px solid #d7d7d7;
+    color: #d7d7d7;
+}
+
+.live-casino-odds-panel .player-row li:hover button {
+    border-width: 1px !important;
+}
+
+
+/* ----------------------------------------------------------
+   GAME TITLE SECTION
+---------------------------------------------------------- */
+
+.casino-left-header {
+    background: rgba(0, 0, 0, .6);
+    padding: 10px;
+}
+
+.casino-left-header span {
+    display: block;
+    text-align: center;
+}
+
+.casino-game-title {
+    color: #fdcf13;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.casino-round-id {
+    font-size: 14px;
+    color: #ddd;
+    font-weight: 600;
+}
+
+
+/* ----------------------------------------------------------
+   CONTENT ROW
+---------------------------------------------------------- */
+
+.casino-left-content {
+    display: flex;
+    height: 420px;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.card-img {
+    width: 65px;
+    height: 95px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+
+/* ----------------------------------------------------------
+   VIDEO BOX
+---------------------------------------------------------- */
+
+.casino-video-box {
+    flex: 1;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.casino-video-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.casino-video-icons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+    flex-flow: row;
+}
+
+.video-icon-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #1d1d1d;
+    border: 1px solid #cccccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+}
+
+.video-loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #333;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.countdown-circle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 4px solid #14b366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #14b366;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+
+/* ----------------------------------------------------------
+   ODDS PANEL
+---------------------------------------------------------- */
+
+.casino-odds-panel {
+    background: #0f291a;
+    margin-top: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.odds-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #24432d;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.odds-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #1a3824;
+}
+
+.odds-player-name {
+    padding: 14px;
+    background: #11281a;
+    font-weight: bold;
+}
+
+.odds-player-score {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+.odds-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn {
+    width: 85%;
+    padding: 12px 0;
+    background: #1c2e22;
+    border: 2px solid #4fb1ff;
+    border-radius: 6px;
+    color: #d3eaff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+/* ============================
+   RIGHT SIDE PANEL (Improved)
+   ============================ */
+
+.casino-right {
+    padding: 5px;
+    background: #0f291a;
+}
+
+/* ----- BOX WRAPPER ----- */
+.betting-box {
+
+    border-radius: 4px;
+    padding: 0;
+    border: 1px solid #1b3d2a;
+    overflow: hidden;
+    background: #16191c;
+}
+
+/* ----- TITLE BAR ----- */
+.betting-title {
+    padding: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #aaafb5;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* LAST RESULTS items */
+.results-list {
+    padding: 5px;
+    background: #333;
+    position: relative;
+    background-color: rgba(0, 0, 0, .6);
+    width: 100%;
+    display: flex !important;
+    display: -webkit-flex;
+    transition: 1s;
+    overflow: hidden;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3px;
+
+}
+
+.result-item {
+    /* padding: 5px 10px; */
+    border-radius: 4px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    width: 9%;
+    height: 25px;
+    line-height: 25px;
+    margin-top: 5px;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #434343;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    flex-grow: 1;
+}
+
+.result-a {
+    color: #ed4242;
+}
+
+.result-b {
+    color: #fdcf13;
+}
+
+/* ============================
+   PLACE BET SECTION
+   ============================ */
+
+.bet-range {
+    font-size: 11px !important;
+    text-transform: capitalize !important;
+}
+
+.placebet-header .bet-range {
+    color: #c3c3c3;
+    font-size: 13px;
+}
+
+/* Sub-header row */
+.bet-info-header {
+    background: #3c444b;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    color: #aaafb5;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid #2f343a;
+}
+
+.bet-info select,
+.bet-info input {
+    color: #fff;
+}
+
+/* Player Row */
+.bet-info {
+    padding: 10px;
+    background: #0f291a;
+}
+
+.bet-dropdown {
+    width: 100%;
+    background: #1f3030;
+    border: 1px solid #4d5959;
+    color: #d1d1d1;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.bet-input {
+    width: 100%;
+    background: #1f3030;
+    border: 1px solid #4d5959;
+    padding: 6px;
+    border-radius: 4px;
+    color: #d1d1d1;
+}
+
+.profit-positive {
+    background: #003a1a;
+    color: #2cff90;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.profit-negative {
+    background: #3a0000;
+    color: #ff8b8b;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+/* QUICK STAKE BUTTONS */
+.stake-buttons {
+    padding: 10px;
+}
+
+.stake-btn {
+    background: #1c5f3f;
+    border: 1px solid #2e8560;
+    padding: 10px 0;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #e6f6e9;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stake-btn:hover {
+    background: #124b30;
+}
+
+.stake-btn:hover {
+    background: #267a53;
+}
+
+/* RESET + SUBMIT */
+.bet-actions {
+    padding: 10px;
+    padding-top: 0;
+}
+
+.reset-btn {
+    background: #d44a4a;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.reset-btn:hover {
+    background: #c03939;
+}
+
+.submit-btn {
+    background: #06b66a;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.submit-btn:hover {
+    background: #079a59;
+}
+
+/* ============================
+   MY BETS SECTION
+   ============================ */
+.mybets-header {
+    background: #3e4650;
+    color: #dcdcdc;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid #2c2f33;
+}
+
+.mybets-empty {
+    padding: 12px;
+    color: #9aa0a6;
+    font-size: 14px;
+}
+
+@media (max-width:767px) {
+    .casino-left {
+        position: relative;
+    }
+
+    .min-wrapper {
+        position: absolute;
+        z-index: 99;
+        height: 50%;
+    }
+
+    .casino-cards-box {
+        top: 60% !important;
+    }
+
+    .casino-left-header {
+        background: rgba(0, 0, 0, .6);
+    }
+
+    .casino-video-box {
+        height: 350px;
+    }
+
+    .casino-page.live .casino-cards-box.open {
+        width: auto;
+        height: auto;
+    }
+
+    .casino-page.live .casino-cards-box img {
+        width: 22px;
+        margin-right: 5px;
+    }
+
+    .casino-video-icons {
+        flex-flow: column;
+    }
+
+    .countdown-circle {
+        bottom: 5px;
+        right: 5px;
+    }
+
+    .live-user .icon {
+        height: 25px;
+        width: 25px;
+    }
+
+    .casino-user-icon {
+        font-size: 14px;
+    }
+
+    .live-right .balance {
+        top: 15px;
+    }
+
+    .casino-page.live .casino-header {
+        height: 30px;
+    }
+
+    .casino-page .casino-title {
+        font-weight: 400 !important;
+    }
+}
+
+/* ============================
+   RULES POPUP OVERLAY
+============================ */
+.rules-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    z-index: 99999;
+    padding-top: 30px;
+}
+   .rules-modal-content{
+    width: 100%;
+   }
+@media (min-width: 576px) {
+    .rules-modal-content {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+}
+
+/* BOX */
+.rules-modal-box {
+    max-height: calc(100vh - 50px);
+    max-width: 90%;
+    background: #132b1d;
+    border: 2px solid #2f4f2f;
+    padding: 0;
+    animation: fadeIn 0.3s ease;
+    margin: auto;
+}
+
+/* HEADER */
+.rules-modal-header {
+    border: 0;
+    border-radius: 0;
+    background-color: #3c444b;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.rules-title {
+    color: #ffd24c;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.rules-close-btn {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* IMAGE */
+.rules-modal-image {
+    padding: 10px;
+    text-align: center;
+}
+
+.rules-img {
+    height: 100%;
+    max-height: calc(100vh - 180px);
+    width: auto;
+    margin: auto;
+}
+
+/* RULES TEXT */
+.rules-list {
+    padding: 10px 18px 20px 18px;
+}
+
+.rules-list p {
+    color: #ffd24c;
+    margin: 6px 0;
+    font-size: 11px;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

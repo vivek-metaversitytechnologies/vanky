@@ -46,7 +46,7 @@ export default function Navbar({
           </li>
 
           <li>
-            <Link href="/all-market-book" className="nav-link">
+            <Link href="/market-analysis" className="nav-link">
               <i className="fa-solid fa-chart-column"></i>
               All Market Book
             </Link>
@@ -66,12 +66,12 @@ export default function Navbar({
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link href="/rate-information" className="nav-link">
               <i className="fa-solid fa-circle-info"></i>
               Rate Information
             </Link>
-          </li>
+          </li> */}
 
           {/* RULES POPUP */}
           <li>

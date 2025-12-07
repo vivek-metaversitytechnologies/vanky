@@ -143,3 +143,76 @@
         width: 46%;
     }
 }
+
+/* =======live========= */
+
+/* ----------------------------------------------------------
+   GLOBAL LAYOUT
+---------------------------------------------------------- */
+.casino-page {
+    background: #122c1a;
+    min-height: 100vh;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ----------------------------------------------------------
+   TOP BAR
+---------------------------------------------------------- */
+.casino-topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #1e442b;
+    border-bottom: 1px solid #1a3824;
+}
+
+.casino-top-left {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.casino-top-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.casino-points {
+    font-size: 16px;
+}
+
+.casino-user {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.casino-user-icon {
+    font-size: 16px;
+}
+
+.casino-username {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* ----------------------------------------------------------
+   MAIN LAYOUT
+---------------------------------------------------------- */
+.casino-main {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+}
+
+/* LEFT SECTION */
+.casino-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+

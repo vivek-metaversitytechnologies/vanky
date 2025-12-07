@@ -1,106 +1,285 @@
 "use client";
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import BettingSection from "@/src/components/casinoAdda/BettingSection";
+import React, { useState } from "react";
+import "../../../styles/casino-live.css";
+import "../../../styles/casino.css";
+import Image from "next/image";
+import Link from "next/link";
+import CasinoRules from "../casino-rule";
 
-const Page = () => {
-    const results = ["A", "A", "B", "B", "B", "A", "A", "A", "A", "B"];
+const GamePage = () => {
+    const [stake, setStake] = useState(0);
+    const [cardsOpen, setCardsOpen] = useState(true);
+    const [showRules, setShowRules] = useState(false);
+
+    const odds = 0.96;
+    const [selectedOdds, setSelectedOdds] = useState(odds);
+
+    const results = ["A", "A", "B", "A", "B", "B", "A", "A", "B", "A"];
+    const stakeButtons = [1, 5, 10, 50, 100, 500, 1000, 5000];
 
     return (
-        <div className="min-h-screen bg-[#264e34] text-white flex flex-col">
-            {/* Top Bar */}
-            <div className="flex justify-between items-center px-6 py-3 bg-[#1f3224] text-sm">
-                <h1 className="font-bold text-lg">HOME</h1>
-                <div className="flex items-center gap-6">
-                    <span className="font-semibold">Pts: 1262.00</span>
-                    <span className="bg-gray-800 px-3 py-1 rounded text-sm">c272184</span>
-                </div>
-            </div>
+        <>
+            {/* ===========================
+                RULES MODAL
+            ============================ */}
+            <CasinoRules visible={showRules} onClose={() => setShowRules(false)} />
 
-            {/* Main Layout */}
-            <div className="flex flex-1 p-4 gap-4 ">
-                {/* Left Column */}
-                <div className="flex-1 flex flex-col gap-6 bg-[#1f3224] p-2 rounded-lg  h-[100%]">
-                    {/* Cards and Video side by side */}
-                    <div className="flex gap-4">
-                        {/* Cards */}
-                        <div>
-                            <div className='bg-black p-2'>
-                                <span className='text-yellow-500 text-xl flex items-center justify-center'>TEENPAATTI T-20</span>
-                                <span className='text-white block'>ROUND ID: 123456789012345</span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2 mt-6 bg-black">
-                            {[...Array(6)].map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className="bg-red-600 w-12 h-16 border border-black rounded"
-                                    />
-                                ))}
+            <div className="casino-page live">
+
+                {/* HEADER */}
+                <header className="casino-header flex justify-between items-center px-4 py-3">
+                     <Link href="/CasinoAdda">  
+                    <h1 className="casino-title">HOME</h1>
+                     </Link>
+
+                    <div className="live-right flex items-center gap-4">
+                        <p className="balance">
+                            <span>Pts:</span> <span className="bal">1262.00</span>
+                        </p>
+
+                        <div className="live-user flex items-center gap-2">
+                            <span className="icon">
+                                <i className="fa-solid fa-user casino-user-icon"></i>
+                            </span>
+                            <span className="casino-username">c360348</span>
+                        </div>
+                    </div>
+                </header>
+
+                {/* MAIN CONTENT */}
+                <div className="casino-main live-main">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+                        {/* LEFT SECTION */}
+                        <div className="lg:col-span-9">
+                            <div className="casino-left">
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-0">
+
+                                    {/* CARDS BLOCK */}
+                                    <div className="md:col-span-3">
+                                        <div className="min-wrapper">
+
+                                            <div className="casino-left-header">
+                                                <span className="casino-game-title">TEENPATTI 1-DAY</span>
+                                                <span className="casino-round-id">Round ID: 101251207194631</span>
+                                            </div>
+
+                                            <div className={`casino-cards-box ${cardsOpen ? "open" : "closed"}`}>
+
+                                                {/* Row 1 */}
+                                                <div className="cards-row">
+                                                    {[1, 2, 3].map((x, i) => (
+                                                        <Image
+                                                            key={i}
+                                                            src="/assets/images/card-close.png"
+                                                            alt="card"
+                                                            width={30}
+                                                            height={30}
+                                                            className="card-img"
+                                                        />
+                                                    ))}
+                                                </div>
+
+                                                {/* Row 2 */}
+                                                <div className="cards-row">
+                                                    {[4, 5, 6].map((x, i) => (
+                                                        <Image
+                                                            key={i}
+                                                            src="/assets/images/card-close.png"
+                                                            alt="card"
+                                                            width={30}
+                                                            height={30}
+                                                            className="card-img"
+                                                        />
+                                                    ))}
+                                                </div>
+
+                                                {/* Toggle */}
+                                                <span className="cards-toggle" onClick={() => setCardsOpen(!cardsOpen)}>
+                                                    <i className="fa-solid fa-grip-lines"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* VIDEO BLOCK */}
+                                    <div className="md:col-span-9">
+                                        <div className="casino-video-box relative">
+
+                                            <div className="casino-video-icons absolute">
+                                                {/* HOME ICON */}
+                                                <Link href="/CasinoAdda">
+                                                    <div className="video-icon-circle">
+                                                        <i className="fa-solid fa-house"></i>
+                                                    </div>
+                                                </Link>
+
+                                                {/* INFO ICON (OPEN MODAL) */}
+                                                <div
+                                                    className="video-icon-circle"
+                                                    onClick={() => setShowRules(true)}
+                                                >
+                                                    <i className="fa-solid fa-circle-info"></i>
+                                                </div>
+                                            </div>
+
+                                            <div className="casino-video-frame relative">
+                                                {/* <iframe src="YOUR_VIDEO_URL"></iframe> */}
+                                            </div>
+
+                                            <div className="video-loader"></div>
+
+                                            <div className="countdown-circle">19</div>
+                                        </div>
+                                    </div>
+
+                                    {/* ODDS PANEL */}
+                                    <div className="md:col-span-12">
+                                        <div className="live-casino-odds-panel">
+                                            <ul className="panel-header">
+                                                <li><b className="text-sm">Main</b></li>
+                                                <li><b className="text-sm">Back</b></li>
+                                                <li><b className="text-sm">Lay</b></li>
+                                            </ul>
+
+                                            <ul className="player-row">
+                                                <li>
+                                                    <span className="player-name">Player A</span>
+                                                    <div className="player-score">0.00</div>
+                                                </li>
+
+                                                <li className="bet-btn bet-back-btn">
+                                                    <button className="back">64</button>
+                                                </li>
+
+                                                <li className="bet-btn bet-lay-btn">
+                                                    <button className="lay">68</button>
+                                                </li>
+                                            </ul>
+
+                                            <ul className="player-row player-b">
+                                                <li>
+                                                    <span className="player-name">Player B</span>
+                                                    <div className="player-score">0.00</div>
+                                                </li>
+
+                                                <li className="bet-btn bet-back-btn">
+                                                    <button className="back">64</button>
+                                                    <button className="lay"><i className="fa-solid fa-lock"></i></button>
+                                                </li>
+
+                                                <li className="bet-btn bet-lay-btn">
+                                                    <button className="lay">68</button>
+                                                    <button className="lay"><i className="fa-solid fa-lock"></i></button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
 
+                        {/* RIGHT SIDEBAR */}
+                        <div className="lg:col-span-3">
+                            <div className="casino-right flex flex-col gap-4">
 
-                        {/* Video */}
-                        <div
-                            className="flex-1 flex justify-center items-center bg-black h-80 rounded-lg shadow-lg relative">
-                            <div
-                                className="animate-spin rounded-full h-10 w-10 border-t-2 border-white border-opacity-70"/>
-                            <div
-                                className="absolute bottom-3 right-3 flex items-center justify-center w-12 h-12 rounded-full border-2 border-red-500 text-red-500 font-bold text-lg">
-                                8
+                                {/* LAST RESULTS */}
+                                <div className="betting-box betting-last-results">
+                                    <h2 className="betting-title">LAST RESULTS</h2>
+
+                                    <div className="results-list">
+                                        {results.map((r, i) => (
+                                            <div key={i} className={`result-item ${r === "A" ? "result-a" : "result-b"}`}>
+                                                {r}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* PLACE BET */}
+                                <div className="betting-box betting-placebet">
+
+                                    <div className="placebet-header">
+                                        <h2 className="betting-title">PLACE BET <span className="bet-range">Range:100-5000</span></h2>
+                                    </div>
+
+                                    <div className="bet-info-header">
+                                        <span>(Bet for)</span>
+                                        <span>Odds</span>
+                                        <span>Stake</span>
+                                        <span>Profit</span>
+                                    </div>
+
+                                    <div className="bet-info grid grid-cols-4 gap-2 items-center">
+
+                                        {/* Player Name */}
+                                        <span className="font-semibold text-sm">Player A</span>
+
+                                        {/* SELECT (FIXED ERROR) */}
+                                        <select
+                                            className="bet-dropdown text-sm"
+                                            value={selectedOdds}
+                                            onChange={(e) => setSelectedOdds(Number(e.target.value))}
+                                        >
+                                            <option value="0.64">0.64</option>
+                                            <option value="0.70">0.70</option>
+                                            <option value="0.80">0.80</option>
+                                        </select>
+
+                                        {/* Stake */}
+                                        <input
+                                            type="number"
+                                            value={stake}
+                                            onChange={(e) => setStake(Number(e.target.value))}
+                                            className="bet-input text-sm"
+                                        />
+
+                                        {/* Profit */}
+                                        <div className={stake * selectedOdds >= 0 ? "profit-positive" : "profit-negative"}>
+                                            {(stake * selectedOdds).toFixed(2)}
+                                        </div>
+                                    </div>
+
+                                    {/* QUICK STAKE */}
+                                    <div className="stake-buttons grid grid-cols-4 gap-1 mt-1">
+                                        {stakeButtons.map((val) => (
+                                            <button key={val} className="stake-btn" onClick={() => setStake(val)}>
+                                                {val}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* BUTTONS */}
+                                    <div className="bet-actions flex gap-2 mt-1">
+                                        <button className="bet-btn reset-btn flex-1" onClick={() => setStake(0)}>Reset</button>
+                                        <button className="bet-btn submit-btn flex-1">Submit</button>
+                                    </div>
+                                </div>
+
+                                {/* MY BETS */}
+                                <div className="betting-box betting-mybets">
+                                    <h2 className="betting-title">MY BETS</h2>
+
+                                    <div className="mybets-header grid grid-cols-4">
+                                        <span>Name</span>
+                                        <span>Odds</span>
+                                        <span>Stake</span>
+                                        <span>P/L</span>
+                                    </div>
+
+                                    <div className="mybets-empty">No bets placed yet.</div>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
 
-                    {/* Odds Section */}
-                    <div className="w-full mx-auto mt-4">
-                        <table className="w-full text-center text-sm border-collapse">
-                            <thead>
-                            <tr className="bg-[#2d4131]">
-                                <th className="py-2">Main</th>
-                                <th className="py-2">Back</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr className="border-b border-gray-600">
-                                <td className="py-3 font-semibold bg-[#0e1f15]">Player A
-                                    <span className='block'>0.00</span>
-                                </td>
-                                <td>
-                                    <Button
-                                        variant="outline"
-                                        className="bg-[#243628] w-100 border-blue-400"
-                                    >
-                                        1.96
-                                    </Button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="py-3 font-semibold bg-[#0e1f15]">Player B
-                                    <span className='block'>0.00</span>
-                                </td>
-                                <td>
-                                <Button
-                                        variant="outline"
-                                        className="bg-[#243628] border-blue-400 w-100"
-                                    >
-                                        1.96
-                                    </Button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
                     </div>
-                </div>
-
-                {/* Right Section */}
-                <div className="w-1/4 flex flex-col gap-4">
-                    <BettingSection />
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
-export default Page;
+export default GamePage;

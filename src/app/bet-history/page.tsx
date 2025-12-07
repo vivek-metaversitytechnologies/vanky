@@ -297,7 +297,7 @@ export default function BetHistoryPage() {
                                     </thead>
 
                                     {filteredRows.length > 0 && (
-                                        <tbody style={{display:"none"}}>
+                                        <tbody >
                                             {filteredRows.map((r, idx) => (
                                                 <tr key={idx}>
                                                     <td>{r.sno}</td>

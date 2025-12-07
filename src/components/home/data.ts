@@ -1,12 +1,13 @@
 export const menuIcons = [
-  { title: "IN PLAY", image: "/assets/images/menu/inplay.webp", uppercase: true },
-  { title: "CASINO", image: "/assets/images/menu/casino.webp", uppercase: true },
-  { title: "My Ledger", image: "/assets/images/menu/my-ledger.webp" },
-  { title: "Account Statement", image: "/assets/images/menu/passbook.webp" },
-  { title: "PROFILE", image: "/assets/images/menu/profile.webp", uppercase: true },
-  { title: "PASSWORD", image: "/assets/images/menu/password.webp", uppercase: true },
-  { title: "Commission Report", image: "/assets/images/menu/commission-report.webp" },
+  { title: "IN PLAY", image: "/assets/images/menu/inplay.webp", link: "/inplay", uppercase: true },
+  { title: "CASINO", image: "/assets/images/menu/casino.webp", link: "/CasinoAdda", uppercase: true },
+  { title: "My Ledger", image: "/assets/images/menu/my-ledger.webp", link: "/ledger" },
+  { title: "Account Statement", image: "/assets/images/menu/passbook.webp", link: "/accountStatement" },
+  { title: "PROFILE", image: "/assets/images/menu/profile.webp", link: "/profile", uppercase: true },
+  { title: "PASSWORD", image: "/assets/images/menu/password.webp", link: "/change-password", uppercase: true },
+  { title: "Commission Report", image: "/assets/images/menu/commission-report.webp", link: "/myCommission" },
 ];
+
 
 export const mobileNavItems = [
   { title: "Dashboard", icon: "🕹️" },
