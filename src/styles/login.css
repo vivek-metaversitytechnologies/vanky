@@ -1,0 +1,174 @@
+/* ===========================
+   PAGE WRAPPER (Full Screen BG)
+=========================== */
+.login-wrapper {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-image: url('/assets/images/bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+    
+}
+
+/* Dim effect on background */
+.login-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* ===========================
+   LOGIN BOX
+=========================== */
+.login-box {
+    position: relative;
+    padding: 40px 45px 30px;
+    background:url(../../public/assets/images/login-form-bg.svg)  no-repeat center center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+    position: relative;
+    height: 610px;
+    width: 500px;
+    border-radius: 25px;
+    border: 1px solid #89FE43;
+}
+
+/* ===========================
+   LOGO SECTION
+=========================== */
+.login-logo {
+    text-align: center;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo-img {
+    object-fit: contain;
+    width: 180px;
+    margin-bottom: 10px;
+}
+
+/* ===========================
+   INPUT SECTION
+=========================== */
+.login-field {
+    margin-bottom: 26px;
+}
+
+.login-label {
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 6px;
+    padding-left: 10px;
+}
+
+.login-label .icon {
+    margin-right: 8px;
+    color: #89fe43;
+    font-size: 18px;
+}
+
+/* Input style */
+.login-input {
+      width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 15px;
+    border: 1px solid rgba(137, 254, 67, .3);
+    background: #0000005c;
+    color: #fff;
+    font-size: 16px;
+}
+
+.login-input::placeholder {
+    color: #c1c1c1;
+}
+
+.login-input:focus {
+    border-color: #b5ff89;
+    box-shadow: 0 0 8px rgba(137, 254, 67, 0.6);
+}
+
+/* ===========================
+   ERROR MESSAGE
+=========================== */
+.error-text {
+    font-size: 12px;
+    color: #ff5d5d;
+    font-weight: 700;
+    margin-top: 2px;
+    display: block;
+}
+
+/* ===========================
+   LOGIN BUTTON
+=========================== */
+.login-btn {
+    width: 100%;
+    padding: 12px 0;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    border-radius: 12px;
+    border: 2px solid #89fe43;
+
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+
+    transition: 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #89fe43;
+    color: #121212;
+}
+
+/* ===========================
+   WARNING BOX
+=========================== */
+.login-warning {
+   padding: 10px;
+    background: #ebdede;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    text-align: center;
+    color: red;
+    font-weight: 700;
+    margin: 5px 0;
+    font-size: 14px;
+    letter-spacing: normal;
+    margin-top: 35px;
+}
+
+/* ===========================
+   FOOTER NOTE
+=========================== */
+.footer-note {
+    color: #c2c2c2;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 480px) {
+    .login-box {
+        width: 90%;
+        padding: 30px;
+    }
+}
