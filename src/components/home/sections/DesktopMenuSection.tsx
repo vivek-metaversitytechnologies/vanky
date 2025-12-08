@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { menuIcons } from "../data";
 
@@ -9,11 +8,9 @@ export function DesktopMenuSection() {
         <Link key={item.title} href={item.link} className="desktop-menu-item">
           
           <div className="desktop-menu-icon-inner">
-            <Image
+            <img
               src={item.image}
               alt={item.title}
-              width={70}
-              height={70}
               className="desktop-menu-img"
             />
           </div>

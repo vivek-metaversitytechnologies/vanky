@@ -46,15 +46,15 @@ export const tennisMatches = [
 
 
 export const casinoGames = [
-  { title: "TeenPatti T-20", image: "/assets/images/casino/teenpatti-t20.webp" },
-  { title: "Dragon Tiger", image: "/assets/images/casino/dragon-tiger.webp" },
-  { title: "Lucky 7", image: "/assets/images/casino/lucky-7.webp" },
-  { title: "AAA", image: "/assets/images/casino/aaa.webp" },
-  { title: "Dragon Tiger 2", image: "/assets/images/casino/dragon-tiger-2.webp" },
-  { title: "Worli Matka", image: "/assets/images/casino/worli-matka.webp" },
-  { title: "TeenPatti One-day", image: "/assets/images/casino/teenpatti-one-day.webp" },
-  { title: "TeenPatti Test", image: "/assets/images/casino/teenpatti-test.webp" },
-  { title: "32 Card A", image: "/assets/images/casino/32-card-a.webp" },
-  { title: "32 Card B", image: "/assets/images/casino/32-card-b.webp" },
-  { title: "Andar Bahar2", image: "/assets/images/casino/ander-bahar-2.webp" },
+  { title: "TeenPatti T-20", image: "/assets/images/casino/teenpatti-t20.png" },
+  { title: "Dragon Tiger", image: "/assets/images/casino/dragon-tiger.png" },
+  { title: "Lucky 7", image: "/assets/images/casino/lucky-7.png" },
+  { title: "AAA", image: "/assets/images/casino/aaa.png" },
+  { title: "Dragon Tiger 2", image: "/assets/images/casino/dragon-tiger-2.png" },
+  { title: "Worli Matka", image: "/assets/images/casino/worli-matka.png" },
+  { title: "TeenPatti One-day", image: "/assets/images/casino/teenpatti-one-day.png" },
+  { title: "TeenPatti Test", image: "/assets/images/casino/teenpatti-test.png" },
+  { title: "32 Card A", image: "/assets/images/casino/32-card-a.png" },
+  { title: "32 Card B", image: "/assets/images/casino/32-card-b.png" },
+  { title: "Andar Bahar2", image: "/assets/images/casino/ander-bahar-2.png" },
 ];

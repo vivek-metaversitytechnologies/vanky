@@ -5,7 +5,7 @@ export function CricketSection() {
   return (
     <section className="vs-wrap vs-main">
       <div className="vs-heading">
-        <Image src="/assets/images/ball.png" alt="Cricket" width={26} height={26} />
+        <img src="/assets/images/ball.png" alt="Cricket"  />
         <span className="sports-cat">Cricket</span>
       </div>
 

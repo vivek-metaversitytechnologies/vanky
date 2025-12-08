@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import "../../styles/header.css";
 
 export default function SidebarDesktop() {
@@ -16,7 +17,9 @@ export default function SidebarDesktop() {
 
       <ul className="sidebar-list">
         <li>
-          <button className="sidebar-btn">In-Play</button>
+          <Link href="/home" className="sidebar-btn">
+            In-Play
+          </Link>
         </li>
 
         {/* CRICKET */}

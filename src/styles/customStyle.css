@@ -342,8 +342,8 @@ li {
 
 
 .vs-main .vs-heading img {
-  height: clamp(22px, 4vw, 50px);
-  width: clamp(22px, 4vw, 50px);
+  height: clamp(22px, 4vw, 45px);
+  width: clamp(22px, 4vw, 45px);
 }
 
 .inplay-matches-box .vs-heading img {
@@ -361,7 +361,7 @@ li {
 .casino-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 9px;
   padding: 10px 8px;
 }
 
@@ -377,6 +377,8 @@ li {
 .casino-card img {
   width: 100%;
   box-shadow: 3px 3px 3px gray;
+  object-fit: fill;
+  height: 140px;
 }
 
 .casino-card:hover .casino-card-content span {
