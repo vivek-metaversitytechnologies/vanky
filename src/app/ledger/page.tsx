@@ -6,10 +6,10 @@ import "../../styles/customStyle.css";
 import "../../styles/header.css";
 import "../../styles/table.css";
 
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-import Marquee from "../../components/layout/Marquee";
-import BackButton from "../../components/layout/BackButton";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import Marquee from "../../components/Layout/Marquee";
+import BackButton from "../../components/Layout/BackButton";
 
 export default function LedgerPage() {
   // ⭐ STATE FOR LEDGER ROWS

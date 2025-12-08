@@ -1,4 +1,4 @@
-// components/layout/Marquee.jsx
+// components/Layout/Marquee.jsx
 "use client";
 
 import React from "react";

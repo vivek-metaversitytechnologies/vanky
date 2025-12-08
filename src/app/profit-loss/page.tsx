@@ -6,10 +6,10 @@ import "../../styles/customStyle.css";
 import "../../styles/header.css";
 import "../../styles/table.css";
 
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-import Marquee from "../../components/layout/Marquee";
-import BackButton from "../../components/layout/BackButton";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import Marquee from "../../components/Layout/Marquee";
+import BackButton from "../../components/Layout/BackButton";
 
 export default function ProfitLossPage() {
 
@@ -70,8 +70,13 @@ export default function ProfitLossPage() {
                         <div className="casino-heading no-radius uppercase acc-heading">
                             <span className="title-with-select">
                                 Profit Loss Listing
-                                <select className="filter-select" id="pages" style={{ color: "black" }}>
-                                    <option value="10" defaultValue>10</option>
+                                <select
+                                    className="filter-select"
+                                    id="pages"
+                                    style={{ color: "black" }}
+                                    defaultValue="10"
+                                >
+                                    <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                     <option value="100">100</option>

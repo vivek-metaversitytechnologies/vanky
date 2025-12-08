@@ -7,9 +7,9 @@ import "../../styles/header.css";
 import "../../styles/table.css";
 import "../../styles/betHistory.css";
 
-import HeaderDesktop from "../../components/layout/HeaderDesktop";
-import SidebarDesktop from "../../components/layout/SidebarDesktop";
-import Marquee from "../../components/layout/Marquee";
+import HeaderDesktop from "../../components/Layout/HeaderDesktop";
+import SidebarDesktop from "../../components/Layout/SidebarDesktop";
+import Marquee from "../../components/Layout/Marquee";
 
 export default function BetHistoryPage() {
     const initialData = [
