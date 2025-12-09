@@ -252,7 +252,7 @@ export default function MatchPage() {
 
                                                 {/* EMPTY ROW WITH BORDER (SAME AS ANGULAR) */}
                                                 <tr style={{ border: '0.5px solid #000' }}>
-                                                    <td colSpan="3" id="betSlipBooKMaker67868736" className="modal_book_design" style={{ display: 'none' }}></td>
+                                                    <td colSpan={3} id="betSlipBooKMaker67868736" className="modal_book_design" style={{ display: 'none' }}></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -393,7 +393,7 @@ export default function MatchPage() {
                                                     </thead>
                                                     <tbody id="fancybets">
                                                         <tr>
-                                                            <td colSpan="7" className="text-center">No placed bet found !</td>
+                                                            <td colSpan={7} className="text-center">No placed bet found !</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -419,10 +419,10 @@ export default function MatchPage() {
                                             </header>
                                             <div className="modal-body" style={{ maxHeight: 'calc(96vh - 47px)', padding: '0 !important', overflow: 'auto' }}>
                                                 <table className="table table-bordered" style={{ margin: '0' }}>
-                                                    <thead>
+                                                        <thead>
                                                         <tr style={{ background: '#272e41' }}>
-                                                            <th width="50%" className="text-center" style={{ color: '#fff' }}>Run</th>
-                                                            <th width="50%" className="text-center" style={{ color: '#fff' }}>Amount</th>
+                                                            <th className="text-center" style={{ color: '#fff', width: '50%' }}>Run</th>
+                                                            <th className="text-center" style={{ color: '#fff', width: '50%' }}>Amount</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="fancyLengthBook">
