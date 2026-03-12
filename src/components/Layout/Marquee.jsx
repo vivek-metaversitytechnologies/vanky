@@ -1,10 +1,24 @@
 // components/Layout/Marquee.jsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { fetchMessage } from "../../store/actions/message";
 
 export default function Marquee({ text } = {}) {
-    const message = text || "2025-11-28 10:13:20 - WELCOME TO VANKY12.COM ( Adelaide Strikers Women vs Sydney Thunder Women 5 over par side due to rain )";
+    const { text: messageText } = useSelector((state) => state.message);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        fetchMessage();
+    }, []);
+
+    const message = mounted ? String(messageText || "").trim() : "";
+
+    if (!message) {
+        return null;
+    }
 
     return (
         <div className="marquee-track">

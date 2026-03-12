@@ -11,6 +11,9 @@ import {
 } from 'redux-persist';
 import createWebStorage from 'redux-persist/es/storage/createWebStorage';
 import auth from "./reducers/auth";
+import message from "./reducers/message";
+import matches from "./reducers/matches";
+import balance from "./reducers/balance";
 
 const createNoopStorage = () => ({
   getItem() {
@@ -31,6 +34,9 @@ const storage =
 
 const rootReducer = combineReducers({
   auth,
+  message,
+  matches,
+  balance,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -52,7 +58,7 @@ const store = configureStore({
     }),
 });
 
-  export type AppDispatch = typeof store.dispatch;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
 export const persistor = persistStore(store);

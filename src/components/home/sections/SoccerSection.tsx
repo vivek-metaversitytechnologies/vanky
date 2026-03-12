@@ -1,7 +1,19 @@
 import Image from "next/image";
 import { soccerMatches } from "../data";
 
-export function SoccerSection() {
+type MatchItem = {
+  matchName: string;
+  openDate: string;
+};
+
+export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
+  const list = matches?.length
+    ? matches.map((item) => ({
+      opponent: item.matchName,
+      time: item.openDate,
+    }))
+    : soccerMatches;
+
   return (
     <section className="vs-wrap vs-main">
 
@@ -18,7 +30,7 @@ export function SoccerSection() {
 
       {/* MATCH LIST */}
       <div className="vs-content">
-        {soccerMatches.map((match) => (
+        {list.map((match) => (
           <div key={match.opponent} className="vs-strip">
             <div className="vs-table">
 

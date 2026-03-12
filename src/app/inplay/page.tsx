@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import "../../styles/inplay.css";
+import type { RootState } from "../../store/store";
 
 import SidebarDesktop from "../../components/Layout/SidebarDesktop";
 import HeaderDesktop from "../../components/Layout/HeaderDesktop";
@@ -12,9 +14,15 @@ import {
     SoccerSection,
     TennisSection,
 } from "../../components/home/sections";
+import { fetchMatches } from "../../store/actions/matches";
 
 export default function InPlayPage() {
     const [activeTab, setActiveTab] = useState("cricket");
+    const { list: matches } = useSelector((state: RootState) => state.matches);
+
+    useEffect(() => {
+        fetchMatches();
+    }, []);
 
     return (
         <div className="dashboard-wrapper">
@@ -65,9 +73,9 @@ export default function InPlayPage() {
                                     </a>
                                 </div>
                                 <div className="inplay-matches-box">
-                                    {activeTab === "cricket" && <CricketSection />}
-                                    {activeTab === "soccer" && <SoccerSection />}
-                                    {activeTab === "tennis" && <TennisSection />}
+                                    {activeTab === "cricket" && <CricketSection matches={matches} />}
+                                    {activeTab === "soccer" && <SoccerSection matches={matches} />}
+                                    {activeTab === "tennis" && <TennisSection matches={matches} />}
                                 </div>
                             </div>
                             <div className="inplay-right">

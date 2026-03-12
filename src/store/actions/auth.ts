@@ -1,9 +1,8 @@
 import store from "../store";
-import axios from "axios";
 import { authActions } from "../reducers/auth";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { API_BASE_URL } from "../../config/axiosConfig";
+import { urbApiClient } from "../../config/axiosConfig";
 
 const { dispatch } = store;
 
@@ -14,10 +13,11 @@ export const login = async (userId, password) => {
     const fullUrl = typeof window !== 'undefined' ? window.location.origin : '';
     const urlWithoutProtocol = fullUrl.replace(/^https?:\/\//, '');
 
-    const response = await axios.post(`${API_BASE_URL}/login/cleint-login`, {
+    const response = await urbApiClient.post("/login/cleint-login", {
       userId,
       password,
-      url: urlWithoutProtocol,
+      // url: urlWithoutProtocol,
+      url: "urb99.com"
     });
 
     const { data } = response;
@@ -71,7 +71,7 @@ export const loadUser = async (accessToken) => {
 
   try {
     // If you have a user info endpoint, use it here
-    const response = await axios.get(`${API_BASE_URL}/user/me`, {
+    const response = await urbApiClient.get("/user/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -103,11 +103,7 @@ export const demoLogin = async () => {
 
   try {
     // Use a separate axios instance so global auth interceptors are not applied.
-    const publicClient = axios.create({
-      baseURL: API_BASE_URL,
-    });
-
-    const response = await publicClient.post("/login/demo-login");
+    const response = await urbApiClient.post("/login/demo-login");
     const { data } = response;
 
     if (!data || !data.token) {

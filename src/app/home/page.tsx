@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Image from "next/image";
+import type { RootState } from "../../store/store";
 
 import "../../styles/customStyle.css";
 import "../../styles/header.css";
@@ -18,10 +20,16 @@ import {
   DesktopCasinoSection,
   DesktopMenuSection,
 } from "../../components/home/sections";
+import { fetchMatches } from "../../store/actions/matches";
 
 export default function MainDashboard() {
   const [showRules, setShowRules] = useState(false);
   const [showStakeModal, setShowStakeModal] = useState(false);
+  const { list: matches } = useSelector((state: RootState) => state.matches);
+
+  useEffect(() => {
+    fetchMatches();
+  }, []);
 
   return (
     <div className="dashboard-wrapper">
@@ -47,7 +55,7 @@ export default function MainDashboard() {
           {/* MAIN CONTENT */}
           <main className="desktop-main">
             <DesktopMenuSection />
-            <CricketSection />
+            <CricketSection matches={matches} />
             <DesktopCasinoSection />
           </main>
         </div>
