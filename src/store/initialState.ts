@@ -34,3 +34,10 @@ export const accountStatementInitialState = {
   error: null,
   lastFetched: null as number | null,
 };
+
+export const passwordChangeInitialState = {
+  loading: false,
+  success: false,
+  error: null as string | null,
+  message: null as string | null,
+};

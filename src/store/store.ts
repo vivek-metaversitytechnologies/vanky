@@ -15,6 +15,7 @@ import message from "./reducers/message";
 import matches from "./reducers/matches";
 import balance from "./reducers/balance";
 import accountStatement from "./reducers/accountStatement";
+import passwordChange from "./reducers/passwordChange";
 
 const createNoopStorage = () => ({
   getItem() {
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   matches,
   balance,
   accountStatement,
+  passwordChange,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
