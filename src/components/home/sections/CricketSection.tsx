@@ -1,18 +1,35 @@
 import Image from "next/image";
+import Link from "next/link";
 import { cricketMatches } from "../data";
 
 type MatchItem = {
   matchName: string;
   openDate: string;
+  matchId?: number;
 };
 
-export function CricketSection({ matches }: { matches?: MatchItem[] }) {
-  const list = matches?.length
+type DisplayMatch = {
+  opponent: string;
+  time: string;
+  matchId?: number;
+};
+
+export function CricketSection({
+  matches,
+  enableMatchLink = false,
+  useApiOnly = false,
+}: {
+  matches?: MatchItem[];
+  enableMatchLink?: boolean;
+  useApiOnly?: boolean;
+}) {
+  const list: DisplayMatch[] = matches?.length
     ? matches.map((item) => ({
       opponent: item.matchName,
       time: item.openDate,
+      matchId: item.matchId,
     }))
-    : cricketMatches;
+    : (useApiOnly ? [] : cricketMatches);
 
   return (
     <section className="vs-wrap vs-main">
@@ -22,14 +39,33 @@ export function CricketSection({ matches }: { matches?: MatchItem[] }) {
       </div>
 
       <div className="vs-content">
+        {list.length === 0 ? (
+          <div className="vs-strip">
+            <div className="vs-table">
+              <div className="match-opponent">
+                <p className="match-name">No matches found</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         {list.map((match) => (
-          <div key={match.opponent} className="vs-strip">
+          <div key={`${match.opponent}-${match.matchId ?? "na"}`} className="vs-strip">
             <div className="vs-table">
 
               <div className="match-opponent">
                 <p className="match-name">
-                  <Image src="/assets/images/jersey.svg" alt="" width={30} height={30} />
-                  {match.opponent}
+                  {enableMatchLink && match.matchId ? (
+                    <Link href={`/match/${match.matchId}`} className="match-name">
+                      <Image src="/assets/images/jersey.svg" alt="" width={30} height={30} />
+                      {match.opponent}
+                    </Link>
+                  ) : (
+                    <>
+                      <Image src="/assets/images/jersey.svg" alt="" width={30} height={30} />
+                      {match.opponent}
+                    </>
+                  )}
                 </p>
                 <Image src="/assets/images/tv.png" className="tv-img" alt="" width={30} height={30} />
               </div>

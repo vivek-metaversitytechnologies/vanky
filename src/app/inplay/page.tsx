@@ -79,7 +79,13 @@ export default function InPlayPage() {
                                     </a>
                                 </div>
                                 <div className="inplay-matches-box">
-                                    {activeTab === "cricket" && <CricketSection matches={hydratedMatches} />}
+                                    {activeTab === "cricket" && (
+                                        <CricketSection
+                                            matches={hydratedMatches}
+                                            enableMatchLink
+                                            useApiOnly
+                                        />
+                                    )}
                                     {activeTab === "soccer" && <SoccerSection matches={hydratedMatches} />}
                                     {activeTab === "tennis" && <TennisSection matches={hydratedMatches} />}
                                 </div>
