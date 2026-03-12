@@ -1,62 +1,441 @@
-@media (min-width:767px){
-    .teamNameBox[_ngcontent-nkk-c31]{
-    flex-direction: row!important;
-}
+.match-layout {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 12px;
+  margin-top: 8px;
 }
 
-/* DROPDOWN WRAPPER */
+.match-left-panel,
+.match-right-panel {
+  min-width: 0;
+}
+
+.match-score-box {
+  border: 1px solid #000;
+  background: #fff;
+}
+
+.match-top-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.match-name-head {
+  width: 65%;
+  border: none;
+  background: #255f00;
+  color: #fff;
+  position: relative;
+  height: 44px;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.match-name-inline {
+  font-weight: 500;
+  width: 55%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  text-overflow: ellipsis;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.match-tv-head {
+  width: 18%;
+  border: none;
+  background: #ffdf1a;
+  color: #000;
+  text-align: center;
+  font-weight: 600;
+}
+
+.match-dropdown-head {
+  border: none;
+  background: #8b0000;
+  color: #fff;
+  text-align: center;
+  position: relative;
+}
+
+.match-dropdown-button {
+  font-weight: 700;
+  line-height: 25px;
+  padding: 0;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .match-dd {
-    position: absolute;
-    top: 40px;
-    right: 0;
-    max-width: 190px;
-    max-height: 50vh;
-    overflow-y: auto;
-    background: #006869; /* perfect match to screenshot */
-    border-radius:10px;
-    padding:0;
-    color: #fff;
-    border-bottom: 2px solid #55b569;
-    margin: 0;
-    z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    overflow: hidden;
+  position: absolute;
+  top: 38px;
+  right: 0;
+  width: 100%;
+  max-height: 50vh;
+  overflow-y: auto;
+  background: #006869;
+  padding: 0;
+  margin: 0;
+  z-index: 9999;
+  border-bottom: 2px solid #55b569;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* EACH ROW */
 .match-dd-item {
-    list-style: none;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    padding: 5px 15px;
-    color: #fff;
-    border-bottom: 1px solid #55b569;
-    transition: background 0.2s ease;
-
-}
-.match-dd-item:last-of-type{
-    border: none;
+  list-style: none;
+  border-bottom: 1px solid #55b569;
+  padding: 5px 12px;
 }
 
-/* LINK INSIDE ROW */
+.match-dd-item:last-of-type {
+  border-bottom: none;
+}
+
 .match-dd-link {
-    display: block;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 400;
-    text-transform: uppercase;
-    text-decoration: none;
-
-    /* ELLIPSIS */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: left;
-
+  display: block;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  cursor: pointer;
 }
 
-/* HOVER EFFECT EXACT SAME STYLE */
 .match-dd-item:hover {
-    background: #008183;
+  background: #008183;
 }
 
+.score_area {
+  overflow: hidden;
+}
 
+.iframestyle {
+  border: 0;
+}
+
+.iframeheightControll {
+  min-height: 185px;
+}
+
+.tvformobilediv {
+  border: 1px solid #000;
+  padding: 0;
+}
+
+.sportrow-4 {
+  margin-top: 1%;
+  border: 1px solid #000;
+}
+
+.matchTable214087,
+.bulk_actions,
+.jambo_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.headings th,
+.headings td {
+  border: 1px solid #000;
+  padding: 8px;
+}
+
+.fix_heading {
+  color: #000;
+  background: #fff;
+  text-align: left;
+}
+
+.bookmaker-title .minmax {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+.back_heading_color {
+  background: #ffdf1a !important;
+  color: #000;
+  text-align: center;
+}
+
+.lay_heading_color {
+  background: #8b0000 !important;
+  color: #fff;
+  text-align: center;
+}
+
+.back_lay_color td {
+  border: 1px solid #000;
+  padding: 8px;
+}
+
+.runner_text {
+  margin: 0;
+  font-weight: 600;
+}
+
+.mark-back {
+  background: #7cc4f7 !important;
+  text-align: center;
+}
+
+.mark-lay {
+  background: #fca4b7 !important;
+  text-align: center;
+}
+
+.autoFancyDiv {
+  padding: 0;
+}
+
+.session-title {
+  color: #000;
+}
+
+.session-no,
+.session-yes {
+  text-align: center;
+}
+
+.session-lay-cell,
+.session-back-cell {
+  line-height: 1.1;
+}
+
+.session-price {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.session-size {
+  display: block;
+  font-size: 11px;
+}
+
+.fancy-info {
+  cursor: pointer;
+  float: right;
+  line-height: 17px;
+  margin: 5px;
+  font-size: 18px;
+}
+
+.betSlipBox {
+  border: 1px solid #000;
+  background: #fff;
+}
+
+.betslip-head {
+  background: #0b7d36;
+  color: #fff;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.betslip-head a {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tab_bets .nav {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tab_bets .nav-item {
+  list-style: none;
+}
+
+.tab_bets .nav-item a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tab_bets .active-position {
+  margin-left: auto;
+  text-align: right;
+  width: 10%;
+}
+
+.match_bets td {
+  border: 1px solid #000;
+  padding: 6px;
+  font-size: 12px;
+}
+
+.match-empty-cell {
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+
+.fancy-book-btn {
+  margin-left: 8px;
+  background: #0b7d36;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.completed-table-wrap {
+  border: 1px solid #000;
+  margin-top: 10px;
+  background: #fff;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.completed-table-head {
+  background: #1f4e79;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.match-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 10px;
+}
+
+.match-modal {
+  width: min(500px, 100%);
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.match-modal-head {
+  background: #0b7d36;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
+
+.match-modal-head h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.match-modal-head button {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.match-modal-body {
+  max-height: 60vh;
+  overflow: auto;
+}
+
+#MatchUnMatchBetaData {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#MatchUnMatchBetaData .jambo_table,
+.completed-table-wrap .jambo_table {
+  min-width: 640px;
+}
+
+@media (max-width: 992px) {
+  .match-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .match-name-inline {
+    width: 68%;
+  }
+
+  .match-top-table {
+    table-layout: fixed;
+  }
+
+  .match-right-panel {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .match-name-inline {
+    width: 58%;
+    font-size: 12px;
+  }
+
+  .headings th,
+  .headings td,
+  .back_lay_color td,
+  .match_bets td {
+    padding: 5px 4px;
+    font-size: 11px;
+  }
+
+  .session-price {
+    font-size: 15px;
+  }
+
+  .tab_bets .nav-item a {
+    font-size: 11px;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .match-name-inline {
+    width: 50%;
+    font-size: 11px;
+  }
+
+  .bookmaker-title .minmax {
+    display: block;
+    margin-left: 0;
+    font-size: 10px;
+  }
+
+  .fancy-book-btn {
+    margin-left: 0;
+    margin-top: 4px;
+    display: inline-block;
+  }
+
+  .match-modal-head h3 {
+    font-size: 12px;
+  }
+
+  #MatchUnMatchBetaData .jambo_table,
+  .completed-table-wrap .jambo_table {
+    min-width: 560px;
+  }
+}

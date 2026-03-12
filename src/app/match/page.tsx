@@ -1,446 +1,614 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+import { fetchMatches } from "../../store/actions/matches";
+import { fetchGameData, clearGameData } from "../../store/actions/game";
+import {
+  fetchMatchBetsData,
+  fetchFancyBook,
+  clearFancyBook,
+  fetchCompletedBets,
+} from "../../store/actions/matchBets";
 import "../../styles/match.css";
 import HeaderDesktop from "../../components/Layout/HeaderDesktop";
 import SidebarDesktop from "../../components/Layout/SidebarDesktop";
 import Marquee from "../../components/Layout/Marquee";
 
-export default function MatchPage() {
-    const [matches] = useState([
-        { id: 1, name: "Desert Vipers v Gulf Giants" },
-        { id: 2, name: "South Africa W v Ireland W" },
-        { id: 3, name: "New Zealand v West Indies" },
-        { id: 4, name: "India v South Africa" },
-        { id: 5, name: "Perth Scorchers W v Melbourne Stars W" },
-    ]);
+type MatchPageProps = {
+  initialMatchId?: string;
+};
 
-    const [selectedMatch, setSelectedMatch] = useState(matches[0]);
-    const [favorite, setFavorite] = useState(false);
-    const [dropdown, setDropdown] = useState(false);
-    const [showLiveTV, setShowLiveTV] = useState(false);
+type MatchOption = {
+  id: string;
+  name: string;
+};
 
-    const [bookmakers] = useState([
-        { id: 1, team: "Desert Vipers", bookMakerPrice: -500, lagai: 222, khai: 285, status: "SUSPENDED" },
-        { id: 2, team: "Gulf Giants", bookMakerPrice: 190, lagai: 35, khai: 45, status: "SUSPENDED" },
-    ]);
+export default function MatchPage({ initialMatchId }: MatchPageProps) {
+  const router = useRouter();
+  const { list: matches } = useSelector((state: RootState) => state.matches);
+  const { bookmaker, fancy2, loading } = useSelector((state: RootState) => state.game);
+  const {
+    betList,
+    completedBets,
+    fancyBook,
+    loadingFancyBook,
+    loadingBetList,
+    loadingCompletedBets,
+  } = useSelector((state: RootState) => state.matchBets);
 
-    const [activeBetTab, setActiveBetTab] = useState("matched");
+  const options: MatchOption[] = useMemo(
+    () =>
+      (matches || []).map((m: any) => ({
+        id: String(m?.matchId ?? ""),
+        name: m?.matchName || "-",
+      })),
+    [matches]
+  );
 
-    const [matchedBets] = useState([
-        {
-            id: 1,
-            no: 1,
-            runner: "Gulf Giants",
-            odds: 0.38,
-            stack: 500,
-            betType: "Lagai",
-            placeTime: "Mon Dec 08 23:19:42 IST 2025",
-            matchedTime: "Mon Dec 08 23:19:42 IST 2025",
-        },
-    ]);
+  const [selectedId, setSelectedId] = useState(initialMatchId || "");
+  const [favorite, setFavorite] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showLiveTV, setShowLiveTV] = useState(false);
+  const [activeBetTab, setActiveBetTab] = useState("bookmaker");
+  const [showSessionBookModal, setShowSessionBookModal] = useState(false);
+  const [selectedFancyName, setSelectedFancyName] = useState("");
+  const [isHydrated, setIsHydrated] = useState(false);
 
-    const toggleFavorite = () => setFavorite((s) => !s);
-    const toggleLiveTV = () => setShowLiveTV((s) => !s);
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
-    const truncateText = (text, maxLength = 25) => {
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength - 3) + "...";
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  useEffect(() => {
+    if (!options.length) return;
+
+    if (initialMatchId && options.some((o) => o.id === initialMatchId)) {
+      setSelectedId(initialMatchId);
+      return;
+    }
+
+    if (!selectedId || !options.some((o) => o.id === selectedId)) {
+      setSelectedId(options[0].id);
+    }
+  }, [initialMatchId, options, selectedId]);
+
+  useEffect(() => {
+    if (!selectedId) return;
+
+    fetchGameData(selectedId, false);
+    fetchMatchBetsData(selectedId);
+    fetchCompletedBets(selectedId);
+
+    const interval = setInterval(() => {
+      fetchGameData(selectedId, true);
+      fetchMatchBetsData(selectedId);
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+      clearFancyBook();
+      clearGameData();
     };
+  }, [selectedId]);
 
-    return (
-        <div className="dashboard-wrapper">
-            <HeaderDesktop />
+  const selectedMatch =
+    options.find((item) => item.id === selectedId) ||
+    options[0] || { id: "", name: "No match available" };
 
-            <div className="marquee-wrap mobile">
-                <Marquee />
-            </div>
+  const bookmakerData = isHydrated && Array.isArray(bookmaker)
+    ? bookmaker.filter((item: any) => item?.t === "Bookmaker")
+    : [];
 
-            <div className="desktop-wrapper">
-                <div className="desktop-container flex">
-                    <SidebarDesktop />
+  const tossData = isHydrated && Array.isArray(bookmaker)
+    ? bookmaker.filter((item: any) => item?.t === "TOSS")
+    : [];
 
-                    {/* MAIN CONTENT */}
-                    <main className="desktop-main commission-wrap w-full p-2">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-3">
-                            {/* LEFT 7 cols */}
-                            <div className="lg:col-span-8 space-y-4">
-                                {/* LEFT SIDE WRAPPER */}
-                                <div className="w-full ">
-                                    {/* ========== TOP HEADER (MATCH + LIVE TV + MATCHES) ========== */}
-                                    <div className="w-full bg-white shadow border border-gray-300 ">
-                                        <table className="w-full">
-                                            <tbody>
-                                                <tr className="h-12">
-                                                    {/* MATCH NAME */}
-                                                    <th className="bg-[#255f00] text-white px-3 py-2 relative w-[65%]">
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis w-[55%] font-medium">
-                                                            <i
-                                                                className={`fa ${favorite ? 'fa-star' : 'fa-star-o'}`}
-                                                                onClick={toggleFavorite}
-                                                                style={{ cursor: 'pointer' }}
-                                                            ></i>
-                                                            {truncateText(selectedMatch.name)}
-                                                        </span>
-                                                    </th>
+  const sortedFancyData = isHydrated && Array.isArray(fancy2)
+    ? [...fancy2].sort((a: any, b: any) => Number(a?.srno || 0) - Number(b?.srno || 0))
+    : [];
 
-                                                    {/* LIVE TV */}
-                                                    <th className="bg-[#ffdf1a] text-black text-center w-[18%] border-none">
-                                                        <span
-                                                            className="font-semibold cursor-pointer click-tv"
-                                                            style={{ color: '#000' }}
-                                                            onClick={toggleLiveTV}
-                                                        >
-                                                            <span className="tvformobile">Live TV</span>
-                                                        </span>
-                                                    </th>
+  const bookmakerBets = (isHydrated ? betList : []).filter(
+    (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "BOOKMAKER"
+  );
+  const tossBets = (isHydrated ? betList : []).filter(
+    (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "TOSS"
+  );
+  const fancyBets = (isHydrated ? betList : []).filter((bet: any) => bet.isFancy);
+  const completedBetsData = isHydrated ? completedBets : [];
 
-                                                    {/* MATCHES DROPDOWN */}
-                                                    <th
-                                                        className="bg-[#8b0000] text-white text-center relative w-[17%] border-none cursor-pointer"
-                                                        onClick={() => setDropdown(!dropdown)}
-                                                    >
-                                                        <div className="dropdown relative">
-                                                            <button
-                                                                className="w-full py-2 font-bold flex items-center justify-center gap-1"
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    lineHeight: '25px',
-                                                                    padding: '0',
-                                                                    color: '#fff',
-                                                                    background: 'none',
-                                                                    border: 'none',
-                                                                    cursor: 'pointer'
-                                                                }}
-                                                            >
-                                                                Matches
-                                                            </button>
+  const openMatch = (matchId: string) => {
+    setSelectedId(matchId);
+    setDropdownOpen(false);
+    router.push(`/match/${matchId}`);
+  };
 
-                                                            {/* dropdown list */}
-                                                            {dropdown && (
-                                                                <ul className="match-dd">
-                                                                    {matches.map((m, i) => (
-                                                                        <li key={i} className={`match-dd-item ${selectedMatch.id === m.id ? "active" : ""}`}>
-                                                                            <a
-                                                                                onClick={() => {
-                                                                                    setSelectedMatch(m);
-                                                                                    setDropdown(false);
-                                                                                }}
-                                                                                className="match-dd-link"
-                                                                            >
-                                                                                {m.name}
-                                                                            </a>
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            )}
+  const handleBookClick = async (fancy: any) => {
+    setSelectedFancyName(fancy?.nation || "Session Book");
+    setShowSessionBookModal(true);
+    await fetchFancyBook(fancy?.sid, selectedId);
+  };
 
+  const closeSessionBookModal = () => {
+    setShowSessionBookModal(false);
+    setSelectedFancyName("");
+    clearFancyBook();
+  };
 
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return dateStr;
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" });
+    const hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const hour12 = hours % 12 || 12;
+    return `${day} ${month} ${hour12}:${minutes}:${seconds} ${ampm}`;
+  };
 
-                                    {/* ========== SCORE AREA + TV IFRAME ========== */}
-                                    <div className="score_area  overflow-hidden">
-                                        {/* Hidden animscore iframe */}
-                                        <iframe
-                                            id="animscore"
-                                            width="100%"
-                                            title="Match Score"
-                                            className="iframestyle"
-                                            style={{ display: 'none' }}
-                                        ></iframe>
+  const scoreSrc = selectedMatch.id
+    ? `https://score.newbsf.com/#/score7/${selectedMatch.id}`
+    : "about:blank";
 
-                                        {/* Main score iframe */}
-                                        <iframe
-                                            id="cricketScore"
-                                            title="Match Score"
-                                            className="iframestyle iframeheightControll border border-gray-700"
-                                            style={{ width: '100%', background: '#fff', marginBottom: '10px' }}
-                                            src="https://score.newbsf.com/#/score7/35036901?v=3643"
-                                        ></iframe>
+  const tvSrc = selectedMatch.id
+    ? `https://livetv.apnatv.shop/livetv.php?eventId=${selectedMatch.id}`
+    : "about:blank";
 
-                                        {/* TV Frame for mobile - Only shown when Live TV is clicked */}
-                                        {showLiveTV && (
-                                            <div className="col-lg-12 col-xs-12 tvformobilediv border border-gray-700" style={{ padding: '0px' }}>
-                                                <iframe
-                                                    id="tvFrame"
-                                                    style={{ width: '100%', height: '250px' }}
-                                                    src="https://livetv.apnatv.shop/livetv.php?eventId=35036901"
-                                                ></iframe>
-                                            </div>
-                                        )}
-                                    </div>
+  const title = selectedMatch.name;
 
-                                    {/* ========== BOOKMAKER TABLE ========== */}
-                                    <div className="w-full border border-gray-300 rounded-md overflow-hidden sportrow-4">
-                                        <table className="w-full matchTable214087">
-                                            <tbody>
-                                                {/* HEADER */}
-                                                <tr className="headings mobile_heading">
-                                                    <th className="p-2 bg-white text-left font-semibold fix_heading" style={{ color: '#000' }}>
-                                                        Bookmaker
-                                                        <span className="minmax ml-2 text-xs font-medium">Min/Max - 100 / 100000</span>
-                                                    </th>
-                                                    <th className="p-2 text-center font-semibold back_heading_color" style={{ background: '#ffdf1a !important' }}>Lagai</th>
-                                                    <th className="p-2 text-center font-semibold lay_heading_color" style={{ background: '#8b0000 !important', color: '#fff' }}>Khai</th>
-                                                </tr>
+  return (
+    <div className="dashboard-wrapper">
+      <HeaderDesktop />
 
-                                                {/* ROWS */}
-                                                {bookmakers.map(bm => (
-                                                    <tr key={bm.id} className="back_lay_color runner-row-1 ball_running-message border-b border-black">
-                                                        {/* TEAM + PRICE */}
-                                                        <td className="p-2">
-                                                            <p className="runner_text font-semibold">{bm.team}</p>
-                                                            <p className={`teamBook2954263 ${bm.bookMakerPrice < 0 ? 'text-danger' : 'text-success'} font-bold`}>
-                                                                {bm.bookMakerPrice}
-                                                            </p>
-                                                        </td>
+      <div className="marquee-wrap mobile">
+        <Marquee />
+      </div>
 
-                                                        {/* LAGAI */}
-                                                        <td className="mark-back p-0 border-l border-black relative" style={{ color: 'inherit' }}>
-                                                            <div className="w-full text-center py-4" style={{ background: '#3b6f8f', color: '#fff', position: 'relative' }}>
-                                                                <span className="text-2xl">{bm.lagai}</span>
-                                                                <span style={{ display: 'none' }}> 0 </span>
+      <div className="desktop-wrapper">
+        <div className="desktop-container">
+          <SidebarDesktop />
 
-                                                                {/* SUSPENDED Overlay - EXACTLY like Angular */}
-                                                                {bm.status === "SUSPENDED" && (
-                                                                    <h6
-                                                                        className="absolute inset-0 flex items-center justify-center"
-                                                                        style={{
-                                                                            color: 'rgb(255, 255, 255)',
-                                                                            background: 'rgba(0, 0, 0, 0.7)',
-                                                                            margin: 0,
-                                                                            fontSize: '1rem',
-                                                                            fontWeight: 'bold'
-                                                                        }}
-                                                                    >
-                                                                        SUSPENDED
-                                                                    </h6>
-                                                                )}
-                                                            </div>
-                                                        </td>
+          <main className="desktop-main commission-wrap">
+            <div className="match-layout">
+              <section className="match-left-panel">
+                <div className="match-score-box">
+                  <table className="match-top-table">
+                    <tbody>
+                      <tr className="mobile_heading">
+                        <th className="match-name-head">
+                          <span className="match-name-inline">
+                            <i
+                              className={`fa ${favorite ? "fa-star" : "fa-star-o"}`}
+                              onClick={() => setFavorite((s) => !s)}
+                              aria-hidden="true"
+                            ></i>
+                            {title}
+                          </span>
+                        </th>
 
-                                                        {/* KHAI */}
-                                                        <td className="mark-lay p-0 border-l border-black relative" style={{ color: 'inherit' }}>
-                                                            <div className="w-full text-center py-4" style={{ background: '#8b5c63', color: '#fff', position: 'relative' }}>
-                                                                <span className="text-2xl">{bm.khai}</span>
-                                                                <span style={{ display: 'none' }}> 0 </span>
+                        <th className="match-tv-head">
+                          <span className="click-tv" onClick={() => setShowLiveTV((s) => !s)}>
+                            <span className="tvformobile">Live TV</span>
+                          </span>
+                        </th>
 
-                                                                {/* SUSPENDED Overlay - EXACTLY like Angular */}
-                                                                {bm.status === "SUSPENDED" && (
-                                                                    <h6
-                                                                        className="absolute inset-0 flex items-center justify-center"
-                                                                        style={{
-                                                                            color: 'rgb(255, 255, 255)',
-                                                                            background: 'rgba(0, 0, 0, 0.7)',
-                                                                            margin: 0,
-                                                                            fontSize: '1rem',
-                                                                            fontWeight: 'bold'
-                                                                        }}
-                                                                    >
-                                                                        SUSPENDED
-                                                                    </h6>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                        <th className="match-dropdown-head">
+                          <div className="dropdown">
+                            <button
+                              type="button"
+                              className="match-dropdown-button"
+                              onClick={() => setDropdownOpen((s) => !s)}
+                            >
+                              Matches
+                            </button>
+                            {dropdownOpen && (
+                              <ul id="matchesList" className="match-dd">
+                                {options.map((item) => (
+                                  <li key={item.id} className="match-dd-item">
+                                    <a
+                                      className="match-dd-link"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        openMatch(item.id);
+                                      }}
+                                    >
+                                      {item.name}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
 
-                                                {/* EMPTY ROW WITH BORDER (SAME AS ANGULAR) */}
-                                                <tr style={{ border: '0.5px solid #000' }}>
-                                                    <td colSpan={3} id="betSlipBooKMaker67868736" className="modal_book_design" style={{ display: 'none' }}></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+                  <div className="score_area">
+                    <iframe id="animscore" width="100%" title="Match Score" className="iframestyle" style={{ display: "none" }}></iframe>
+                    <iframe
+                      id="cricketScore"
+                      title="Match Score"
+                      className="iframestyle iframeheightControll"
+                      style={{ width: "100%", background: "#000" }}
+                      src={scoreSrc}
+                    ></iframe>
 
-                            {/* RIGHT 5 cols - Bet Slip */}
-                            <div className="lg:col-span-4">
-                                <div className="betSlipBox">
-                                    {/* Bet slip header */}
-                                    <div className="betslip-head flex justify-between items-center bg-[#0b7d36] text-white px-4 py-3 rounded-t-md">
-                                        <span id="tital_change" className="item font-semibold">Bet Slip</span>
-                                        <a
-                                            className="text-white"
-                                            href="#"
-                                            onClick={(e) => e.preventDefault()}
-                                            data-toggle="modal"
-                                            data-target="#chipsetting"
-                                            data-backdrop="static"
-                                            data-keyboard="false"
-                                        >
-                                            Edit Stake
-                                        </a>
-                                    </div>
-
-                                    {/* Tabs */}
-                                    <div className="tab_bets">
-                                        <ul id="pills-tab" role="tablist" className="flex m-0 p-0">
-                                            <li
-                                                className={`nav-item betdata ${activeBetTab === "matched" ? "active-all" : ""}`}
-                                                style={{ background: "#0b7d36", listStyle: "none" }}
-                                            >
-                                                <button
-                                                    className="allbet text-white px-4 py-2 flex items-center gap-1"
-                                                    onClick={() => setActiveBetTab("matched")}
-                                                    style={{ padding: '9px 15px', color: '#fff', border: 'none !important' }}
-                                                >
-                                                    <span className="bet-label">Matched Bet</span>
-                                                    <span id="matchBetsCount">({matchedBets.length})</span>
-                                                </button>
-                                            </li>
-
-                                            <li
-                                                className={`nav-item betdata ${activeBetTab === "fancy" ? "active-all" : ""}`}
-                                                style={{ background: "#417e92", listStyle: "none" }}
-                                            >
-                                                <button
-                                                    className="unmatchbet text-white px-4 py-2 flex items-center gap-1"
-                                                    onClick={() => setActiveBetTab("fancy")}
-                                                    style={{ padding: '9px 15px', color: '#fff', border: 'none !important' }}
-                                                >
-                                                    <span className="bet-label">Fancy Bet</span>
-                                                    <span id="fancyBetsCount">(0)</span>
-                                                </button>
-                                            </li>
-
-                                            <li
-                                                className="nav-item betdata"
-                                                style={{ background: "darkred", listStyle: "none" }}
-                                            >
-                                                <button
-                                                    className="unmatchbet text-white px-4 py-2"
-                                                    onClick={() => setActiveBetTab("completed")}
-                                                    style={{ padding: '9px 5px', color: '#fff', border: 'none !important' }}
-                                                >
-                                                    <span className="bet-label">Completed Fancy</span>
-                                                </button>
-                                            </li>
-
-                                            <li
-                                                className="nav-item active-position ml-auto"
-                                                style={{
-                                                    float: 'right',
-                                                    cursor: 'pointer',
-                                                    textAlign: 'right',
-                                                    width: '10%',
-                                                    listStyle: 'none'
-                                                }}
-                                            >
-                                                <button
-                                                    id="togdiv"
-                                                    className="px-3 py-2"
-                                                    style={{ padding: '5px' }}
-                                                >
-                                                    <i className="fa fa-caret-down" style={{ fontSize: '25px' }}></i>
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    {/* Tab contents */}
-                                    <div id="MatchUnMatchBetaData" className="mt-3">
-                                        {activeBetTab === "matched" && (
-                                            <div id="allbetss" className="match_bets MachShowHide tab-pane fade in active">
-                                                <table className="w-full table-striped jambo_table bulk_action wspace">
-                                                    <thead>
-                                                        <tr className="headings">
-                                                            <td style={{ width: "4%" }}>No.</td>
-                                                            <td style={{ width: "18%" }}>Runner</td>
-                                                            <td style={{ width: "6%" }}>Odds</td>
-                                                            <td style={{ width: "10%" }}>Stack</td>
-                                                            <td style={{ width: "8%" }}>Bet Type</td>
-                                                            <td style={{ width: "21%" }}>Place Time</td>
-                                                            <td>Matched Time</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="matchBets">
-                                                        {matchedBets.map((b) => (
-                                                            <tr key={b.id} className="content_user_table mark-back">
-                                                                <td>{b.no}</td>
-                                                                <td>{b.runner}</td>
-                                                                <td className="text-center">{b.odds}</td>
-                                                                <td className="text-center">{b.stack}</td>
-                                                                <td className="text-center">{b.betType}</td>
-                                                                <td className="text-center">{b.placeTime}</td>
-                                                                <td className="text-center">{b.matchedTime}</td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        )}
-
-                                        {activeBetTab === "fancy" && (
-                                            <div id="fbets" className="match_bets MachShowHide tab-pane fade">
-                                                <table className="w-full table-striped jambo_table bulk_action wspace">
-                                                    <thead>
-                                                        <tr className="headings">
-                                                            <td style={{ width: "4%" }}>No.</td>
-                                                            <td style={{ width: "18%" }}>Runner</td>
-                                                            <td style={{ width: "8%" }}>Bet Type</td>
-                                                            <td style={{ width: "8%" }}>Odds</td>
-                                                            <td style={{ width: "8%" }}>Stack</td>
-                                                            <td style={{ width: "21%" }}>Place Time</td>
-                                                            <td>Matched Time</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="fancybets">
-                                                        <tr>
-                                                            <td colSpan={7} className="text-center">No placed bet found !</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        )}
-
-                                        {activeBetTab === "completed" && (
-                                            <div className="match_bets">
-                                                {/* You can add Completed Fancy content here if needed */}
-                                                <div className="text-center py-6">No completed fancy bets</div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Fancy Position Modal (Hidden by default) */}
-                                <div id="fancypositionmodal" role="dialog" className="modal fade" style={{ display: 'none' }}>
-                                    <div className="modal-dialog modal-xs">
-                                        <div className="modal-content">
-                                            <header className="modal-header">
-                                                <h5 id="fancyBookName" className="modal-title" style={{ width: '90%', float: 'left' }}>Run Position</h5>
-                                                <button type="button" aria-label="Close" data-dismiss="modal" className="close">x</button>
-                                            </header>
-                                            <div className="modal-body" style={{ maxHeight: 'calc(96vh - 47px)', padding: '0 !important', overflow: 'auto' }}>
-                                                <table className="table table-bordered" style={{ margin: '0' }}>
-                                                        <thead>
-                                                        <tr style={{ background: '#272e41' }}>
-                                                            <th className="text-center" style={{ color: '#fff', width: '50%' }}>Run</th>
-                                                            <th className="text-center" style={{ color: '#fff', width: '50%' }}>Amount</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="fancyLengthBook">
-                                                        <tr>
-                                                            <td className="text-center">00</td>
-                                                            <td className="text-center">00</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+                    {showLiveTV && (
+                      <div className="tvformobilediv">
+                        <iframe id="tvFrame" style={{ width: "100%", height: "250px" }} src={tvSrc}></iframe>
+                      </div>
+                    )}
+                  </div>
                 </div>
+
+                <div id="bookMakerDiv" className="sportrow-4 matchOpenBox_214087">
+                  <div className="fullrow MatchIndentB">
+                    <table className="table table-striped bulk_actions matchTable214087">
+                      <tbody>
+                        <tr className="headings mobile_heading">
+                          <th className="fix_heading bookmaker-title">
+                            Bookmaker <span className="minmax">Min/Max - 100 / 100000</span>
+                          </th>
+                          <th className="back_heading_color">Lagai</th>
+                          <th className="lay_heading_color">Khai</th>
+                        </tr>
+
+                        {loading && bookmakerData.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="match-empty-cell">Loading bookmaker odds...</td>
+                          </tr>
+                        ) : bookmakerData.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="match-empty-cell">No bookmaker odds available</td>
+                          </tr>
+                        ) : bookmakerData.map((bm: any) => (
+                          <tr key={`${bm?.sid}-${bm?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
+                            <td>
+                              <p className="runner_text">{bm?.nation || "-"}</p>
+                            </td>
+                            <td className="mark-back">
+                              <a style={{ color: "inherit" }}>
+                                <span style={{ fontSize: "16px", fontWeight: 600 }}>{bm?.b1 ?? "-"}</span>
+                              </a>
+                            </td>
+                            <td className="mark-lay">
+                              <a style={{ color: "inherit" }}>
+                                <span style={{ fontSize: "16px", fontWeight: 600 }}>{bm?.l1 ?? "-"}</span>
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+
+                        <tr style={{ border: "0.5px solid #000" }}>
+                          <td colSpan={3} className="modal_book_design" style={{ display: "none" }}></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="sportrow-4 matchOpenBox_214087">
+                  <div className="fullrow MatchIndentB">
+                    <table className="table table-striped bulk_actions matchTable214087">
+                      <tbody>
+                        <tr className="headings mobile_heading">
+                          <th className="fix_heading bookmaker-title">
+                            Toss Odds <span className="minmax">Min/Max - 100 / 100000</span>
+                          </th>
+                          <th className="back_heading_color">Lagai</th>
+                          <th className="lay_heading_color">Khai</th>
+                        </tr>
+
+                        {tossData.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="match-empty-cell">No toss odds available</td>
+                          </tr>
+                        ) : tossData.map((row: any) => (
+                          <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
+                            <td>
+                              <p className="runner_text">{row?.nation || "-"}</p>
+                            </td>
+                            <td className="mark-back">
+                              <a style={{ color: "inherit" }}>
+                                <span style={{ fontSize: "16px", fontWeight: 600 }}>{row?.b1 ?? "-"}</span>
+                              </a>
+                            </td>
+                            <td className="mark-lay">
+                              <a style={{ color: "inherit" }}>
+                                <span style={{ fontSize: "16px", fontWeight: 600 }}>{row?.l1 ?? "-"}</span>
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="sportrow-4 autoFancyDiv">
+                  <div className="fullrow MatchIndentB">
+                    <table className="table table-striped bulk_actions">
+                      <tbody id="fancy_table_own">
+                        <tr className="headings mobile_heading">
+                          <th className="fix_heading session-title">Session</th>
+                          <th className="lay_heading_color session-no">No</th>
+                          <th className="back_heading_color session-yes">Yes</th>
+                        </tr>
+
+                        {sortedFancyData.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="match-empty-cell">No fancy odds available</td>
+                          </tr>
+                        ) : sortedFancyData.map((row: any) => (
+                          <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color ball_running-message">
+                            <td>
+                              <p className="runner_text">{row?.nation || "-"}</p>
+                              <a onClick={() => handleBookClick(row)}>
+                                <img src="/assets/images/ladder.svg" style={{ width: "7%" }} />
+                              </a>
+                              <i className="fa fa-info-circle fancy-info"></i>
+                              <button className="fancy-book-btn" onClick={() => handleBookClick(row)}>
+                                Book
+                              </button>
+                            </td>
+                            <td className="mark-lay session-lay-cell">
+                              <span className="session-price">{row?.l1 ?? 0}</span>
+                              <span className="session-size">{row?.ls1 ?? 0}</span>
+                            </td>
+                            <td className="mark-back session-back-cell">
+                              <span className="session-price">{row?.b1 ?? 0}</span>
+                              <span className="session-size">{row?.bs1 ?? 0}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+
+              <aside className="match-right-panel">
+                <div className="betSlipBox">
+                  <div className="betslip-head">
+                    <span id="tital_change" className="item">Bet Slip</span>
+                    <a>Placed Bets</a>
+                  </div>
+
+                  <div className="tab_bets">
+                    <ul id="pills-tab" role="tablist" className="nav nav-tabs nav-pills mb-3">
+                      <li className="nav-item betdata active-all" style={{ background: "#0b7d36" }}>
+                        <a
+                          className="allbet active"
+                          style={{ padding: "9px 15px", color: "#fff", border: "none" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveBetTab("bookmaker");
+                          }}
+                        >
+                          <span className="bet-label">Bookmaker</span>
+                          <span id="matchBetsCount">({bookmakerBets.length})</span>
+                        </a>
+                      </li>
+
+                      <li className="nav-item betdata" style={{ background: "#417e92" }}>
+                        <a
+                          className="unmatchbet"
+                          style={{ padding: "9px 15px", color: "#fff", border: "none" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveBetTab("toss");
+                          }}
+                        >
+                          <span className="bet-label">Toss</span>
+                          <span id="fancyBetsCount">({tossBets.length})</span>
+                        </a>
+                      </li>
+
+                      <li className="nav-item betdata" style={{ background: "darkred" }}>
+                        <a
+                          className="unmatchbet"
+                          style={{ padding: "9px 5px", color: "#fff", border: "none" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveBetTab("fancy");
+                          }}
+                        >
+                          <span className="bet-label">Fancy</span>
+                          <span id="fancyBetsCount">({fancyBets.length})</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div id="MatchUnMatchBetaData">
+                  <div id="maindivbets" className="tab-content">
+                    {activeBetTab === "bookmaker" && (
+                      <div id="allbetss" className="match_bets MachShowHide tab-pane fade in active">
+                        <table className="table table-striped jambo_table bulk_action wspace">
+                          <thead>
+                            <tr className="headings">
+                              <td style={{ width: "4%" }}>No.</td>
+                              <td style={{ width: "18%" }}>Runner</td>
+                              <td style={{ width: "6%" }}>Odds</td>
+                              <td style={{ width: "10%" }}>Stack</td>
+                              <td style={{ width: "8%" }}>Bet Type</td>
+                              <td style={{ width: "21%" }}>Place Time</td>
+                              <td>Market</td>
+                            </tr>
+                          </thead>
+                          <tbody id="matchBets">
+                            {loadingBetList && bookmakerBets.length === 0 ? (
+                              <tr><td colSpan={7} className="text-center">Loading bets...</td></tr>
+                            ) : bookmakerBets.length === 0 ? (
+                              <tr><td colSpan={7} className="text-center">No bookmaker bets found</td></tr>
+                            ) : bookmakerBets.map((b: any, idx: number) => (
+                              <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
+                                <td>{idx + 1}</td>
+                                <td>{b?.name || "-"}</td>
+                                <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                                <td>{Number(b?.stake || 0).toFixed(2)}</td>
+                                <td>{b?.isBack ? "Lagai" : "Khai"}</td>
+                                <td>{formatDate(b?.placeTime)}</td>
+                                <td>{b?.marketName || "-"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {activeBetTab === "toss" && (
+                      <div id="fbets" className="match_bets MachShowHide tab-pane fade">
+                        <table className="table table-striped jambo_table bulk_action wspace">
+                          <thead>
+                            <tr className="headings">
+                              <td style={{ width: "4%" }}>No.</td>
+                              <td style={{ width: "18%" }}>Runner</td>
+                              <td style={{ width: "8%" }}>Odds</td>
+                              <td style={{ width: "8%" }}>Stack</td>
+                              <td style={{ width: "8%" }}>Bet Type</td>
+                              <td style={{ width: "21%" }}>Place Time</td>
+                              <td>Market</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {tossBets.length === 0 ? (
+                              <tr><td colSpan={7} className="text-center">No toss bets found</td></tr>
+                            ) : tossBets.map((b: any, idx: number) => (
+                              <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
+                                <td>{idx + 1}</td>
+                                <td>{b?.name || "-"}</td>
+                                <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                                <td>{Number(b?.stake || 0).toFixed(2)}</td>
+                                <td>{b?.isBack ? "Lagai" : "Khai"}</td>
+                                <td>{formatDate(b?.placeTime)}</td>
+                                <td>{b?.marketName || "-"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {activeBetTab === "fancy" && (
+                      <div className="match_bets MachShowHide tab-pane fade">
+                        <table className="table table-striped jambo_table bulk_action wspace">
+                          <thead>
+                            <tr className="headings">
+                              <td style={{ width: "4%" }}>No.</td>
+                              <td style={{ width: "18%" }}>Runner</td>
+                              <td style={{ width: "8%" }}>Odds</td>
+                              <td style={{ width: "8%" }}>Stack</td>
+                              <td style={{ width: "8%" }}>Mode</td>
+                              <td style={{ width: "21%" }}>Place Time</td>
+                              <td>Market</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {fancyBets.length === 0 ? (
+                              <tr><td colSpan={7} className="text-center">No fancy bets found</td></tr>
+                            ) : fancyBets.map((b: any, idx: number) => (
+                              <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
+                                <td>{idx + 1}</td>
+                                <td>{b?.name || "-"}</td>
+                                <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                                <td>{Number(b?.stake || 0).toFixed(2)}</td>
+                                <td>{b?.isBack ? "YES" : "NO"}</td>
+                                <td>{formatDate(b?.placeTime)}</td>
+                                <td>{b?.marketName || "-"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="completed-table-wrap">
+                  <div className="completed-table-head">Completed Bets</div>
+                  <table className="table table-striped jambo_table bulk_action wspace">
+                    <thead>
+                      <tr className="headings">
+                        <td style={{ width: "4%" }}>No.</td>
+                        <td style={{ width: "18%" }}>Runner</td>
+                        <td style={{ width: "8%" }}>Odds</td>
+                        <td style={{ width: "8%" }}>Stack</td>
+                        <td style={{ width: "8%" }}>Mode</td>
+                        <td style={{ width: "21%" }}>Result</td>
+                        <td>P&L</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loadingCompletedBets && completedBetsData.length === 0 ? (
+                        <tr><td colSpan={7} className="text-center">Loading completed bets...</td></tr>
+                      ) : completedBetsData.length === 0 ? (
+                        <tr><td colSpan={7} className="text-center">No completed bets found</td></tr>
+                      ) : completedBetsData.map((b: any, idx: number) => (
+                        <tr key={`${b?.name}-${idx}`}>
+                          <td>{idx + 1}</td>
+                          <td>{b?.name || "-"}</td>
+                          <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                          <td>{Number(b?.stake || 0).toFixed(2)}</td>
+                          <td>{b?.isFancy ? (b?.isBack ? "YES" : "NO") : (b?.isBack ? "Lagai" : "Khai")}</td>
+                          <td>{b?.declared || "-"}</td>
+                          <td>{Number(b?.netPnl || 0).toFixed(0)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </aside>
             </div>
+          </main>
         </div>
-    );
+      </div>
+
+      {showSessionBookModal && (
+        <div className="match-modal-overlay" onClick={closeSessionBookModal}>
+          <div className="match-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="match-modal-head">
+              <h3>{selectedFancyName || "Session Book"}</h3>
+              <button onClick={closeSessionBookModal}>x</button>
+            </div>
+
+            <div className="match-modal-body">
+              <table className="table table-striped bulk_actions">
+                <thead>
+                  <tr className="headings">
+                    <th>Run</th>
+                    <th>P&L</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loadingFancyBook && fancyBook.length === 0 ? (
+                    <tr><td colSpan={2} className="text-center">Loading...</td></tr>
+                  ) : fancyBook.length === 0 ? (
+                    <tr><td colSpan={2} className="text-center">No Data Found</td></tr>
+                  ) : fancyBook.map((item: any, idx: number) => (
+                    <tr key={idx}>
+                      <td>{item?.odds ?? "-"}</td>
+                      <td className={Number(item?.pnl || 0) >= 0 ? "text-success" : "text-danger"}>
+                        {Number(item?.pnl || 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

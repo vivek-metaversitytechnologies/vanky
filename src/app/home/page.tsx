@@ -61,7 +61,7 @@ export default function MainDashboard() {
           {/* MAIN CONTENT */}
           <main className="desktop-main">
             <DesktopMenuSection />
-            <CricketSection matches={hydratedMatches} />
+            <CricketSection matches={hydratedMatches} useApiOnly />
             <DesktopCasinoSection />
           </main>
         </div>

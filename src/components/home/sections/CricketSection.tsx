@@ -43,7 +43,7 @@ export function CricketSection({
           <div className="vs-strip">
             <div className="vs-table">
               <div className="match-opponent">
-                <p className="match-name">No matches found</p>
+                <p className="match-name">No upcoming matches are there</p>
               </div>
             </div>
           </div>

@@ -35,6 +35,28 @@ export const accountStatementInitialState = {
   lastFetched: null as number | null,
 };
 
+export const gameInitialState = {
+  odds: [] as any[],
+  bookmaker: [] as any[],
+  fancy: [] as any[],
+  fancy2: [] as any[],
+  loading: false,
+  error: null as string | null,
+  lastFetched: null as number | null,
+};
+
+export const matchBetsInitialState = {
+  betList: [] as any[],
+  completedBets: [] as any[],
+  fancyBook: [] as any[],
+  loadingBetList: false,
+  loadingCompletedBets: false,
+  loadingFancyBook: false,
+  errorBetList: null as string | null,
+  errorCompletedBets: null as string | null,
+  errorFancyBook: null as string | null,
+};
+
 export const passwordChangeInitialState = {
   loading: false,
   success: false,
