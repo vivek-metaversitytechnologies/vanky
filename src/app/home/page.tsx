@@ -23,9 +23,15 @@ import {
 import { fetchMatches } from "../../store/actions/matches";
 
 export default function MainDashboard() {
+  const [isHydrated, setIsHydrated] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [showStakeModal, setShowStakeModal] = useState(false);
   const { list: matches } = useSelector((state: RootState) => state.matches);
+  const hydratedMatches = isHydrated ? matches : [];
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     fetchMatches();
@@ -55,7 +61,7 @@ export default function MainDashboard() {
           {/* MAIN CONTENT */}
           <main className="desktop-main">
             <DesktopMenuSection />
-            <CricketSection matches={matches} />
+            <CricketSection matches={hydratedMatches} />
             <DesktopCasinoSection />
           </main>
         </div>

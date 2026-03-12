@@ -2,34 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 import { login, demoLogin } from '../../store/actions/auth';
+import { authActions } from '../../store/reducers/auth';
 import type { RootState } from '../../store/store';
 import '../../styles/login.css';
 
 export default function LoginForm() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState({ userId: false, password: false });
 
-  const { loading, error, isAuthenticated, accessToken } = useSelector(
+  const { error, isAuthenticated, accessToken } = useSelector(
     (state: RootState) => state.auth
   );
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
 
-    if (isAuthenticated || accessToken || token) {
+    if (!token && (isAuthenticated || accessToken)) {
+      dispatch(authActions.resetAuth());
+      return;
+    }
+
+    if (token) {
       router.replace('/home');
     }
-  }, [accessToken, isAuthenticated, router]);
+  }, [accessToken, dispatch, isAuthenticated, router]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (e?) => {
+    if (e?.preventDefault) {
+      e.preventDefault();
+    }
 
     const userIdError = userId.trim() === '';
     const passwordError = password.trim() === '';
@@ -43,7 +53,9 @@ export default function LoginForm() {
       return;
     }
 
+    setIsSubmitting(true);
     const result = await login(userId, password);
+    setIsSubmitting(false);
 
     if (result.success) {
       router.replace('/home');
@@ -51,26 +63,30 @@ export default function LoginForm() {
   };
 
   const handleDemoLogin = async () => {
+    setIsSubmitting(true);
     const result = await demoLogin();
+    setIsSubmitting(false);
 
     if (result.success) {
       router.replace('/home');
     }
   };
 
-  if (isAuthenticated || accessToken || Cookies.get('accessToken')) {
+  if (Cookies.get('accessToken')) {
     return null;
   }
 
   return (
     <div className="login-wrapper">
-      <form onSubmit={handleLogin} className="login-box">
+      <div className="login-box" role="form" aria-label="Login form">
         <div className="login-logo">
           <Image
             src="/assets/images/vanky-red.svg"
             alt="logo"
             width={90}
             height={32}
+            priority
+            loading="eager"
             className="logo-img"
           />
         </div>
@@ -92,9 +108,14 @@ export default function LoginForm() {
             type="text"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleLogin();
+              }
+            }}
             placeholder="Enter User ID"
             className={`login-input ${validationError.userId ? 'error' : ''}`}
-            disabled={loading}
+            disabled={isSubmitting}
           />
 
           {validationError.userId && (
@@ -113,15 +134,20 @@ export default function LoginForm() {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleLogin();
+                }
+              }}
               placeholder="Enter Password"
               className={`login-input ${validationError.password ? 'error' : ''}`}
-              disabled={loading}
+              disabled={isSubmitting}
             />
             <button
               type="button"
               className="password-toggle-btn"
               onClick={() => setShowPassword(!showPassword)}
-              disabled={loading}
+              disabled={isSubmitting}
               aria-label="Toggle password visibility"
             >
               <i className={`fas fa-eye${showPassword ? '' : '-slash'}`}></i>
@@ -133,8 +159,13 @@ export default function LoginForm() {
           )}
         </div>
 
-        <button type="submit" className="login-btn" disabled={loading}>
-          {loading ? (
+        <button
+          type="button"
+          className="login-btn"
+          onClick={handleLogin}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
             <>
               <i className="fas fa-spinner fa-spin"></i>
               Logging in...
@@ -151,9 +182,9 @@ export default function LoginForm() {
           type="button"
           className="demo-login-btn"
           onClick={handleDemoLogin}
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? (
+          {isSubmitting ? (
             <>
               <i className="fas fa-spinner fa-spin"></i>
               Loading...
@@ -173,7 +204,7 @@ export default function LoginForm() {
         <p className="footer-note">
           ⚠️ Note - This Website is not for Indian Territory.
         </p>
-      </form>
+      </div>
     </div>
   );
 }

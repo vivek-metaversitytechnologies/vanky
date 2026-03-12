@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 import "../../styles/customStyle.css";
 import "../../styles/header.css";
@@ -10,38 +12,56 @@ import HeaderDesktop from "../../components/Layout/HeaderDesktop";
 import SidebarDesktop from "../../components/Layout/SidebarDesktop";
 import Marquee from "../../components/Layout/Marquee";
 import BackButton from "../../components/Layout/BackButton";
+import { fetchAccountStatement } from "../../store/actions/accountStatement";
 
 export default function AccountStatementPage() {
-  // ⭐ STORE TABLE ROW DATA IN STATE
-  const [rows, setRows] = useState([]);
+  const [detailType, setDetailType] = useState("ALL");
+
+  const today = new Date();
+  const startOfMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
+  const endOfMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()).padStart(2, "0")}`;
+
+  const [fromDate, setFromDate] = useState(startOfMonth);
+  const [toDate, setToDate] = useState(endOfMonth);
+
+  const { rows, loading } = useSelector((state: RootState) => state.accountStatement);
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  const loadStatements = async (nextDetailType = detailType, nextFrom = fromDate, nextTo = toDate) => {
+    await fetchAccountStatement({
+      detailType: nextDetailType,
+      fromDate: nextFrom,
+      toDate: nextTo,
+      userId: "",
+    });
+  };
 
   useEffect(() => {
-    // ⭐ LOAD STATIC DATA (Later you can fetch from API)
-    const data = [
-      {
-        date: "26 Nov 2025 23:36 PM",
-        desc: "Cricket / Royal Champs v Aspin Stallions / Match / Royal Champs v Aspin Stallions / 34998526 / Aspin Stallions",
-        prev: 1000,
-        cr: 0,
-        dr: 0,
-        commPlus: 0,
-        commMinus: 0,
-        bal: "1,000.00",
-      },
-      {
-        date: "23 Nov 2025 13:24 PM",
-        desc: "Cricket / Bangladesh v Ireland / Match / Bangladesh v Ireland / 34958715 / Bangladesh",
-        prev: 1000,
-        cr: 0,
-        dr: 0,
-        commPlus: 0,
-        commMinus: 0,
-        bal: "1,000.00",
-      }
-    ];
-
-    setRows(data); // 👉 REMOVE OR SET EMPTY [] TO TEST PAGINATION DISABLED
+    loadStatements("ALL", startOfMonth, endOfMonth);
   }, []);
+
+  const formatValue = (value) => {
+    if (value === null || value === undefined || value === "") {
+      return "-";
+    }
+    return value;
+  };
+
+  const handleSearch = () => {
+    loadStatements(detailType, fromDate, toDate);
+  };
+
+  const handleReset = () => {
+    setDetailType("ALL");
+    setFromDate(startOfMonth);
+    setToDate(endOfMonth);
+    loadStatements("ALL", startOfMonth, endOfMonth);
+  };
+
+  const handleTypeChange = (nextType) => {
+    setDetailType(nextType);
+    loadStatements(nextType, fromDate, toDate);
+  };
 
   // ⭐ PAGINATION DISABLED WHEN NO ROWS
   const noData = rows.length === 0;
@@ -74,20 +94,30 @@ export default function AccountStatementPage() {
             {/* FILTER AREA */}
             <div className="commission-filters panel-body">
               <div className="filter-item">
-                <input type="date" className="input-sm input-s form-control" />
+                <input
+                  type="date"
+                  className="input-sm input-s form-control"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
               </div>
 
               <div className="filter-item">
-                <input type="date" className="input-sm input-s form-control" />
+                <input
+                  type="date"
+                  className="input-sm input-s form-control"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
               </div>
 
               <div className="filter-buttons-group">
-                <button className="btn btn-s-md btn-success">Search</button>
-                <button className="btn btn-s-md btn-danger">Reset</button>
-                <button className="btn btn-s-md btn-primary">All</button>
-                <button className="btn btn-s-md btn-success">P&amp;L</button>
-                <button className="btn btn-s-md btn-danger">PDC</button>
-                <button className="btn btn-s-md btn-light">Account</button>
+                <button className="btn btn-s-md btn-success" onClick={handleSearch}>Search</button>
+                <button className="btn btn-s-md btn-danger" onClick={handleReset}>Reset</button>
+                <button className="btn btn-s-md btn-primary" onClick={() => handleTypeChange("ALL")}>All</button>
+                <button className="btn btn-s-md btn-success" onClick={() => handleTypeChange("PL")}>P&amp;L</button>
+                <button className="btn btn-s-md btn-danger" onClick={() => handleTypeChange("PDC")}>PDC</button>
+                <button className="btn btn-s-md btn-light" onClick={() => handleTypeChange("ACCOUNT")}>Account</button>
               </div>
             </div>
 
@@ -110,23 +140,29 @@ export default function AccountStatementPage() {
                   </thead>
 
                   <tbody id="statements">
-                    {rows.length === 0 ? (
+                    {loading ? (
                       <tr>
-                        <td className="text-center py-4 text-gray-500">
+                        <td colSpan={8} className="text-center py-4 text-gray-500">
+                          Loading...
+                        </td>
+                      </tr>
+                    ) : rows.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="text-center py-4 text-gray-500">
                           No records found
                         </td>
                       </tr>
                     ) : (
                       rows.map((item, i) => (
                         <tr key={i}>
-                          <td>{item.date}</td>
-                          <td>{item.desc}</td>
-                          <td>{item.prev}</td>
-                          <td>{item.cr}</td>
-                          <td>{item.dr}</td>
-                          <td>{item.commPlus}</td>
-                          <td>{item.commMinus}</td>
-                          <td>{item.bal}</td>
+                          <td>{formatValue(item.date)}</td>
+                          <td>{formatValue(item.description)}</td>
+                          <td>-</td>
+                          <td>{formatValue(item.credit)}</td>
+                          <td>{formatValue(item.debit)}</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>{formatValue(item.closing)}</td>
                         </tr>
                       ))
                     )}

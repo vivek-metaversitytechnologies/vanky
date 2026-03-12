@@ -27,3 +27,10 @@ export const balanceInitialState = {
   error: null,
   lastFetched: null as number | null,
 };
+
+export const accountStatementInitialState = {
+  rows: [],
+  loading: false,
+  error: null,
+  lastFetched: null as number | null,
+};

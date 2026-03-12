@@ -16,6 +16,7 @@ export default function HeaderDesktop({
   onOpenStakeModal = () => { }   // ⭐ NEW PROP ADDED
 }) {
   const router = useRouter();
+  const [isHydrated, setIsHydrated] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
@@ -24,9 +25,9 @@ export default function HeaderDesktop({
   const { balance, liability } = useSelector((state) => state.balance);
 
   const userInfo = {
-    id: user?.id || authUser?.userId || "-",
-    main: Number(balance || 0).toFixed(2),
-    expo: Number(liability || 0).toFixed(2),
+    id: isHydrated ? (user?.id || authUser?.userId || "-") : (user?.id || "-"),
+    main: isHydrated ? Number(balance || 0).toFixed(2) : "0.00",
+    expo: isHydrated ? Number(liability || 0).toFixed(2) : "0.00",
   };
 
   const toggleDropdown = () => setDropdownOpen(prev => !prev);
@@ -50,6 +51,10 @@ export default function HeaderDesktop({
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setIsHydrated(true);
   }, []);
 
   useEffect(() => {

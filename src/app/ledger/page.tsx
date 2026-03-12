@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { urbApiClient } from "../../config/axiosConfig";
 
 import "../../styles/customStyle.css";
 import "../../styles/header.css";
@@ -11,37 +12,56 @@ import SidebarDesktop from "../../components/Layout/SidebarDesktop";
 import Marquee from "../../components/Layout/Marquee";
 import BackButton from "../../components/Layout/BackButton";
 
+type LedgerRow = {
+  date?: string;
+  time?: string;
+  remark?: string;
+  wonBy?: string;
+  won?: number;
+  lost?: number;
+  balance?: number;
+  matchId?: number;
+};
+
 export default function LedgerPage() {
-  // ⭐ STATE FOR LEDGER ROWS
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<LedgerRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const formatNumber = (value?: number) => Number(value || 0).toFixed(2);
+
+  const loadLedger = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await urbApiClient.post("/enduser/ledger", {});
+      const list = Array.isArray(response?.data?.data) ? response.data.data : [];
+      setRows(list);
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.msg ||
+        err?.message ||
+        "Unable to fetch ledger";
+      setRows([]);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // SAMPLE STATIC DATA — replace with API later
-    const data = [
-      {
-        date: "26 Nov 2025 23:36 PM",
-        name: "Cricket - Royal Champs v Aspin Stallions",
-        debit: "0.00",
-        credit: "0.00",
-        balance: "0.00",
-        type: "-",
-        remark: "User Minus",
-      },
-      {
-        date: "23 Nov 2025 13:24 PM",
-        name: "Cricket - Bangladesh v Ireland",
-        debit: "0.00",
-        credit: "0.00",
-        balance: "0.00",
-        type: "-",
-        remark: "User Minus",
-      }
-    ];
-
-    setRows(data); 
-    // To test disabled pagination → setRows([])
-
+    loadLedger();
   }, []);
+
+  const lenaTotal = rows.reduce((sum, item) => sum + Number(item.won || 0), 0);
+  const denaTotal = rows.reduce((sum, item) => sum + Number(item.lost || 0), 0);
+  const netBalance = lenaTotal - denaTotal;
+  const balanceLabel =
+    netBalance === 0
+      ? `${formatNumber(0)} Settled`
+      : `${formatNumber(Math.abs(netBalance))} ${netBalance > 0 ? "Lena Hai" : "Dena Hai"}`;
 
   // 👉 DISABLE PAGINATION IF NO ROWS
   const noData = rows.length === 0;
@@ -84,7 +104,7 @@ export default function LedgerPage() {
               </div>
 
               <div className="filter-btn-area">
-                <button className="btn btn-s-md btn-success">
+                <button className="btn btn-s-md btn-success" onClick={loadLedger} disabled={loading}>
                   <i className="fa fa-search"></i> Search
                 </button>
               </div>
@@ -93,17 +113,23 @@ export default function LedgerPage() {
             <div className="ledger-summary-box">
               <div className="summary-item">
                 <strong>Lena:</strong>
-                <span className="summary-green summary">0.00</span>
+                <span className="summary-green summary">{formatNumber(lenaTotal)}</span>
               </div>
 
               <div className="summary-item">
                 <strong>Dena:</strong>
-                <span className="summary-red summary">0.00</span>
+                <span className="summary-red summary">{formatNumber(denaTotal)}</span>
               </div>
 
               <div className="summary-item">
                 <strong>Balance:</strong>
-                <span className="summary-neutral summary">0 Dena Hai</span>
+                <span
+                  className={`summary ${
+                    netBalance > 0 ? "summary-green" : netBalance < 0 ? "summary-red" : "summary-neutral"
+                  }`}
+                >
+                  {balanceLabel}
+                </span>
               </div>
             </div>
 
@@ -124,29 +150,39 @@ export default function LedgerPage() {
                   </thead>
 
                   <tbody id="statements">
-                    {rows.length === 0 ? (
+                    {loading ? (
                       <tr>
-                        <td  className="text-center py-4 text-gray-400">
+                        <td colSpan={7} className="text-center py-4 text-gray-400">
+                          Loading...
+                        </td>
+                      </tr>
+                    ) : error ? (
+                      <tr>
+                        <td colSpan={7} className="text-center py-4 text-red-400">
+                          {error}
+                        </td>
+                      </tr>
+                    ) : rows.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="text-center py-4 text-gray-400">
                           No records found
                         </td>
                       </tr>
                     ) : (
                       rows.map((item, index) => (
                         <tr key={index}>
-                          <td>{item.date}</td>
+                          <td>{[item.date, item.time].filter(Boolean).join(" ") || "-"}</td>
 
                           <td>
-                            <a href="#" style={{ fontWeight: 600 }}>
-                              {item.name}
-                            </a>
+                            <span style={{ fontWeight: 600 }}>{item.remark || "-"}</span>
                           </td>
 
-                          <td className="red"><div>{item.debit}</div></td>
-                          <td className="green"><div>{item.credit}</div></td>
-                          <td className="red"><div>{item.balance}</div></td>
+                          <td className="red"><div>{formatNumber(item.lost)}</div></td>
+                          <td className="green"><div>{formatNumber(item.won)}</div></td>
+                          <td className="red"><div>{formatNumber(item.balance)}</div></td>
 
-                          <td>{item.type}</td>
-                          <td>{item.remark}</td>
+                          <td>{item.wonBy || "-"}</td>
+                          <td>{item.matchId ?? "-"}</td>
                         </tr>
                       ))
                     )}

@@ -17,8 +17,14 @@ import {
 import { fetchMatches } from "../../store/actions/matches";
 
 export default function InPlayPage() {
+    const [isHydrated, setIsHydrated] = useState(false);
     const [activeTab, setActiveTab] = useState("cricket");
     const { list: matches } = useSelector((state: RootState) => state.matches);
+    const hydratedMatches = isHydrated ? matches : [];
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     useEffect(() => {
         fetchMatches();
@@ -73,9 +79,9 @@ export default function InPlayPage() {
                                     </a>
                                 </div>
                                 <div className="inplay-matches-box">
-                                    {activeTab === "cricket" && <CricketSection matches={matches} />}
-                                    {activeTab === "soccer" && <SoccerSection matches={matches} />}
-                                    {activeTab === "tennis" && <TennisSection matches={matches} />}
+                                    {activeTab === "cricket" && <CricketSection matches={hydratedMatches} />}
+                                    {activeTab === "soccer" && <SoccerSection matches={hydratedMatches} />}
+                                    {activeTab === "tennis" && <TennisSection matches={hydratedMatches} />}
                                 </div>
                             </div>
                             <div className="inplay-right">
