@@ -3,6 +3,9 @@ import "../styles/variables.css";
 import "../styles/customStyle.css";
 
 import { Roboto_Condensed } from "next/font/google";
+import { ReduxProvider } from "../components/ReduxProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const roboto = Roboto_Condensed({
   subsets: ["latin"],
@@ -30,7 +33,20 @@ export default function RootLayout({ children }) {
         <link rel="shortcut icon" href="/assets/images/favicon.ico?v=3" />
       </head>
       <body suppressHydrationWarning className={roboto.className}>
-        {children}
+        <ReduxProvider>
+          {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+        </ReduxProvider>
       </body>
     </html>
   );

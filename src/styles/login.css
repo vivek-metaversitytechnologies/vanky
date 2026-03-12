@@ -164,11 +164,163 @@
 }
 
 /* ===========================
+   PASSWORD INPUT WRAPPER
+=========================== */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #89fe43;
+    font-size: 16px;
+    padding: 8px;
+    transition: 0.2s ease;
+    z-index: 1;
+}
+
+.password-toggle-btn:hover {
+    color: #b5ff89;
+}
+
+.password-toggle-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   API ERROR MESSAGE
+=========================== */
+.login-error-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: rgba(255, 93, 93, 0.15);
+    border: 1px solid #ff5d5d;
+    border-radius: 12px;
+    color: #ff9a9a;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    animation: slideDown 0.3s ease;
+}
+
+.login-error-message i {
+    flex-shrink: 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================
+   INPUT ERROR STATE
+=========================== */
+.login-input.error {
+    border-color: #ff5d5d;
+    background: rgba(255, 93, 93, 0.1);
+}
+
+.login-input.error::placeholder {
+    color: #ff9a9a;
+}
+
+.login-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   DEMO LOGIN BUTTON
+=========================== */
+.demo-login-btn {
+    width: 100%;
+    padding: 12px 0;
+    margin-top: 12px;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    border-radius: 12px;
+    border: 2px solid rgba(137, 254, 67, .6);
+
+    background: rgba(137, 254, 67, 0.1);
+    color: #89fe43;
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.demo-login-btn:hover {
+    background: rgba(137, 254, 67, 0.2);
+    border-color: #89fe43;
+}
+
+.demo-login-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   BUTTON LOADING STATE
+=========================== */
+.login-btn:disabled,
+.demo-login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login-btn i,
+.demo-login-btn i {
+    margin-right: 8px;
+}
+
+/* ===========================
    RESPONSIVE
 =========================== */
 @media (max-width: 480px) {
     .login-box {
         width: 90%;
         padding: 30px;
+        height: auto;
+    }
+
+    .login-input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .login-btn,
+    .demo-login-btn {
+        padding: 10px 0;
+        font-size: 16px;
+    }
+
+    .password-toggle-btn {
+        right: 12px;
+        font-size: 14px;
+    }
+
+    .login-warning {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .footer-note {
+        font-size: 10px;
     }
 }
