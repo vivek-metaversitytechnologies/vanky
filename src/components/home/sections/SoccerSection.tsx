@@ -35,7 +35,7 @@ export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
             <div className="vs-table">
 
               {/* OPPONENTS */}
-              <p className="match-opponent">
+              <div className="match-opponent">
                 <div className="match-name">
                   <Image 
                     src="/assets/images/jersey.svg" 
@@ -51,7 +51,7 @@ export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
                   width={30} 
                   height={30} 
                 />
-              </p>
+              </div>
 
               {/* TIME */}
               <div className="match-time">
