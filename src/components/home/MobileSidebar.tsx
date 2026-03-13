@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { mobileNavItems } from "./data";
 import {
   faChartColumn,
@@ -31,6 +32,10 @@ const navIconMap: Record<string, IconDefinition> = {
 };
 
 const getNavIcon = (title: string) => navIconMap[title] ?? faCircle;
+
+const navHrefMap: Record<string, string> = {
+  "Edit Stake": "/edit-stake",
+};
 
 export type MobileSidebarProps = {
   isOpen: boolean;
@@ -115,31 +120,54 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         </div>
         <div className="bg-[#255f00] text-white">
           <nav className="mt-1 border-t border-[#255f00]">
-            {mobileNavItems.map((item) => (
-              <button
-                key={item.title}
-                type="button"
-                className="flex w-full items-center text-left text-sm font-semibold tracking-wide"
-                style={{borderBottom: "1px solid #6c6c6c"}}
-              >
-                <span className="flex flex-1 items-center gap-1 px-2 py-1">
-                  <span className="text-base text-white">
-                    <FontAwesomeIcon
-                      icon={getNavIcon(item.title)}
-                      className="h-4 w-4 text-white"
-                    />
+            {mobileNavItems.map((item) => {
+              const href = navHrefMap[item.title];
+              const content = (
+                <>
+                  <span className="flex flex-1 items-center gap-1 px-2 py-1">
+                    <span className="text-base text-white">
+                      <FontAwesomeIcon
+                        icon={getNavIcon(item.title)}
+                        className="h-4 w-4 text-white"
+                      />
+                    </span>
+                    {item.title}
                   </span>
-                  {item.title}
-                </span>
-                {item.action ? (
-                  <span className="flex h-full items-center border-l border-[#255f00] px-4 text-lg text-[#ffe77b]">
-                    {item.action}
-                  </span>
-                ) : (
-                  <span className="w-2" aria-hidden="true"></span>
-                )}
-              </button>
-            ))}
+                  {item.action ? (
+                    <span className="flex h-full items-center border-l border-[#255f00] px-4 text-lg text-[#ffe77b]">
+                      {item.action}
+                    </span>
+                  ) : (
+                    <span className="w-2" aria-hidden="true"></span>
+                  )}
+                </>
+              );
+
+              if (href) {
+                return (
+                  <Link
+                    key={item.title}
+                    href={href}
+                    onClick={onClose}
+                    className="flex w-full items-center text-left text-sm font-semibold tracking-wide"
+                    style={{borderBottom: "1px solid #6c6c6c"}}
+                  >
+                    {content}
+                  </Link>
+                );
+              }
+
+              return (
+                <button
+                  key={item.title}
+                  type="button"
+                  className="flex w-full items-center text-left text-sm font-semibold tracking-wide"
+                  style={{borderBottom: "1px solid #6c6c6c"}}
+                >
+                  {content}
+                </button>
+              );
+            })}
           </nav>
         </div>
       </div>

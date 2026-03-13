@@ -13,7 +13,7 @@ import "../../styles/header.css";
 export default function HeaderDesktop({
   user = { id: "c272184", main: "1,262.00", expo: "0.00" },
   onOpenRules = () => { },
-  onOpenStakeModal = () => { }   // ⭐ NEW PROP ADDED
+  onOpenStakeModal = () => { },
 }) {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = useState(false);
@@ -167,7 +167,6 @@ export default function HeaderDesktop({
         isOpen={navOpen}
         onClose={closeNav}
         onOpenRules={onOpenRules}
-        onOpenEditStake={onOpenStakeModal}   // ✅ CORRECT NAME
       />
 
     </header>

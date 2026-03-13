@@ -69,6 +69,12 @@ export default function SidebarDesktop() {
             </li>
           </ul>
         </li>
+
+        <li>
+          <Link href="/edit-stake" className="sidebar-btn">
+            Edit Stake
+          </Link>
+        </li>
       </ul>
     </aside>
   );

@@ -19,6 +19,7 @@ import passwordChange from "./reducers/passwordChange";
 import game from "./reducers/game";
 import matchBets from "./reducers/matchBets";
 import bet from "./reducers/bet";
+import stakeSettings from "./reducers/stakeSettings";
 
 const createNoopStorage = () => ({
   getItem() {
@@ -47,6 +48,7 @@ const rootReducer = combineReducers({
   game,
   matchBets,
   bet,
+  stakeSettings,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

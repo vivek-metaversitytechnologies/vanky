@@ -70,3 +70,11 @@ export const betInitialState = {
   betError: null as string | null,
   lastBetResponse: null as any,
 };
+
+export const stakeSettingsInitialState = {
+  values: [100, 500, 1000, 2000, 5000, 10000, 25000, 50000, 100000, 200000, 300000, 500000] as number[],
+  loading: false,
+  saving: false,
+  error: null as string | null,
+  message: null as string | null,
+};

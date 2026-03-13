@@ -8,7 +8,6 @@ export default function Navbar({
   isOpen, 
   onClose, 
   onOpenRules,
-  onOpenEditStake        // ✅ ADDED HERE
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -117,12 +116,12 @@ export default function Navbar({
             </Link>
           </li>
 
-          {/* EDIT STAKE POPUP TRIGGER */}
+          {/* EDIT STAKE PAGE */}
           <li>
-            <a className="nav-link" onClick={onOpenEditStake}>
+            <Link href="/edit-stake" className="nav-link" onClick={onClose}>
               <i className="fa-solid fa-book"></i>
               Edit Stake
-            </a>
+            </Link>
           </li>
 
         </ul>
