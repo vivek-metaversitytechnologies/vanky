@@ -1,35 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import axios from "axios";
 import { toast } from "react-toastify";
-import type { RootState } from "../../store/store";
-import { fetchMatches } from "../../store/actions/matches";
-import { fetchGameData, clearGameData } from "../../store/actions/game";
-import { placeBet, resetBetState } from "../../store/actions/bet";
-import {
-  fetchMatchBetsData,
-  fetchFancyBook,
-  clearFancyBook,
-  fetchCompletedBets,
-} from "../../store/actions/matchBets";
 import "../../styles/match.css";
 import HeaderDesktop from "../../components/Layout/HeaderDesktop";
 import SidebarDesktop from "../../components/Layout/SidebarDesktop";
 import Marquee from "../../components/Layout/Marquee";
-
-type MatchPageProps = {
-  initialMatchId?: string;
-};
 
 type MatchOption = {
   id: string;
   name: string;
 };
 
-type SelectedBet = {
+type BetPopupData = {
   matchId: string;
   name: string;
   odds: number;
@@ -39,120 +22,106 @@ type SelectedBet = {
   marketType?: string;
   marketId?: string;
   priceValue?: number;
-  userIp?: string;
 };
 
-export default function MatchPage({ initialMatchId }: MatchPageProps) {
-  const router = useRouter();
-  const { list: matches } = useSelector((state: RootState) => state.matches);
-  const { bookmaker, fancy2, loading } = useSelector((state: RootState) => state.game);
-  const { user, accessToken } = useSelector((state: RootState) => state.auth);
-  const { placingBet, betSuccess } = useSelector((state: RootState) => state.bet as any);
-  const {
-    betList,
-    completedBets,
-    fancyBook,
-    loadingFancyBook,
-    loadingBetList,
-    loadingCompletedBets,
-  } = useSelector((state: RootState) => state.matchBets);
+const SAMPLE_MATCHES: MatchOption[] = [
+  { id: "35353513", name: "ECL v LIM" },
+  { id: "35353514", name: "IND v AUS" },
+  { id: "35353515", name: "ENG v NZ" },
+];
 
-  const options: MatchOption[] = useMemo(
-    () =>
-      (matches || []).map((m: any) => ({
-        id: String(m?.matchId ?? ""),
-        name: m?.matchName || "-",
-      })),
-    [matches]
-  );
+const SAMPLE_BOOKMAKER = [
+  { sid: 101, mid: "BMK-101", t: "Bookmaker", nation: "Limpopo", b1: 833, l1: 842, bs1: 120000, ls1: 100000 },
+  { sid: 102, mid: "BMK-102", t: "Bookmaker", nation: "ECL", b1: 794, l1: 805, bs1: 110000, ls1: 100000 },
+];
 
-  const [selectedId, setSelectedId] = useState(initialMatchId || "");
+const SAMPLE_TOSS = [
+  { sid: 201, mid: "TOSS-201", t: "TOSS", nation: "Limpopo Toss", b1: 198, l1: 203, bs1: 50000, ls1: 50000 },
+  { sid: 202, mid: "TOSS-202", t: "TOSS", nation: "ECL Toss", b1: 197, l1: 204, bs1: 50000, ls1: 50000 },
+];
+
+const SAMPLE_FANCY = [
+  { sid: 301, mid: "FAN-301", srno: 1, nation: "10 over run ECL", b1: 63, l1: 62, bs1: 100, ls1: 110 },
+  { sid: 302, mid: "FAN-302", srno: 2, nation: "8 over run ECL", b1: 50, l1: 49, bs1: 90, ls1: 100 },
+  { sid: 303, mid: "FAN-303", srno: 3, nation: "Total 1st inning 150", b1: 52, l1: 53, bs1: 120, ls1: 120 },
+];
+
+const SAMPLE_FANCY_BOOK: Record<number, Array<{ odds: number; pnl: number }>> = {
+  301: [
+    { odds: 58, pnl: -1200 },
+    { odds: 60, pnl: -600 },
+    { odds: 62, pnl: 200 },
+    { odds: 64, pnl: 850 },
+    { odds: 66, pnl: 1250 },
+  ],
+  302: [
+    { odds: 45, pnl: -900 },
+    { odds: 47, pnl: -300 },
+    { odds: 50, pnl: 450 },
+    { odds: 52, pnl: 900 },
+  ],
+  303: [
+    { odds: 145, pnl: -1000 },
+    { odds: 148, pnl: -350 },
+    { odds: 150, pnl: 200 },
+    { odds: 153, pnl: 1100 },
+  ],
+};
+
+const SAMPLE_BET_LIST = [
+  { name: "Limpopo", odds: 8.33, stake: 5000, isBack: true, isFancy: false, marketName: "BOOKMAKER", placeTime: "13 Mar 3:10:22 PM" },
+  { name: "ECL", odds: 8.05, stake: 3500, isBack: false, isFancy: false, marketName: "BOOKMAKER", placeTime: "13 Mar 3:11:09 PM" },
+  { name: "Limpopo Toss", odds: 2.01, stake: 1200, isBack: true, isFancy: false, marketName: "TOSS", placeTime: "13 Mar 3:12:45 PM" },
+  { name: "10 over run ECL", odds: 62, stake: 1500, isBack: false, isFancy: true, marketName: "Fancy2", placeTime: "13 Mar 3:13:16 PM" },
+  { name: "8 over run ECL", odds: 50, stake: 2000, isBack: true, isFancy: true, marketName: "Fancy2", placeTime: "13 Mar 3:14:05 PM" },
+];
+
+const SAMPLE_COMPLETED = [
+  { name: "Limpopo", odds: 8.10, stake: 1000, isBack: true, isFancy: false, marketName: "BOOKMAKER", declared: "WON", netPnl: 7100 },
+  { name: "ECL Toss", odds: 2.00, stake: 2000, isBack: false, isFancy: false, marketName: "TOSS", declared: "LOST", netPnl: -2000 },
+  { name: "Total 1st inning 150", odds: 52, stake: 1200, isBack: true, isFancy: true, marketName: "Fancy2", declared: "YES", netPnl: 1800 },
+];
+
+const SAMPLE_STAKES = [500, 1000, 2000, 3000, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 300000];
+
+export default function TestPage() {
+  const [selectedId, setSelectedId] = useState(SAMPLE_MATCHES[0].id);
   const [favorite, setFavorite] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLiveTV, setShowLiveTV] = useState(false);
   const [activeBetTab, setActiveBetTab] = useState("bookmaker");
   const [showSessionBookModal, setShowSessionBookModal] = useState(false);
   const [selectedFancyName, setSelectedFancyName] = useState("");
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [fancyBookRows, setFancyBookRows] = useState<Array<{ odds: number; pnl: number }>>([]);
+
   const [showBetPopup, setShowBetPopup] = useState(false);
-  const [selectedBet, setSelectedBet] = useState<SelectedBet | null>(null);
-  const [quickAmounts, setQuickAmounts] = useState<number[]>([]);
-  const [loadingStakes, setLoadingStakes] = useState(false);
+  const [selectedBet, setSelectedBet] = useState<BetPopupData | null>(null);
+  const [quickAmounts] = useState<number[]>(SAMPLE_STAKES);
   const [stake, setStake] = useState<number>(0);
   const [countdown, setCountdown] = useState(7);
-  const [userIp, setUserIp] = useState("0.0.0.0");
+  const [placingBet, setPlacingBet] = useState(false);
 
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  const selectedMatch =
+    SAMPLE_MATCHES.find((item) => item.id === selectedId) || SAMPLE_MATCHES[0];
 
-  useEffect(() => {
-    const fetchIp = async () => {
-      try {
-        const response = await fetch("https://api.ipify.org?format=json");
-        const data = await response.json();
-        if (data?.ip) {
-          setUserIp(data.ip);
-        }
-      } catch (_error) {
-        setUserIp("0.0.0.0");
-      }
-    };
-    fetchIp();
-  }, []);
+  const sortedFancyData = useMemo(
+    () => [...SAMPLE_FANCY].sort((a, b) => Number(a.srno) - Number(b.srno)),
+    []
+  );
 
-  useEffect(() => {
-    fetchMatches();
-  }, []);
+  const bookmakerBets = SAMPLE_BET_LIST.filter(
+    (bet) => !bet.isFancy && String(bet.marketName).toUpperCase() === "BOOKMAKER"
+  );
+  const tossBets = SAMPLE_BET_LIST.filter(
+    (bet) => !bet.isFancy && String(bet.marketName).toUpperCase() === "TOSS"
+  );
+  const fancyBets = SAMPLE_BET_LIST.filter((bet) => bet.isFancy);
 
-  useEffect(() => {
-    if (!options.length) return;
-
-    if (initialMatchId && options.some((o) => o.id === initialMatchId)) {
-      setSelectedId(initialMatchId);
-      return;
-    }
-
-    if (!selectedId || !options.some((o) => o.id === selectedId)) {
-      setSelectedId(options[0].id);
-    }
-  }, [initialMatchId, options, selectedId]);
-
-  useEffect(() => {
-    if (!selectedId) return;
-
-    fetchGameData(selectedId, false);
-    fetchMatchBetsData(selectedId);
-    fetchCompletedBets(selectedId);
-
-    const interval = setInterval(() => {
-      fetchGameData(selectedId, true);
-      fetchMatchBetsData(selectedId);
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-      clearFancyBook();
-      clearGameData();
-    };
-  }, [selectedId]);
-
-  useEffect(() => {
-    if (!betSuccess) return;
-
-    setShowBetPopup(false);
-    setSelectedBet(null);
+  const openBetPopup = (betData: Omit<BetPopupData, "matchId">) => {
+    setSelectedBet({ ...betData, matchId: selectedId });
     setStake(0);
-    setCountdown(7);
-    fetchMatchBetsData(selectedId);
-    fetchCompletedBets(selectedId);
-
-    const timer = setTimeout(() => {
-      resetBetState();
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, [betSuccess, selectedId]);
+    setShowBetPopup(true);
+  };
 
   useEffect(() => {
     if (!showBetPopup) return;
@@ -181,49 +150,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     };
   }, [showBetPopup]);
 
-  const selectedMatch =
-    options.find((item) => item.id === selectedId) ||
-    options[0] || { id: "", name: "No match available" };
-
-  const bookmakerData = isHydrated && Array.isArray(bookmaker)
-    ? bookmaker.filter((item: any) => item?.t === "Bookmaker")
-    : [];
-
-  const tossData = isHydrated && Array.isArray(bookmaker)
-    ? bookmaker.filter((item: any) => item?.t === "TOSS")
-    : [];
-
-  const sortedFancyData = isHydrated && Array.isArray(fancy2)
-    ? [...fancy2].sort((a: any, b: any) => Number(a?.srno || 0) - Number(b?.srno || 0))
-    : [];
-
-  const bookmakerBets = (isHydrated ? betList : []).filter(
-    (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "BOOKMAKER"
-  );
-  const tossBets = (isHydrated ? betList : []).filter(
-    (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "TOSS"
-  );
-  const fancyBets = (isHydrated ? betList : []).filter((bet: any) => bet.isFancy);
-  const completedBetsData = isHydrated ? completedBets : [];
-
-  const openMatch = (matchId: string) => {
-    setSelectedId(matchId);
-    setDropdownOpen(false);
-    router.push(`/match/${matchId}`);
-  };
-
-  const handleBookClick = async (fancy: any) => {
-    setSelectedFancyName(fancy?.nation || "Session Book");
-    setShowSessionBookModal(true);
-    await fetchFancyBook(fancy?.sid, selectedId);
-  };
-
-  const closeSessionBookModal = () => {
-    setShowSessionBookModal(false);
-    setSelectedFancyName("");
-    clearFancyBook();
-  };
-
   const closeBetPopup = () => {
     setShowBetPopup(false);
     setSelectedBet(null);
@@ -231,155 +157,73 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     setCountdown(7);
   };
 
-  const fetchStakeButtons = async () => {
-    if (!user?.userId || !accessToken) {
-      setQuickAmounts([500, 1000, 2000, 3000, 5000, 10000, 20000, 25000, 50000, 100000]);
-      return;
-    }
-
-    setLoadingStakes(true);
-    try {
-      const response = await axios.post(
-        "/enduser/get-stake-button",
-        { userId: user.userId },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response?.data?.status && response?.data?.data) {
-        const d = response.data.data;
-        const buttons = [
-          d.stack1,
-          d.stack2,
-          d.stack3,
-          d.stack4,
-          d.stack5,
-          d.stack6,
-          d.stack7,
-          d.stack8,
-          d.stack9,
-          d.stack10,
-          d.stack11,
-          d.stack12,
-        ].filter((n: any) => n != null && Number(n) > 0);
-
-        setQuickAmounts(buttons.length ? buttons : [500, 1000, 2000, 3000, 5000, 10000, 20000, 25000, 50000, 100000]);
-      }
-    } catch (_error) {
-      setQuickAmounts([500, 1000, 2000, 3000, 5000, 10000, 20000, 25000, 50000, 100000]);
-    } finally {
-      setLoadingStakes(false);
-    }
-  };
-
-  const openBetPopup = async (betData: Omit<SelectedBet, "matchId" | "userIp">) => {
-    const enriched = {
-      ...betData,
-      matchId: selectedId,
-      userIp,
-    };
-
-    setSelectedBet(enriched);
-    setStake(0);
-    setShowBetPopup(true);
-    await fetchStakeButtons();
-  };
-
   const handlePlaceBet = async () => {
     if (!selectedBet) return;
-
     if (!stake || stake <= 0) {
       toast.error("Please enter a valid stake amount");
       return;
     }
 
-    const result = await placeBet({
-      ...selectedBet,
-      stake,
-    });
-
-    if (!result?.success && result?.error) {
-      toast.error(result.error);
-    }
+    setPlacingBet(true);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    setPlacingBet(false);
+    toast.success(`Sample bet placed on ${selectedBet.name}`);
+    closeBetPopup();
   };
 
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "-";
-    const date = new Date(dateStr);
-    if (Number.isNaN(date.getTime())) return dateStr;
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "short" });
-    const hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-    const hour12 = hours % 12 || 12;
-    return `${day} ${month} ${hour12}:${minutes}:${seconds} ${ampm}`;
+  const handleBookClick = (fancy: any) => {
+    setSelectedFancyName(fancy?.nation || "Session Book");
+    setFancyBookRows(SAMPLE_FANCY_BOOK[Number(fancy?.sid)] || []);
+    setShowSessionBookModal(true);
   };
+
+  const closeSessionBookModal = () => {
+    setShowSessionBookModal(false);
+    setSelectedFancyName("");
+    setFancyBookRows([]);
+  };
+
+  const scoreSrc = `https://score.newbsf.com/#/score7/${selectedMatch.id}`;
+  const tvSrc = `https://livetv.apnatv.shop/livetv.php?eventId=${selectedMatch.id}`;
 
   const placedBetsContent = (
     <>
       <div className="betSlipBox">
         <div className="betslip-head">
-          <span className="item">Bet Slip</span>
+          <span id="tital_change" className="item">Bet Slip</span>
           <a>Placed Bets</a>
         </div>
 
         <div className="tab_bets">
-          <ul role="tablist" className="nav nav-tabs nav-pills mb-3">
+          <ul id="pills-tab" role="tablist" className="nav nav-tabs nav-pills mb-3">
             <li className="nav-item betdata active-all" style={{ background: "#0b7d36" }}>
-              <a
-                className="allbet active"
-                style={{ padding: "9px 15px", color: "#fff", border: "none" }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveBetTab("bookmaker");
-                }}
-              >
+              <a className="allbet active" style={{ padding: "9px 15px", color: "#fff", border: "none" }} onClick={(e) => { e.preventDefault(); setActiveBetTab("bookmaker"); }}>
                 <span className="bet-label">Bookmaker</span>
-                <span>({bookmakerBets.length})</span>
+                <span id="matchBetsCount">({bookmakerBets.length})</span>
               </a>
             </li>
 
             <li className="nav-item betdata" style={{ background: "#417e92" }}>
-              <a
-                className="unmatchbet"
-                style={{ padding: "9px 15px", color: "#fff", border: "none" }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveBetTab("toss");
-                }}
-              >
+              <a className="unmatchbet" style={{ padding: "9px 15px", color: "#fff", border: "none" }} onClick={(e) => { e.preventDefault(); setActiveBetTab("toss"); }}>
                 <span className="bet-label">Toss</span>
-                <span>({tossBets.length})</span>
+                <span id="fancyBetsCount">({tossBets.length})</span>
               </a>
             </li>
 
             <li className="nav-item betdata" style={{ background: "darkred" }}>
-              <a
-                className="unmatchbet"
-                style={{ padding: "9px 5px", color: "#fff", border: "none" }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveBetTab("fancy");
-                }}
-              >
+              <a className="unmatchbet" style={{ padding: "9px 5px", color: "#fff", border: "none" }} onClick={(e) => { e.preventDefault(); setActiveBetTab("fancy"); }}>
                 <span className="bet-label">Fancy</span>
-                <span>({fancyBets.length})</span>
+                <span id="fancyBetsCount">({fancyBets.length})</span>
               </a>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="match-bets-scroll-wrap">
-        <div className="tab-content">
+      <div id="MatchUnMatchBetaData">
+        <div id="maindivbets" className="tab-content">
           {activeBetTab === "bookmaker" && (
-            <div className="match_bets MachShowHide tab-pane fade in active">
+            <div id="allbetss" className="match_bets MachShowHide tab-pane fade in active">
               <table className="table table-striped jambo_table bulk_action wspace">
                 <thead>
                   <tr className="headings">
@@ -392,19 +236,15 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                     <td>Market</td>
                   </tr>
                 </thead>
-                <tbody>
-                  {loadingBetList && bookmakerBets.length === 0 ? (
-                    <tr><td colSpan={7} className="text-center">Loading bets...</td></tr>
-                  ) : bookmakerBets.length === 0 ? (
-                    <tr><td colSpan={7} className="text-center">No bookmaker bets found</td></tr>
-                  ) : bookmakerBets.map((b: any, idx: number) => (
+                <tbody id="matchBets">
+                  {bookmakerBets.map((b: any, idx: number) => (
                     <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
                       <td>{idx + 1}</td>
                       <td>{b?.name || "-"}</td>
-                      <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                      <td>{(Number(b?.odds || 0)).toFixed(2)}</td>
                       <td>{Number(b?.stake || 0).toFixed(2)}</td>
                       <td>{b?.isBack ? "Lagai" : "Khai"}</td>
-                      <td>{formatDate(b?.placeTime)}</td>
+                      <td>{b?.placeTime || "-"}</td>
                       <td>{b?.marketName || "-"}</td>
                     </tr>
                   ))}
@@ -414,7 +254,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
           )}
 
           {activeBetTab === "toss" && (
-            <div className="match_bets MachShowHide tab-pane fade">
+            <div id="fbets" className="match_bets MachShowHide tab-pane fade">
               <table className="table table-striped jambo_table bulk_action wspace">
                 <thead>
                   <tr className="headings">
@@ -428,16 +268,14 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {tossBets.length === 0 ? (
-                    <tr><td colSpan={7} className="text-center">No toss bets found</td></tr>
-                  ) : tossBets.map((b: any, idx: number) => (
+                  {tossBets.map((b: any, idx: number) => (
                     <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
                       <td>{idx + 1}</td>
                       <td>{b?.name || "-"}</td>
-                      <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                      <td>{(Number(b?.odds || 0)).toFixed(2)}</td>
                       <td>{Number(b?.stake || 0).toFixed(2)}</td>
                       <td>{b?.isBack ? "Lagai" : "Khai"}</td>
-                      <td>{formatDate(b?.placeTime)}</td>
+                      <td>{b?.placeTime || "-"}</td>
                       <td>{b?.marketName || "-"}</td>
                     </tr>
                   ))}
@@ -461,16 +299,14 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {fancyBets.length === 0 ? (
-                    <tr><td colSpan={7} className="text-center">No fancy bets found</td></tr>
-                  ) : fancyBets.map((b: any, idx: number) => (
+                  {fancyBets.map((b: any, idx: number) => (
                     <tr key={`${b?.name}-${idx}`} className="content_user_table mark-back">
                       <td>{idx + 1}</td>
                       <td>{b?.name || "-"}</td>
-                      <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                      <td>{(Number(b?.odds || 0)).toFixed(2)}</td>
                       <td>{Number(b?.stake || 0).toFixed(2)}</td>
                       <td>{b?.isBack ? "YES" : "NO"}</td>
-                      <td>{formatDate(b?.placeTime)}</td>
+                      <td>{b?.placeTime || "-"}</td>
                       <td>{b?.marketName || "-"}</td>
                     </tr>
                   ))}
@@ -496,15 +332,11 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
             </tr>
           </thead>
           <tbody>
-            {loadingCompletedBets && completedBetsData.length === 0 ? (
-              <tr><td colSpan={7} className="text-center">Loading completed bets...</td></tr>
-            ) : completedBetsData.length === 0 ? (
-              <tr><td colSpan={7} className="text-center">No completed bets found</td></tr>
-            ) : completedBetsData.map((b: any, idx: number) => (
+            {SAMPLE_COMPLETED.map((b: any, idx: number) => (
               <tr key={`${b?.name}-${idx}`}>
                 <td>{idx + 1}</td>
                 <td>{b?.name || "-"}</td>
-                <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                <td>{(Number(b?.odds || 0)).toFixed(2)}</td>
                 <td>{Number(b?.stake || 0).toFixed(2)}</td>
                 <td>{b?.isFancy ? (b?.isBack ? "YES" : "NO") : (b?.isBack ? "Lagai" : "Khai")}</td>
                 <td>{b?.declared || "-"}</td>
@@ -516,16 +348,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
       </div>
     </>
   );
-
-  const scoreSrc = selectedMatch.id
-    ? `https://score.newbsf.com/#/score7/${selectedMatch.id}`
-    : "about:blank";
-
-  const tvSrc = selectedMatch.id
-    ? `https://livetv.apnatv.shop/livetv.php?eventId=${selectedMatch.id}`
-    : "about:blank";
-
-  const title = selectedMatch.name;
 
   return (
     <div className="dashboard-wrapper">
@@ -553,7 +375,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                               onClick={() => setFavorite((s) => !s)}
                               aria-hidden="true"
                             ></i>
-                            {title}
+                            {selectedMatch.name}
                           </span>
                         </th>
 
@@ -574,13 +396,14 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                             </button>
                             {dropdownOpen && (
                               <ul id="matchesList" className="match-dd">
-                                {options.map((item) => (
+                                {SAMPLE_MATCHES.map((item) => (
                                   <li key={item.id} className="match-dd-item">
                                     <a
                                       className="match-dd-link"
                                       onClick={(e) => {
                                         e.preventDefault();
-                                        openMatch(item.id);
+                                        setSelectedId(item.id);
+                                        setDropdownOpen(false);
                                       }}
                                     >
                                       {item.name}
@@ -596,7 +419,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </table>
 
                   <div className="score_area">
-                    <iframe id="animscore" width="100%" title="Match Score" className="iframestyle" style={{ display: "none" }}></iframe>
                     <iframe
                       id="cricketScore"
                       title="Match Score"
@@ -625,15 +447,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           <th className="lay_heading_color">Khai</th>
                         </tr>
 
-                        {loading && bookmakerData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">Loading bookmaker odds...</td>
-                          </tr>
-                        ) : bookmakerData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No bookmaker odds available</td>
-                          </tr>
-                        ) : bookmakerData.map((bm: any) => (
+                        {SAMPLE_BOOKMAKER.map((bm: any) => (
                           <tr key={`${bm?.sid}-${bm?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
                             <td>
                               <p className="runner_text">{bm?.nation || "-"}</p>
@@ -676,10 +490,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                             </td>
                           </tr>
                         ))}
-
-                        <tr style={{ border: "0.5px solid #000" }}>
-                          <td colSpan={3} className="modal_book_design" style={{ display: "none" }}></td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -697,11 +507,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           <th className="lay_heading_color">Khai</th>
                         </tr>
 
-                        {tossData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No toss odds available</td>
-                          </tr>
-                        ) : tossData.map((row: any) => (
+                        {SAMPLE_TOSS.map((row: any) => (
                           <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
                             <td>
                               <p className="runner_text">{row?.nation || "-"}</p>
@@ -759,11 +565,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           <th className="back_heading_color session-yes">Yes</th>
                         </tr>
 
-                        {sortedFancyData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No fancy odds available</td>
-                          </tr>
-                        ) : sortedFancyData.map((row: any) => (
+                        {sortedFancyData.map((row: any) => (
                           <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color ball_running-message">
                             <td>
                               <p className="runner_text">{row?.nation || "-"}</p>
@@ -822,12 +624,12 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </div>
                 </div>
 
-                <div className="match-mobile-bets">
+                <div className="test-mobile-bets">
                   {placedBetsContent}
                 </div>
               </section>
 
-              <aside className="match-right-panel match-desktop-bets">
+              <aside className="match-right-panel test-desktop-bets">
                 {placedBetsContent}
               </aside>
             </div>
@@ -852,11 +654,9 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingFancyBook && fancyBook.length === 0 ? (
-                    <tr><td colSpan={2} className="text-center">Loading...</td></tr>
-                  ) : fancyBook.length === 0 ? (
+                  {fancyBookRows.length === 0 ? (
                     <tr><td colSpan={2} className="text-center">No Data Found</td></tr>
-                  ) : fancyBook.map((item: any, idx: number) => (
+                  ) : fancyBookRows.map((item: any, idx: number) => (
                     <tr key={idx}>
                       <td>{item?.odds ?? "-"}</td>
                       <td className={Number(item?.pnl || 0) >= 0 ? "text-success" : "text-danger"}>
@@ -890,7 +690,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
             </div>
 
             <div className="bet-amount-grid">
-              {(quickAmounts || []).map((amount, idx) => (
+              {quickAmounts.map((amount, idx) => (
                 <button key={`${amount}-${idx}`} type="button" className="bet-price-btn" onClick={() => setStake(Number(amount || 0))}>
                   {amount}
                 </button>
@@ -907,8 +707,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
               />
               <span className="bet-countdown">{countdown}</span>
             </div>
-
-            {loadingStakes && <div className="bet-loading-text">Loading stake buttons...</div>}
 
             <div className="bet-footer-actions">
               <button type="button" className="bet-cancel-btn" onClick={closeBetPopup}>

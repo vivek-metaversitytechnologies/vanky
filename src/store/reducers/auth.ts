@@ -30,6 +30,9 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    clearError(state) {
+      state.error = null;
+    },
     requestFail(state, action) {
       state.loading = false;
       state.error = action.payload;

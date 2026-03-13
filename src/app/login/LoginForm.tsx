@@ -13,6 +13,8 @@ import '../../styles/login.css';
 export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [hasAccessToken, setHasAccessToken] = useState(false);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,16 @@ export default function LoginForm() {
   );
 
   useEffect(() => {
+    setIsHydrated(true);
+    setHasAccessToken(!!Cookies.get('accessToken'));
+    dispatch(authActions.clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+
     const token = Cookies.get('accessToken');
+    setHasAccessToken(!!token);
 
     if (!token && (isAuthenticated || accessToken)) {
       dispatch(authActions.resetAuth());
@@ -34,7 +45,7 @@ export default function LoginForm() {
     if (token) {
       router.replace('/home');
     }
-  }, [accessToken, dispatch, isAuthenticated, router]);
+  }, [accessToken, dispatch, isAuthenticated, isHydrated, router]);
 
   const handleLogin = async (e?) => {
     if (e?.preventDefault) {
@@ -72,7 +83,7 @@ export default function LoginForm() {
     }
   };
 
-  if (Cookies.get('accessToken')) {
+  if (hasAccessToken) {
     return null;
   }
 
@@ -91,7 +102,7 @@ export default function LoginForm() {
           />
         </div>
 
-        {error && (
+        {isHydrated && error && (
           <div className="login-error-message">
             <i className="fas fa-exclamation-circle"></i>
             <span>{error}</span>

@@ -63,3 +63,10 @@ export const passwordChangeInitialState = {
   error: null as string | null,
   message: null as string | null,
 };
+
+export const betInitialState = {
+  placingBet: false,
+  betSuccess: false,
+  betError: null as string | null,
+  lastBetResponse: null as any,
+};

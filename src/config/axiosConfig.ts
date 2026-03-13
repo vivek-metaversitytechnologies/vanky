@@ -4,7 +4,7 @@ import store from "../store/store";
 import { authActions } from "../store/reducers/auth";
 
 export const API_BASE_URL = "https://oddsapi.247idhub.com";
-export const URB_API_BASE_URL = "https://api.urb99.com";
+export const URB_API_BASE_URL = "https://api.antpro.co";
 
 const withAuthToken = (config) => {
   const state = store.getState();
