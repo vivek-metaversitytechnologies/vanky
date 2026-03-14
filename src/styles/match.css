@@ -453,6 +453,31 @@
   padding: 8px 10px;
 }
 
+/* ---- Loading backdrop spinner ---- */
+.loading-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: match-spin 0.75s linear infinite;
+}
+
+@keyframes match-spin {
+  to { transform: rotate(360deg); }
+}
+/* ----------------------------------- */
+
 .match-modal-overlay {
   position: fixed;
   inset: 0;
@@ -805,14 +830,14 @@
   }
 
   .bet-placement-overlay {
-    align-items: flex-end;
-    justify-content: stretch;
-    padding: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
   }
 
   .bet-placement-overlay .bet-modal {
     width: 100%;
     max-width: 100%;
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px;
   }
 }

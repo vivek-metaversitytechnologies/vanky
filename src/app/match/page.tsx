@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { urbApiClient } from "../../config/axiosConfig";
 import { toast } from "react-toastify";
 import type { RootState } from "../../store/store";
 import { fetchMatches } from "../../store/actions/matches";
@@ -83,6 +84,8 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   const [stake, setStake] = useState<number>(0);
   const [countdown, setCountdown] = useState(7);
   const [userIp, setUserIp] = useState("0.0.0.0");
+  const [oddsPnlData, setOddsPnlData] = useState<any[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -123,13 +126,36 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   useEffect(() => {
     if (!selectedId) return;
 
+  const fetchOddsPnl = async (matchId: string) => {
+      if (!accessToken) return;
+      try {
+        const response = await urbApiClient.post(
+          "/enduser/user-odds-pnl",
+          { matchId },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response?.data?.status && Array.isArray(response?.data?.data)) {
+          setOddsPnlData(response.data.data);
+        }
+      } catch (_error) {
+        // silently fail
+      }
+    };
+
     fetchGameData(selectedId, false);
     fetchMatchBetsData(selectedId);
     fetchCompletedBets(selectedId);
+    fetchOddsPnl(selectedId);
 
     const interval = setInterval(() => {
       fetchGameData(selectedId, true);
       fetchMatchBetsData(selectedId);
+      fetchOddsPnl(selectedId);
     }, 2000);
 
     return () => {
@@ -148,6 +174,19 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     setCountdown(7);
     fetchMatchBetsData(selectedId);
     fetchCompletedBets(selectedId);
+
+    if (accessToken) {
+      urbApiClient
+        .post("/enduser/user-odds-pnl", { matchId: selectedId }, {
+          headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          if (res?.data?.status && Array.isArray(res?.data?.data)) {
+            setOddsPnlData(res.data.data);
+          }
+        })
+        .catch(() => {});
+    }
 
     const timer = setTimeout(() => {
       resetBetState();
@@ -204,6 +243,11 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   const hasBookmakerData = bookmakerData.length > 0;
   const hasTossData = tossData.length > 0;
   const hasFancyData = sortedFancyData.length > 0;
+
+  // Clear initial loading once first data arrives
+  if (isInitialLoading && (hasBookmakerData || hasTossData || hasFancyData)) {
+    setIsInitialLoading(false);
+  }
 
   const bookmakerBets = (isHydrated ? betList : []).filter(
     (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "BOOKMAKER"
@@ -317,6 +361,15 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     }
   };
 
+  const getPnlForSelection = (marketId: string, selectionId: number): number | null => {
+    const pnlObj = oddsPnlData.find((p: any) => p.marketId === marketId);
+    if (!pnlObj) return null;
+    if (Number(pnlObj.selection1) === selectionId) return pnlObj.pnl1;
+    if (Number(pnlObj.selection2) === selectionId) return pnlObj.pnl2;
+    if (Number(pnlObj.selection3) === selectionId) return pnlObj.pnl3;
+    return null;
+  };
+
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
     const date = new Date(dateStr);
@@ -396,7 +449,9 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                 style={{ padding: "9px 5px", color: "#fff", border: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  setActiveBetTab("completed");
+                  if (selectedId) {
+                    router.push(`/result/${selectedId}`);
+                  }
                 }}
               >
                 <span className="bet-label">Completed Fancy</span>
@@ -678,8 +733,19 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           </tr>
                         ) : bookmakerData.map((bm: any) => (
                           <tr key={`${bm?.sid}-${bm?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
-                            <td>
-                              <p className="runner_text">{bm?.nation || "-"}</p>
+                            <td style={{ padding: "6px 8px" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                                <p className="runner_text" style={{ margin: 0, fontSize: "14px", fontWeight: 600 }}>{bm?.nation || "-"}</p>
+                                {(() => {
+                                  const pnl = getPnlForSelection(String(bm?.mid || ""), Number(bm?.sid || 0));
+                                  if (pnl === null || pnl === 0) return null;
+                                  return (
+                                    <span style={{ fontSize: "14px", fontWeight: 700, color: pnl > 0 ? "#008000" : "#cc0000", whiteSpace: "nowrap" }}>
+                                      {pnl.toFixed(2)}
+                                    </span>
+                                  );
+                                })()}
+                              </div>
                             </td>
                             <td className="mark-back">
                               <a
@@ -742,8 +808,19 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
 
                         {tossData.map((row: any) => (
                           <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
-                            <td>
-                              <p className="runner_text">{row?.nation || "-"}</p>
+                            <td style={{ padding: "6px 8px" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
+                                <p className="runner_text" style={{ margin: 0, fontSize: "14px", fontWeight: 600 }}>{row?.nation || "-"}</p>
+                                {(() => {
+                                  const pnl = getPnlForSelection(String(row?.mid || ""), Number(row?.sid || 0));
+                                  if (pnl === null || pnl === 0) return null;
+                                  return (
+                                    <span style={{ fontSize: "14px", fontWeight: 700, color: pnl > 0 ? "#008000" : "#cc0000", whiteSpace: "nowrap" }}>
+                                      {pnl.toFixed(2)}
+                                    </span>
+                                  );
+                                })()}
+                              </div>
                             </td>
                             <td className="mark-back">
                               <a
@@ -1001,6 +1078,11 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {isHydrated && isInitialLoading && loading && (
+        <div className="loading-backdrop">
+          <div id="loader-1" className="spinner" style={{ display: "block" }}></div>
         </div>
       )}
     </div>

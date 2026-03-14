@@ -165,43 +165,12 @@ export const placeBet = async (betData: any) => {
       ? betData.marketType || "Fancy2"
       : betData.marketType || "Bookmaker";
 
-    const latestData = await fetchLatestBetData(
-      betData.matchId,
-      {
-        isFancy,
-        name: betData.name,
-        type: betData.type,
-        marketType: requestedMarketName,
-        selectionId: betData.selectionId,
-      },
-      betData.odds
-    );
-
-    let finalOdds;
-    let finalPriceValue;
-    let finalMarketId;
-    let finalSelectionId;
-    let finalMarketName;
-
-    if (latestData && latestData.odds > 0) {
-      finalOdds = latestData.odds;
-      finalPriceValue = latestData.priceValue;
-      finalMarketId = latestData.marketId;
-      finalSelectionId = latestData.selectionId;
-      finalMarketName = latestData.marketName || requestedMarketName;
-    } else {
-      finalOdds = betData.odds;
-      finalPriceValue = isFancy ? betData.priceValue || 0 : betData.odds;
-      finalMarketId = betData.marketId || "";
-      finalSelectionId = isFancy ? 0 : betData.selectionId || 0;
-      finalMarketName = requestedMarketName;
-
-      if (isFancy && !finalMarketId) {
-        throw new Error(
-          `Could not fetch market data for "${betData.name}". This fancy bet may be suspended or unavailable. Please try again.`
-        );
-      }
-    }
+    // Use the rate the user clicked — do not refresh odds to avoid rate-mismatch errors
+    const finalOdds = betData.odds;
+    const finalPriceValue = isFancy ? betData.priceValue || 0 : betData.odds;
+    const finalMarketId = betData.marketId || "";
+    const finalSelectionId = isFancy ? 0 : betData.selectionId || 0;
+    const finalMarketName = requestedMarketName;
 
     if (!finalOdds || finalOdds <= 0) {
       throw new Error(

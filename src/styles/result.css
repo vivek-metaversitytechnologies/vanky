@@ -1,0 +1,132 @@
+.result-main {
+  padding: 0;
+}
+
+.result-col {
+  padding: 0 !important;
+}
+
+.result-card {
+  background: #fff;
+}
+
+.result-title {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  background: linear-gradient(to right, #2f5b69 0, #47889e 100%);
+  color: #fff;
+  padding: 5px;
+  border-top: 1px solid #676767;
+}
+
+.result-card table {
+  width: 100%;
+  min-width: 640px;
+  margin-bottom: 16px;
+}
+
+.result-card .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.result-card th {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px;
+  text-align: center;
+  background: #2f5b69;
+  color: #fff;
+}
+
+.result-card td {
+  font-size: 13px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.result-summary-main {
+  font-size: 18px;
+  text-align: center;
+  background: #fff;
+  padding: 5px;
+  font-weight: 700;
+  border-top: 1px solid #193052;
+}
+
+.result-label,
+.result-label-alt {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  color: #fff;
+  padding: 5px;
+}
+
+.result-label {
+  background: linear-gradient(to right, #2f5b69 0, #47889e 100%);
+}
+
+.result-label-alt {
+  background: #a3e672;
+  color: #2f5b69;
+}
+
+.result-value,
+.result-value-alt {
+  font-size: 16px;
+  text-align: center;
+  padding: 5px;
+  border-bottom: 1px solid #193052;
+  font-weight: 700;
+}
+
+.result-value {
+  background: #d8d8d8;
+  border-top: 1px solid #193052;
+}
+
+.result-value-alt {
+  background: #fff;
+}
+
+.result-error {
+  padding: 8px;
+  margin: 6px 0;
+  text-align: center;
+  color: #cc0000;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .result-header {
+    display: none;
+  }
+
+  .result-card .table-responsive {
+    margin-bottom: 10px;
+  }
+
+  .result-card table {
+    min-width: 560px;
+  }
+
+  .result-card th,
+  .result-card td {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .result-title,
+  .result-label,
+  .result-label-alt,
+  .result-summary-main {
+    font-size: 16px;
+  }
+
+  .result-value,
+  .result-value-alt {
+    font-size: 14px;
+  }
+}

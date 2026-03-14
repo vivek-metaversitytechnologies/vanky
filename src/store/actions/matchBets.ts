@@ -130,7 +130,7 @@ export const fetchFancyBook = async (fancyId: string | number, matchId: string) 
   dispatch(matchBetsActions.fetchFancyBookStart());
 
   try {
-    const response = await apiClient.post("/enduser/fancy-book", {
+    const response = await urbApiClient.post("/enduser/fancy-book", {
       fancyId,
       matchId,
     });
