@@ -174,7 +174,7 @@ export default function LedgerPage() {
                           <td>{[item.date, item.time].filter(Boolean).join(" ") || "-"}</td>
 
                           <td>
-                            <span style={{ fontWeight: 600 }}>{item.remark || "-"}</span>
+                            <span style={{ fontWeight: 600, color: "#4083A9" }}>{item.remark || "-"}</span>
                           </td>
 
                           <td className="red"><div>{formatNumber(item.lost)}</div></td>
