@@ -121,7 +121,7 @@ export default function AccountStatementPage() {
                 <button className="btn btn-s-md btn-success" onClick={handleSearch}>Search</button>
                 <button className="btn btn-s-md btn-danger" onClick={handleReset}>Reset</button>
                 <button className="btn btn-s-md btn-primary" onClick={() => handleTypeChange("ALL")}>All</button>
-                <button className="btn btn-s-md btn-success" onClick={() => handleTypeChange("PL")}>P&amp;L</button>
+                <button className="btn btn-s-md btn-success" onClick={() => handleTypeChange("PNL")}>P&amp;L</button>
                 <button className="btn btn-s-md btn-danger" onClick={() => handleTypeChange("PDC")}>PDC</button>
                 <button className="btn btn-s-md btn-light" onClick={() => handleTypeChange("ACCOUNT")}>Account</button>
               </div>

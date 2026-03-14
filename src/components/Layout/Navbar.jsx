@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import "../../styles/header.css";
+import MobileRulesModal from "./MobileRulesModal";
 
 export default function Navbar({ 
   isOpen, 
@@ -10,8 +12,32 @@ export default function Navbar({
   onOpenRules,
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const { isAuthenticated } = useSelector((state) => state.auth || {});
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  useEffect(() => {
+    if (!isAuthenticated || typeof window === "undefined") return;
+
+    const shouldShowRules = sessionStorage.getItem("showRulesPopup") === "true";
+    if (shouldShowRules) {
+      setShowRulesModal(true);
+    }
+  }, [isAuthenticated]);
+
+  const openRules = (e) => {
+    e.preventDefault();
+    setShowRulesModal(true);
+    onClose();
+  };
+
+  const closeRules = () => {
+    setShowRulesModal(false);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("showRulesPopup", "false");
+    }
+  };
 
   return (
     <div className={`nav-sidebar-wrap ${isOpen ? "open" : ""}`}>
@@ -74,7 +100,7 @@ export default function Navbar({
 
           {/* RULES POPUP */}
           <li>
-            <a className="nav-link" onClick={onOpenRules}>
+            <a className="nav-link" onClick={openRules}>
               <i className="fa-solid fa-circle-info"></i>
               Rules
             </a>
@@ -126,6 +152,8 @@ export default function Navbar({
 
         </ul>
       </nav>
+
+      {showRulesModal && <MobileRulesModal onClose={closeRules} />}
     </div>
   );
 }
