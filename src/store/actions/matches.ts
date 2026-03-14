@@ -8,7 +8,7 @@ export const fetchMatches = async () => {
   dispatch(matchesActions.requestStart());
 
   try {
-    const response = await apiClient.get("/betfair_api/active_match/v7/4");
+    const response = await apiClient.get("/betfair_api/active_match/v5/4");
     const list = response?.data?.data || [];
 
     dispatch(matchesActions.requestSuccess(list));

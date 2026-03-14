@@ -78,6 +78,8 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   const [selectedBet, setSelectedBet] = useState<SelectedBet | null>(null);
   const [quickAmounts, setQuickAmounts] = useState<number[]>([]);
   const [loadingStakes, setLoadingStakes] = useState(false);
+  const [isBetTablesOpen, setIsBetTablesOpen] = useState(true);
+  const [activeFancyInfoId, setActiveFancyInfoId] = useState<string | null>(null);
   const [stake, setStake] = useState<number>(0);
   const [countdown, setCountdown] = useState(7);
   const [userIp, setUserIp] = useState("0.0.0.0");
@@ -181,9 +183,11 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     };
   }, [showBetPopup]);
 
+  // Keep server and first client render identical by only using dynamic match options after hydration.
+  const hydratedOptions = isHydrated ? options : [];
   const selectedMatch =
-    options.find((item) => item.id === selectedId) ||
-    options[0] || { id: "", name: "No match available" };
+    hydratedOptions.find((item) => item.id === selectedId) ||
+    hydratedOptions[0] || { id: "", name: "No match available" };
 
   const bookmakerData = isHydrated && Array.isArray(bookmaker)
     ? bookmaker.filter((item: any) => item?.t === "Bookmaker")
@@ -197,6 +201,10 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
     ? [...fancy2].sort((a: any, b: any) => Number(a?.srno || 0) - Number(b?.srno || 0))
     : [];
 
+  const hasBookmakerData = bookmakerData.length > 0;
+  const hasTossData = tossData.length > 0;
+  const hasFancyData = sortedFancyData.length > 0;
+
   const bookmakerBets = (isHydrated ? betList : []).filter(
     (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "BOOKMAKER"
   );
@@ -205,6 +213,8 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   );
   const fancyBets = (isHydrated ? betList : []).filter((bet: any) => bet.isFancy);
   const completedBetsData = isHydrated ? completedBets : [];
+  const isLoadingBetList = isHydrated ? loadingBetList : false;
+  const isLoadingCompletedBets = isHydrated ? loadingCompletedBets : false;
 
   const openMatch = (matchId: string) => {
     setSelectedId(matchId);
@@ -326,57 +336,93 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
       <div className="betSlipBox">
         <div className="betslip-head">
           <span className="item">Bet Slip</span>
-          <a>Placed Bets</a>
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              router.push("/edit-stake");
+            }}
+          >
+            Edit Stake
+          </a>
         </div>
 
         <div className="tab_bets">
           <ul role="tablist" className="nav nav-tabs nav-pills mb-3">
-            <li className="nav-item betdata active-all" style={{ background: "#0b7d36" }}>
+            <li className={`nav-item betdata active-all ${activeBetTab === "bookmaker" ? "active" : ""}`} style={{ background: "#0b7d36" }}>
               <a
-                className="allbet active"
+                className={`allbet ${activeBetTab === "bookmaker" ? "active" : ""}`}
                 style={{ padding: "9px 15px", color: "#fff", border: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveBetTab("bookmaker");
                 }}
               >
-                <span className="bet-label">Bookmaker</span>
+                <span className="bet-label">Matched Bet</span>
                 <span>({bookmakerBets.length})</span>
               </a>
             </li>
 
-            <li className="nav-item betdata" style={{ background: "#417e92" }}>
+            <li className={`nav-item betdata ${activeBetTab === "toss" ? "active" : ""}`} style={{ background: "#417e92" }}>
               <a
-                className="unmatchbet"
+                className={`unmatchbet ${activeBetTab === "toss" ? "active" : ""}`}
                 style={{ padding: "9px 15px", color: "#fff", border: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveBetTab("toss");
                 }}
               >
-                <span className="bet-label">Toss</span>
+                <span className="bet-label">Toss Bet</span>
                 <span>({tossBets.length})</span>
               </a>
             </li>
 
-            <li className="nav-item betdata" style={{ background: "darkred" }}>
+            <li className={`nav-item betdata ${activeBetTab === "fancy" ? "active" : ""}`} style={{ background: "darkred" }}>
               <a
-                className="unmatchbet"
+                className={`unmatchbet ${activeBetTab === "fancy" ? "active" : ""}`}
                 style={{ padding: "9px 5px", color: "#fff", border: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveBetTab("fancy");
                 }}
               >
-                <span className="bet-label">Fancy</span>
+                <span className="bet-label">Fancy Bet</span>
                 <span>({fancyBets.length})</span>
+              </a>
+            </li>
+
+            <li className={`nav-item betdata ${activeBetTab === "completed" ? "active" : ""}`} style={{ background: "#5b4f9a" }}>
+              <a
+                className={`unmatchbet ${activeBetTab === "completed" ? "active" : ""}`}
+                style={{ padding: "9px 5px", color: "#fff", border: "none" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveBetTab("completed");
+                }}
+              >
+                <span className="bet-label">Completed Fancy</span>
+                <span>({completedBetsData.length})</span>
+              </a>
+            </li>
+
+            <li className="nav-item active-position">
+              <a
+                id="togdiv"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsBetTablesOpen((prev) => !prev);
+                }}
+              >
+                <span>
+                  &nbsp;
+                  <i className={`fa ${isBetTablesOpen ? "fa-caret-down" : "fa-caret-up"}`}></i>
+                </span>
               </a>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="match-bets-scroll-wrap">
+      {isBetTablesOpen && <div className="match-bets-scroll-wrap">
         <div className="tab-content">
           {activeBetTab === "bookmaker" && (
             <div className="match_bets MachShowHide tab-pane fade in active">
@@ -393,7 +439,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingBetList && bookmakerBets.length === 0 ? (
+                  {isLoadingBetList && bookmakerBets.length === 0 ? (
                     <tr><td colSpan={7} className="text-center">Loading bets...</td></tr>
                   ) : bookmakerBets.length === 0 ? (
                     <tr><td colSpan={7} className="text-center">No bookmaker bets found</td></tr>
@@ -478,42 +524,43 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
               </table>
             </div>
           )}
-        </div>
-      </div>
 
-      <div className="completed-table-wrap">
-        <div className="completed-table-head">Completed Bets</div>
-        <table className="table table-striped jambo_table bulk_action wspace">
-          <thead>
-            <tr className="headings">
-              <td style={{ width: "4%" }}>No.</td>
-              <td style={{ width: "18%" }}>Runner</td>
-              <td style={{ width: "8%" }}>Odds</td>
-              <td style={{ width: "8%" }}>Stack</td>
-              <td style={{ width: "8%" }}>Mode</td>
-              <td style={{ width: "21%" }}>Result</td>
-              <td>P&L</td>
-            </tr>
-          </thead>
-          <tbody>
-            {loadingCompletedBets && completedBetsData.length === 0 ? (
-              <tr><td colSpan={7} className="text-center">Loading completed bets...</td></tr>
-            ) : completedBetsData.length === 0 ? (
-              <tr><td colSpan={7} className="text-center">No completed bets found</td></tr>
-            ) : completedBetsData.map((b: any, idx: number) => (
-              <tr key={`${b?.name}-${idx}`}>
-                <td>{idx + 1}</td>
-                <td>{b?.name || "-"}</td>
-                <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
-                <td>{Number(b?.stake || 0).toFixed(2)}</td>
-                <td>{b?.isFancy ? (b?.isBack ? "YES" : "NO") : (b?.isBack ? "Lagai" : "Khai")}</td>
-                <td>{b?.declared || "-"}</td>
-                <td>{Number(b?.netPnl || 0).toFixed(0)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          {activeBetTab === "completed" && (
+            <div className="match_bets MachShowHide tab-pane fade">
+              <table className="table table-striped jambo_table bulk_action wspace">
+                <thead>
+                  <tr className="headings">
+                    <td style={{ width: "4%" }}>No.</td>
+                    <td style={{ width: "18%" }}>Runner</td>
+                    <td style={{ width: "8%" }}>Odds</td>
+                    <td style={{ width: "8%" }}>Stack</td>
+                    <td style={{ width: "8%" }}>Mode</td>
+                    <td style={{ width: "21%" }}>Result</td>
+                    <td>P&L</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoadingCompletedBets && completedBetsData.length === 0 ? (
+                    <tr><td colSpan={7} className="text-center">Loading completed bets...</td></tr>
+                  ) : completedBetsData.length === 0 ? (
+                    <tr><td colSpan={7} className="text-center">No completed bets found</td></tr>
+                  ) : completedBetsData.map((b: any, idx: number) => (
+                    <tr key={`${b?.name}-${idx}`}>
+                      <td>{idx + 1}</td>
+                      <td>{b?.name || "-"}</td>
+                      <td>{((Number(b?.odds || 0) * 100).toFixed(2))}</td>
+                      <td>{Number(b?.stake || 0).toFixed(2)}</td>
+                      <td>{b?.isFancy ? (b?.isBack ? "YES" : "NO") : (b?.isBack ? "Lagai" : "Khai")}</td>
+                      <td>{b?.declared || "-"}</td>
+                      <td>{Number(b?.netPnl || 0).toFixed(0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>}
     </>
   );
 
@@ -613,7 +660,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                   </div>
                 </div>
 
-                <div id="bookMakerDiv" className="sportrow-4 matchOpenBox_214087">
+                {(loading || hasBookmakerData) && <div id="bookMakerDiv" className="sportrow-4 matchOpenBox_214087">
                   <div className="fullrow MatchIndentB">
                     <table className="table table-striped bulk_actions matchTable214087">
                       <tbody>
@@ -628,10 +675,6 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                         {loading && bookmakerData.length === 0 ? (
                           <tr>
                             <td colSpan={3} className="match-empty-cell">Loading bookmaker odds...</td>
-                          </tr>
-                        ) : bookmakerData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No bookmaker odds available</td>
                           </tr>
                         ) : bookmakerData.map((bm: any) => (
                           <tr key={`${bm?.sid}-${bm?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
@@ -683,9 +726,9 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div>}
 
-                <div className="sportrow-4 matchOpenBox_214087">
+                {hasTossData && <div className="sportrow-4 matchOpenBox_214087">
                   <div className="fullrow MatchIndentB">
                     <table className="table table-striped bulk_actions matchTable214087">
                       <tbody>
@@ -697,11 +740,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           <th className="lay_heading_color">Khai</th>
                         </tr>
 
-                        {tossData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No toss odds available</td>
-                          </tr>
-                        ) : tossData.map((row: any) => (
+                        {tossData.map((row: any) => (
                           <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color runner-row-1 ball_running-message">
                             <td>
                               <p className="runner_text">{row?.nation || "-"}</p>
@@ -747,9 +786,9 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div>}
 
-                <div className="sportrow-4 autoFancyDiv">
+                {hasFancyData && <div className="sportrow-4 autoFancyDiv">
                   <div className="fullrow MatchIndentB">
                     <table className="table table-striped bulk_actions">
                       <tbody id="fancy_table_own">
@@ -759,21 +798,59 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                           <th className="back_heading_color session-yes">Yes</th>
                         </tr>
 
-                        {sortedFancyData.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} className="match-empty-cell">No fancy odds available</td>
-                          </tr>
-                        ) : sortedFancyData.map((row: any) => (
+                        {sortedFancyData.map((row: any) => (
                           <tr key={`${row?.sid}-${row?.nation}`} className="back_lay_color ball_running-message">
                             <td>
-                              <p className="runner_text">{row?.nation || "-"}</p>
-                              <a onClick={() => handleBookClick(row)}>
-                                <img src="/assets/images/ladder.svg" style={{ width: "7%" }} />
-                              </a>
-                              <i className="fa fa-info-circle fancy-info"></i>
-                              <button className="fancy-book-btn" onClick={() => handleBookClick(row)}>
-                                Book
-                              </button>
+                              {(() => {
+                                const fancyInfoId = String(row?.sid || row?.mid || row?.nation || "");
+                                const minStake = Number(row?.minBet || 0);
+                                const maxStake = Number(row?.maxBet || 0);
+
+                                return (
+                              <div className="fancy-runner-inline">
+                                <p className="runner_text">{row?.nation || "-"}</p>
+                                <div className="fancy-runner-actions">
+                                  <a onClick={() => handleBookClick(row)}>
+                                    <img src="/assets/images/ladder.svg" className="fancy-ladder-icon" />
+                                  </a>
+                                  <div
+                                    className="fancy-info-wrap"
+                                    onMouseEnter={() => setActiveFancyInfoId(fancyInfoId)}
+                                    onMouseLeave={() => {
+                                      setActiveFancyInfoId((prev) => (prev === fancyInfoId ? null : prev));
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="fancy-info-btn"
+                                      aria-label="Show minimum and maximum stake"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setActiveFancyInfoId((prev) => (prev === fancyInfoId ? null : fancyInfoId));
+                                      }}
+                                    >
+                                      <svg
+                                        className="fancy-info-icon"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                        focusable="false"
+                                      >
+                                        <path
+                                          fill="currentColor"
+                                          d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 4a1.25 1.25 0 110 2.5A1.25 1.25 0 0112 6zm1.25 12h-2.5a.75.75 0 010-1.5h.5v-4h-.5a.75.75 0 010-1.5H12a.75.75 0 01.75.75v4.75h.5a.75.75 0 010 1.5z"
+                                        />
+                                      </svg>
+                                    </button>
+                                    <div className={`fancy-minmax-tooltip ${activeFancyInfoId === fancyInfoId ? "show" : ""}`}>
+                                      <div>Min stake: {minStake.toFixed(2)}</div>
+                                      <div>Max stake: {maxStake.toFixed(2)}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                                );
+                              })()}
                             </td>
                             <td className="mark-lay session-lay-cell">
                               <span
@@ -820,7 +897,7 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div>}
 
                 <div className="match-mobile-bets">
                   {placedBetsContent}

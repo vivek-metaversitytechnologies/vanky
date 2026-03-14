@@ -3,11 +3,12 @@ import { toast } from "react-toastify";
 import store from "../store";
 import { betActions } from "../reducers/bet";
 import { fetchBalance } from "./balance";
+import { urbApiClient } from "../../config/axiosConfig";
 
 const { dispatch, getState } = store;
 
 const BET_API_URL = "/bet/place";
-const GAME_API_URL = "https://oddsapi.247idhub.com/betfair_api/fancy/urb99";
+const GAME_API_URL = "https://oddsapi.247idhub.com/betfair_api/fancy/sap";
 const oddsApi = axios.create({
   headers: {
     "Content-Type": "application/json",
@@ -225,7 +226,7 @@ export const placeBet = async (betData: any) => {
       stake: betData.stake,
     };
 
-    const response = await axios.post(BET_API_URL, payload, {
+    const response = await urbApiClient.post(BET_API_URL, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

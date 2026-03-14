@@ -10,7 +10,7 @@ export const fetchGameData = async (matchId: string, silent = false) => {
   }
 
   try {
-    const response = await apiClient.get(`/betfair_api/fancy/urb99/${matchId}`);
+    const response = await apiClient.get(`/betfair_api/fancy/sap/${matchId}`);
 
     const gameData = {
       odds: response?.data?.Odds || [],
