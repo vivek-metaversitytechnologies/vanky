@@ -47,6 +47,12 @@ export default function AccountStatementPage() {
     return value;
   };
 
+  const getNumericColor = (value) => {
+    const num = Number(value);
+    if (!Number.isFinite(num) || num === 0) return "#000";
+    return num > 0 ? "#008000" : "#cc0000";
+  };
+
   const handleSearch = () => {
     loadStatements(detailType, fromDate, toDate);
   };
@@ -157,12 +163,12 @@ export default function AccountStatementPage() {
                         <tr key={i}>
                           <td>{formatValue(item.date)}</td>
                           <td>{formatValue(item.description)}</td>
-                          <td>-</td>
-                          <td>{formatValue(item.credit)}</td>
-                          <td>{formatValue(item.debit)}</td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>{formatValue(item.closing)}</td>
+                          <td style={{ color: getNumericColor(item.opening) }}>{formatValue(item.opening)}</td>
+                          <td style={{ color: "#008000" }}>{formatValue(item.credit)}</td>
+                          <td style={{ color: "#cc0000" }}>{formatValue(item.debit)}</td>
+                          <td style={{ color: getNumericColor(item.commissionPlus) }}>{formatValue(item.commissionPlus)}</td>
+                          <td style={{ color: getNumericColor(item.commissionMinus) }}>{formatValue(item.commissionMinus)}</td>
+                          <td style={{ color: getNumericColor(item.closing) }}>{formatValue(item.closing)}</td>
                         </tr>
                       ))
                     )}
