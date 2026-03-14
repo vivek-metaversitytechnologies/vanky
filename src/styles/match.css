@@ -566,12 +566,15 @@
 }
 
 .bet-price-btn {
-  border: none;
-  background: #fff;
-  color: #111;
-  padding: 8px 6px;
-  font-size: 13px;
-  font-weight: 600;
+  background-color: #255f00 !important;
+  border: none !important;
+  border-radius: 20px;
+  color: #fff;
+  padding: 9px 6px;
+  font-size: 12px;
+  font-weight: 800;
+  margin: 0 auto;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -580,20 +583,33 @@
   align-items: stretch;
   gap: 0;
   padding: 0 12px 12px;
+  width: 100%;
 }
 
 .bet-input {
+  position: relative;
+  z-index: 2;
   width: 100%;
-  border: none;
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 1px solid #ced4da;
+  border-right: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   outline: none;
   height: 42px;
   padding: 0 12px;
   font-size: 16px;
   font-weight: 600;
+  background: #fff;
+  color: #111;
+  box-shadow: none;
 }
 
 .bet-countdown {
-  min-width: 44px;
+  min-width: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -601,6 +617,11 @@
   color: #fff;
   font-size: 16px;
   font-weight: 700;
+  border: 1px solid #111;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .bet-loading-text {

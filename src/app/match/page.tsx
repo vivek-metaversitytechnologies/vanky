@@ -1051,15 +1051,17 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
               ))}
             </div>
 
-            <div className="bet-input-wrap">
+            <div className="bet-input-wrap input-group">
               <input
                 placeholder="Amount"
                 type="number"
+                id="betPl01"
+                name="betpl"
                 value={stake || ""}
                 onChange={(e) => setStake(Number(e.target.value || 0))}
-                className="bet-input"
+                className="bet-input form-control"
               />
-              <span className="bet-countdown">{countdown}</span>
+              <span className="bet-countdown input-group-text">{countdown}</span>
             </div>
 
             {loadingStakes && <div className="bet-loading-text">Loading stake buttons...</div>}
