@@ -231,6 +231,138 @@ li {
   overflow: hidden;
 }
 
+.cricket-dashboard-wrap {
+  padding: 7px !important;
+  margin-bottom: 0;
+  background: transparent;
+}
+
+.cricket-pane {
+  border: 1px solid #000;
+  border-radius: 5px;
+  clear: both;
+  display: block;
+  margin-top: 0 !important;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cricket-lotus-title {
+  background: #fff;
+}
+
+.head-matchname {
+  background: var(--hard-green);
+  color: #fff;
+  padding: 7px 8px;
+}
+
+.match-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cricket-head-icon {
+  width: 7%;
+  min-width: 18px;
+  max-width: 24px;
+  object-fit: contain;
+}
+
+.cricket-dashboard-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background: #fff;
+  min-height: 47px;
+}
+
+.cricket-dashboard-row:last-child {
+  border-bottom: 0;
+}
+
+.cricket-dashboard-main {
+  width: 88%;
+  padding: 6px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dashboard-match-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #252525;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.25;
+  text-decoration: none;
+  width: 100%;
+}
+
+.dashboard-match-icon {
+  width: 10%;
+  min-width: 22px;
+  max-width: 28px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.dashboard-match-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #92cd00;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.dashboard-match-time i {
+  color: #92cd00;
+  font-size: 13px;
+}
+
+.dashboard-match-fav {
+  color: #92cd00;
+  font-size: 15px;
+  line-height: 1;
+  margin-left: auto;
+  margin-top: 2px;
+}
+
+.cricket-tv-side {
+  width: 12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #8ab7bc;
+  line-height: 37px;
+  padding: 0 4px;
+}
+
+.dashboard-tv-icon {
+  width: 35%;
+  min-width: 12px;
+  max-width: 24px;
+  height: auto;
+  object-fit: contain;
+}
+
+.cricket-empty-state {
+  width: 100%;
+  padding: 10px 8px;
+  color: #252525;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .vs-heading,
 .casino-heading {
   display: flex;
@@ -411,6 +543,57 @@ li {
 
   .match-opponent {
     padding-right: 10px;
+  }
+
+  .cricket-pane.fade.in {
+    opacity: 1;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .head-matchname {
+    padding: 8px;
+  }
+
+  .match-head {
+    font-size: 15px;
+  }
+
+  .cricket-dashboard-row {
+    min-height: 54px;
+  }
+
+  .cricket-dashboard-main {
+    width: 84%;
+    padding: 8px 8px 7px;
+  }
+
+  .dashboard-match-link {
+    gap: 5px;
+    font-size: 16px !important;
+  }
+
+  .dashboard-match-icon {
+    width: 10%;
+    min-width: 18px;
+    max-width: 24px;
+  }
+
+  .dashboard-match-time {
+    font-size: 12px;
+  }
+
+  .dashboard-match-fav {
+    font-size: 14px;
+  }
+
+  .cricket-tv-side {
+    width: 16%;
+  }
+
+  .dashboard-tv-icon {
+    width: 35%;
+    min-width: 12px;
   }
 }
 
