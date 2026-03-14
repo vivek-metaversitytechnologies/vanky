@@ -380,6 +380,39 @@ table.jambo_table tfoot td {
     font-weight: 700;
 }
 
+.summary-balance {
+    background: #fff !important;
+}
+
+.ledger-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 5px !important;
+}
+
+.ledger-filter-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.ledger-filter-row-top .ledger-filter-item {
+    width: 50%;
+    margin-bottom: 0;
+}
+
+.ledger-filter-row-bottom .ledger-filter-item,
+.ledger-filter-search {
+    width: 50%;
+    margin-bottom: 0;
+}
+
+.ledger-filter-item .form-control,
+.ledger-filter-search .btn {
+    width: 100%;
+}
+
 .summary-red {
     background: linear-gradient(-180deg, rgb(247, 36, 36), rgb(187, 28, 0)) !important;
     color: #fff !important;
@@ -554,6 +587,21 @@ a{
     .summary-item{
         justify-content: space-between;
         width: 100%;
+    }
+
+    .ledger-filters {
+        padding: 5px !important;
+        gap: 6px;
+    }
+
+    .ledger-filter-row {
+        gap: 8px;
+    }
+
+    .ledger-filter-row-top .ledger-filter-item,
+    .ledger-filter-row-bottom .ledger-filter-item,
+    .ledger-filter-search {
+        width: 50%;
     }
 }
 

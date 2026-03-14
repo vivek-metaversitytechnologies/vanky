@@ -30,6 +30,39 @@ export default function LedgerPage() {
 
   const formatNumber = (value?: number) => Number(value || 0).toFixed(2);
 
+  const formatLedgerDateTime = (date?: string, time?: string) => {
+    if (!date && !time) return "-";
+
+    const safeDate = String(date || "").trim();
+    const safeTime = String(time || "").trim();
+
+    const [dd, mm, yyyy] = safeDate.split(".");
+    const [hh = "00", min = "00"] = safeTime.split(":");
+
+    const dayNum = Number(dd);
+    const monthNum = Number(mm);
+    const yearNum = Number(yyyy);
+    const hourNum = Number(hh);
+
+    if (
+      !Number.isFinite(dayNum) ||
+      !Number.isFinite(monthNum) ||
+      !Number.isFinite(yearNum) ||
+      !Number.isFinite(hourNum) ||
+      monthNum < 1 ||
+      monthNum > 12
+    ) {
+      return [safeDate, safeTime].filter(Boolean).join(" ") || "-";
+    }
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const ampm = hourNum >= 12 ? "PM" : "AM";
+    const hh2 = String(hourNum).padStart(2, "0");
+    const mm2 = String(min || "00").padStart(2, "0");
+
+    return `${String(dayNum).padStart(2, "0")} ${months[monthNum - 1]} ${yearNum} ${hh2}:${mm2}:${ampm}`;
+  };
+
   const loadLedger = async () => {
     setLoading(true);
     setError(null);
@@ -87,26 +120,30 @@ export default function LedgerPage() {
               <BackButton />
             </div>
 
-            <div className="commission-filters panel-body">
-              <div className="filter-item">
-                <input type="date" className="dark-text input-s form-control" />
+            <div className="commission-filters panel-body ledger-filters">
+              <div className="ledger-filter-row ledger-filter-row-top">
+                <div className="filter-item ledger-filter-item">
+                  <input type="date" id="startDate" className="dark-text input-sm input-s form-control" />
+                </div>
+
+                <div className="filter-item ledger-filter-item">
+                  <input type="date" id="endDate" className="dark-text input-sm input-s form-control" />
+                </div>
               </div>
 
-              <div className="filter-item">
-                <input type="date" className="dark-text input-s form-control" />
-              </div>
+              <div className="ledger-filter-row ledger-filter-row-bottom">
+                <div className="filter-item ledger-filter-item">
+                  <select name="account" id="entryType" className="dark-text form-control m-0">
+                    <option value="REP">All</option>
+                    <option value="SET">Settlement</option>
+                  </select>
+                </div>
 
-              <div className="filter-item">
-                <select className="dark-text form-control m-0">
-                  <option value="REP">All</option>
-                  <option value="SET">Settlement</option>
-                </select>
-              </div>
-
-              <div className="filter-btn-area">
-                <button className="btn btn-s-md btn-success" onClick={loadLedger} disabled={loading}>
-                  <i className="fa fa-search"></i> Search
-                </button>
+                <div className="filter-btn-area ledger-filter-search">
+                  <button id="submit" className="btn btn-s-md btn-success" onClick={loadLedger} disabled={loading}>
+                    <i className="fa fa-search"></i> Search
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -124,9 +161,8 @@ export default function LedgerPage() {
               <div className="summary-item">
                 <strong>Balance:</strong>
                 <span
-                  className={`summary ${
-                    netBalance > 0 ? "summary-green" : netBalance < 0 ? "summary-red" : "summary-neutral"
-                  }`}
+                  className="summary summary-balance"
+                  style={{ color: netBalance > 0 ? "#1a7f1a" : netBalance < 0 ? "#d02121" : "#111" }}
                 >
                   {balanceLabel}
                 </span>
@@ -171,7 +207,7 @@ export default function LedgerPage() {
                     ) : (
                       rows.map((item, index) => (
                         <tr key={index}>
-                          <td>{[item.date, item.time].filter(Boolean).join(" ") || "-"}</td>
+                          <td>{formatLedgerDateTime(item.date, item.time)}</td>
 
                           <td>
                             <span style={{ fontWeight: 600, color: "#4083A9" }}>{item.remark || "-"}</span>
