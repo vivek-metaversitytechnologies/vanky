@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cricketMatches } from "../data";
+import { formatMatchTime } from "./formatMatchTime";
 
 type MatchItem = {
   matchName: string;
@@ -30,7 +31,7 @@ export function CricketSection({
   const list: DisplayMatch[] = matches?.length
     ? matches.map((item) => ({
       opponent: item.matchName,
-      time: item.openDate,
+      time: formatMatchTime(item.openDate),
       matchId: item.matchId ?? item.matchid ?? item.id,
     }))
     : (useApiOnly ? [] : cricketMatches);

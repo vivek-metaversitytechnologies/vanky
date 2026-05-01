@@ -1,16 +1,23 @@
 import Image from "next/image";
 import { soccerMatches } from "../data";
+import { formatMatchTime } from "./formatMatchTime";
 
 type MatchItem = {
   matchName: string;
   openDate: string;
 };
 
-export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
-  const list = matches?.length
+export function SoccerSection({
+  matches,
+  emptyMessage = "No upcoming matches are there",
+}: {
+  matches?: MatchItem[];
+  emptyMessage?: string;
+}) {
+  const list = matches !== undefined
     ? matches.map((item) => ({
       opponent: item.matchName,
-      time: item.openDate,
+      time: formatMatchTime(item.openDate),
     }))
     : soccerMatches;
 
@@ -30,6 +37,16 @@ export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
 
       {/* MATCH LIST */}
       <div className="vs-content">
+        {list.length === 0 ? (
+          <div className="vs-strip">
+            <div className="vs-table">
+              <div className="match-opponent">
+                <div className="match-name">{emptyMessage}</div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         {list.map((match) => (
           <div key={match.opponent} className="vs-strip">
             <div className="vs-table">
