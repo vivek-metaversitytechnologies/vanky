@@ -2,13 +2,14 @@ import "./globals.css";
 import "../styles/variables.css";
 import "../styles/customStyle.css";
 
-import { Roboto_Condensed } from "next/font/google";
+import { Raleway } from "next/font/google";
 import { ReduxProvider } from "../components/ReduxProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const roboto = Roboto_Condensed({
+const raleway = Raleway({
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata = {
@@ -32,7 +33,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/assets/images/favicon.ico?v=3" sizes="any" />
         <link rel="shortcut icon" href="/assets/images/favicon.ico?v=3" />
       </head>
-      <body suppressHydrationWarning className={roboto.className}>
+      <body suppressHydrationWarning className={raleway.className}>
         <ReduxProvider>
           {children}
           <ToastContainer

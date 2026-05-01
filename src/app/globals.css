@@ -11,11 +11,11 @@
 /* ------------------------------------------- */
 
 :root {
-  --default-font-family: "Roboto Condensed", sans-serif;
+  --default-font-family: "Raleway", sans-serif;
 }
 
 html, body {
-  font-family: "Roboto Condensed", sans-serif !important;
+  font-family: "Raleway", sans-serif !important;
 }
 
 /* ------------------------------------------- */

@@ -111,7 +111,13 @@ export default function LoginForm() {
 
         <div className="login-field">
           <label className="login-label">
-            <i className="fa-solid fa-user icon"></i>
+            <Image
+              src="/assets/home/user.svg"
+              alt="user icon"
+              width={18}
+              height={18}
+              className="icon"
+            />
             User ID
           </label>
 
@@ -136,7 +142,13 @@ export default function LoginForm() {
 
         <div className="login-field">
           <label className="login-label">
-            <i className="fa-solid fa-lock icon"></i>
+            <Image
+              src="/assets/home/password.svg"
+              alt="password icon"
+              width={18}
+              height={18}
+              className="icon"
+            />
             Password
           </label>
 
@@ -189,31 +201,19 @@ export default function LoginForm() {
           )}
         </button>
 
-        <button
-          type="button"
-          className="demo-login-btn"
-          onClick={handleDemoLogin}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <i className="fas fa-spinner fa-spin"></i>
-              Loading...
-            </>
-          ) : (
-            <>
-              <i className="fas fa-gamepad"></i>
-              Demo Login
-            </>
-          )}
-        </button>
-
         <div className="login-warning">
           Note - Only 10 Wrong Password attempts are valid.
         </div>
 
         <p className="footer-note">
-          ⚠️ Note - This Website is not for Indian Territory.
+          <Image
+            src="/assets/home/important-icon.abca35b106a3f344.svg"
+            alt="alert icon"
+            width={14}
+            height={14}
+            style={{ marginRight: '2px', display: 'inline', marginBottom: '1px' }}
+          />
+          Note - This Website is not for Indian Territory.
         </p>
       </div>
     </div>
