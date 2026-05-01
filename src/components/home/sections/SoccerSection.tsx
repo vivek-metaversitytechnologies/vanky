@@ -7,13 +7,7 @@ type MatchItem = {
   openDate: string;
 };
 
-export function SoccerSection({
-  matches,
-  emptyMessage = "No upcoming matches are there",
-}: {
-  matches?: MatchItem[];
-  emptyMessage?: string;
-}) {
+export function SoccerSection({ matches }: { matches?: MatchItem[] }) {
   const list = matches !== undefined
     ? matches.map((item) => ({
       opponent: item.matchName,
@@ -37,16 +31,6 @@ export function SoccerSection({
 
       {/* MATCH LIST */}
       <div className="vs-content">
-        {list.length === 0 ? (
-          <div className="vs-strip">
-            <div className="vs-table">
-              <div className="match-opponent">
-                <div className="match-name">{emptyMessage}</div>
-              </div>
-            </div>
-          </div>
-        ) : null}
-
         {list.map((match) => (
           <div key={match.opponent} className="vs-strip">
             <div className="vs-table">

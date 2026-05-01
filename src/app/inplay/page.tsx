@@ -86,8 +86,8 @@ export default function InPlayPage() {
                                             useApiOnly
                                         />
                                     )}
-                                    {activeTab === "soccer" && <SoccerSection matches={[]} emptyMessage="Coming Soon" />}
-                                    {activeTab === "tennis" && <TennisSection matches={[]} emptyMessage="Coming Soon" />}
+                                    {activeTab === "soccer" && <SoccerSection matches={[]} />}
+                                    {activeTab === "tennis" && <TennisSection matches={[]} />}
                                 </div>
                             </div>
                             <div className="inplay-right">
