@@ -559,7 +559,10 @@ header {
 
     .marquee-wrap.mobile {
         display: block;
+        float: none;
+        width: 100%;
         max-width: 100%;
+        box-sizing: border-box;
         margin: 0;
         border-radius: 0;
         background: #edf1ea;
@@ -568,14 +571,20 @@ header {
     }
 
     .marquee-wrap.mobile .marquee-track {
+        display: block;
         width: 100%;
-        overflow: visible;
+        overflow: hidden;
     }
 
     .marquee-wrap.mobile .marquee-track .marquee-item {
-        margin: 0 20px;
+        display: inline-block;
+        min-width: max-content;
+        margin: 0;
+        padding-left: 100%;
         color: #4083a9;
         font-size: 14px;
+        animation: marqueeScrollMobile 12s linear infinite;
+        will-change: transform;
     }
 
     .header-top {
@@ -609,6 +618,16 @@ header {
     .logo-wrap {
         width: 125px;
         height: auto;
+    }
+}
+
+@keyframes marqueeScrollMobile {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%);
     }
 }
 

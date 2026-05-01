@@ -23,7 +23,6 @@ export default function Marquee({ text } = {}) {
     return (
         <div className="marquee-track">
             <div className="marquee-item">{message}</div>
-            <div className="marquee-item" aria-hidden="true">{message}</div>
         </div>
     );
 }
