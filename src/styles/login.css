@@ -293,53 +293,21 @@
    RESPONSIVE
 =========================== */
 @media (max-width: 480px) {
-    .login-wrapper {
-        height: 100vh;
-        min-height: 100vh;
-        align-items: center;
-        padding: 0;
-        overflow-y: auto;
-    }
-
     .login-box {
         width: 90%;
-        padding: 20px 24px 16px;
-        height: auto !important;
-        min-height: unset !important;
-        background-size: 100% 100%;
-    }
-
-    .login-logo {
-        margin-bottom: 12px;
-    }
-
-    .logo-img {
-        width: 130px;
-    }
-
-    .login-field {
-        margin-bottom: 12px;
-    }
-
-    .login-label {
-        font-size: 14px;
-        margin-bottom: 2px;
+        padding: 30px;
+        height: auto;
     }
 
     .login-input {
-        padding: 8px 10px;
+        padding: 10px;
         font-size: 14px;
-        margin: 4px 0;
     }
 
     .login-btn,
     .demo-login-btn {
-        padding: 9px 0;
-        font-size: 15px;
-    }
-
-    .demo-login-btn {
-        margin-top: 8px;
+        padding: 10px 0;
+        font-size: 16px;
     }
 
     .password-toggle-btn {
@@ -348,13 +316,11 @@
     }
 
     .login-warning {
-        font-size: 11px;
-        padding: 7px;
-        margin-top: 10px;
+        font-size: 12px;
+        padding: 8px;
     }
 
     .footer-note {
         font-size: 10px;
-        margin-top: 8px;
     }
 }
