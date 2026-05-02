@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 import "../../styles/inplay.css";
 import type { RootState } from "../../store/store";
 
@@ -73,10 +74,10 @@ export default function InPlayPage() {
                                         <span>Tennis</span>
                                     </div>
 
-                                    <a href="/CasinoAdda" className="inplay-tab">
+                                    <Link href="/CasinoAdda" className="inplay-tab">
                                         <img src="/assets/images/casino.png" alt="Casino" />
                                         <span>Casino</span>
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div className="inplay-matches-box">
                                     {activeTab === "cricket" && (

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import Marquee from "./Marquee";
@@ -80,14 +81,14 @@ export default function HeaderDesktop({
           </div>
 
           {/* LOGO */}
-          <div className="logo-wrap">
+          <Link href="/home" className="logo-wrap" aria-label="Go to home">
             <Image
               src="/assets/images/logo.png"
               alt="logo"
               width={90}
               height={32}
             />
-          </div>
+          </Link>
 
           {/* DESKTOP MARQUEE */}
           <div className="marquee-wrap desktop">
@@ -136,7 +137,6 @@ export default function HeaderDesktop({
           <div
             className="user-profile dropdown-toggle"
             ref={dropdownRef}
-            onClick={toggleDropdown}
           >
             <Image
               src="/assets/images/bethistory.svg"
@@ -146,7 +146,7 @@ export default function HeaderDesktop({
               className="user-img"
             />
 
-            <span className="user-id">
+            <span className="user-id" onClick={toggleDropdown}>
               {userInfo.id}
               <i className="fa-solid fa-angle-down"></i>
             </span>
@@ -155,8 +155,14 @@ export default function HeaderDesktop({
               className="dropdown-menu dropdown-usermenu pull-right"
               style={{ display: dropdownOpen ? "block" : "none" }}
             >
-              <li><a href="/change-password">Change Password</a></li>
-              <li className="dropdown-footer"><a href="#" onClick={handleLogout}>Log Out</a></li>
+              <li>
+                <Link href="/change-password" onClick={() => setDropdownOpen(false)}>
+                  Change Password
+                </Link>
+              </li>
+              <li className="dropdown-footer">
+                <button type="button" onClick={handleLogout}>Log Out</button>
+              </li>
             </ul>
           </div>
 

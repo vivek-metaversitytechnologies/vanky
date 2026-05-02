@@ -173,6 +173,17 @@ header {
     font-size: 14px;
 }
 
+.user-profile .dropdown-menu li button {
+    display: block;
+    width: 100%;
+    padding: 12px 8px;
+    font-size: 14px;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
 .user-profile .dropdown-menu li {
     width: 100%;
     border-bottom: solid 1px #d8d8d8;

@@ -39,6 +39,11 @@ export default function Navbar({
     }
   };
 
+  const handleNavClick = () => {
+    setDropdownOpen(false);
+    onClose();
+  };
+
   return (
     <div className={`nav-sidebar-wrap ${isOpen ? "open" : ""}`}>
       <nav className="main-nav">
@@ -57,35 +62,35 @@ export default function Navbar({
         <ul className="nav-list">
 
           <li>
-            <Link href="/home" className="nav-link">
+            <Link href="/home" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-house-chimney"></i>
               Dashboard
             </Link>
           </li>
 
           <li>
-            <Link href="/inplay" className="nav-link">
+            <Link href="/inplay" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-play"></i>
               In-Play
             </Link>
           </li>
 
           <li>
-            <Link href="/market-analysis" className="nav-link">
+            <Link href="/market-analysis" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-chart-column"></i>
               All Market Book
             </Link>
           </li>
 
           <li>
-            <Link href="/profile" className="nav-link">
+            <Link href="/profile" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-user"></i>
               Profile
             </Link>
           </li>
 
           <li>
-            <Link href="/change-password" className="nav-link">
+            <Link href="/change-password" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-lock"></i>
               Password
             </Link>
@@ -107,7 +112,7 @@ export default function Navbar({
           </li>
 
           <li>
-            <Link href="/myCommission" className="nav-link">
+            <Link href="/myCommission" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-book"></i>
               My Commission
             </Link>
@@ -127,16 +132,16 @@ export default function Navbar({
             </span>
 
             <ul className={`nav-link-dropdown ${dropdownOpen ? "open" : ""}`}>
-              <li><Link href="/accountStatement">Account Statement</Link></li>
-              <li><Link href="/ledger">Total Ledger</Link></li>
-              <li><Link href="/profit-loss">Profit & Loss</Link></li>
-              <li><Link href="/bet-history">Bet History</Link></li>
-              <li><Link href="/bet-history-live">Live Bet History</Link></li>
+              <li><Link href="/accountStatement" onClick={handleNavClick}>Account Statement</Link></li>
+              <li><Link href="/ledger" onClick={handleNavClick}>Total Ledger</Link></li>
+              <li><Link href="/profit-loss" onClick={handleNavClick}>Profit & Loss</Link></li>
+              <li><Link href="/bet-history" onClick={handleNavClick}>Bet History</Link></li>
+              <li><Link href="/bet-history-live" onClick={handleNavClick}>Live Bet History</Link></li>
             </ul>
           </li>
 
           <li>
-            <Link href="/CasinoAdda" className="nav-link">
+            <Link href="/CasinoAdda" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-gamepad"></i>
               Live Games
             </Link>
@@ -144,7 +149,7 @@ export default function Navbar({
 
           {/* EDIT STAKE PAGE */}
           <li>
-            <Link href="/edit-stake" className="nav-link" onClick={onClose}>
+            <Link href="/edit-stake" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-book"></i>
               Edit Stake
             </Link>
