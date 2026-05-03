@@ -1,19 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { menuIcons } from "../data";
 
 export function DesktopMenuSection() {
-  const router = useRouter();
-
-  useEffect(() => {
-    menuIcons.forEach((item) => {
-      router.prefetch(item.link);
-    });
-  }, [router]);
-
   return (
     <div className="desktop-menu">
       {menuIcons.map((item) => (

@@ -12,7 +12,6 @@ import { logout } from "../../store/actions/auth";
 import "../../styles/header.css";
 
 export default function HeaderDesktop({
-  user = { id: "c272184", main: "1,262.00", expo: "0.00" },
   onOpenRules = () => { },
   onOpenStakeModal = () => { },
 }) {
@@ -22,11 +21,11 @@ export default function HeaderDesktop({
   const [navOpen, setNavOpen] = useState(false);
 
   const dropdownRef = useRef(null);
-  const { user: authUser } = useSelector((state) => state.auth);
+  const reduxUserId = useSelector((state) => state.auth?.user?.userId);
   const { balance, liability } = useSelector((state) => state.balance);
 
   const userInfo = {
-    id: isHydrated ? (user?.id || authUser?.userId || "-") : (user?.id || "-"),
+    id: isHydrated ? (reduxUserId || "-") : "-",
     main: isHydrated ? Number(balance || 0).toFixed(2) : "0.00",
     expo: isHydrated ? Number(liability || 0).toFixed(2) : "0.00",
   };

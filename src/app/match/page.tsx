@@ -244,10 +244,12 @@ export default function MatchPage({ initialMatchId }: MatchPageProps) {
   const hasTossData = tossData.length > 0;
   const hasFancyData = sortedFancyData.length > 0;
 
-  // Clear initial loading once first data arrives
-  if (isInitialLoading && (hasBookmakerData || hasTossData || hasFancyData)) {
-    setIsInitialLoading(false);
-  }
+  useEffect(() => {
+    if (!isInitialLoading) return;
+    if (hasBookmakerData || hasTossData || hasFancyData) {
+      setIsInitialLoading(false);
+    }
+  }, [isInitialLoading, hasBookmakerData, hasTossData, hasFancyData]);
 
   const bookmakerBets = (isHydrated ? betList : []).filter(
     (bet: any) => !bet.isFancy && String(bet.marketName || "").toUpperCase() === "BOOKMAKER"

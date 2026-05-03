@@ -28,6 +28,29 @@
   table-layout: fixed;
 }
 
+.fullrow {
+  display: block;
+  width: 100%;
+  float: left;
+}
+
+.MatchIndentB {
+  position: relative;
+}
+
+.match-top-table .mobile_heading th {
+  padding: 3px 5px;
+  border: 0.5px solid #000;
+  line-height: 25px;
+  font-weight: 700;
+}
+
+.match-top-table .mobile_heading .match-name-head,
+.match-top-table .mobile_heading .match-tv-head,
+.match-top-table .mobile_heading .match-dropdown-head {
+  border: none;
+}
+
 .match-name-head {
   width: 65%;
   border: none;
@@ -42,11 +65,15 @@
 
 .match-name-inline {
   max-width: 100%;
-  font-weight: 500;
-  width: 55%;
+  font-weight: 400;
+  width: calc(100% - 10px);
+  max-width: calc(100% - 10px);
   overflow: hidden;
   white-space: nowrap;
   position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
   text-overflow: ellipsis;
   display: inline-flex;
   gap: 8px;
@@ -257,6 +284,20 @@
 
 .autoFancyDiv {
   padding: 0;
+  overflow-x: hidden;
+}
+
+.autoFancyDiv .bulk_actions {
+  table-layout: fixed;
+}
+
+.autoFancyDiv .session-title {
+  width: 64%;
+}
+
+.autoFancyDiv .session-no,
+.autoFancyDiv .session-yes {
+  width: 18%;
 }
 
 .session-title {
@@ -684,7 +725,8 @@
   }
 
   .match-name-inline {
-    width: 68%;
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
   }
 
   .match-top-table {
@@ -723,8 +765,10 @@
   }
 
   .match-name-inline {
-    width: 55%;
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
     font-size: 12px;
+    left: 5px;
   }
 
   .match-dropdown-button {
@@ -759,6 +803,15 @@
     font-size: 11px;
   }
 
+  .autoFancyDiv .session-title {
+    width: 62%;
+  }
+
+  .autoFancyDiv .session-no,
+  .autoFancyDiv .session-yes {
+    width: 19%;
+  }
+
   .mark-back a span,
   .mark-lay a span {
     font-size: 16px !important;
@@ -784,8 +837,10 @@
 
 @media (max-width: 320px) {
   .match-name-inline {
-    width: 55%;
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
     font-size: 11px;
+    left: 5px;
   }
 
   .bookmaker-title .minmax {
@@ -814,6 +869,14 @@
     max-width: 14px;
   }
 
+  .fancy-runner-inline {
+    gap: 6px;
+  }
+
+  .fancy-runner-actions {
+    gap: 6px;
+  }
+
   .match-modal-head h3 {
     font-size: 12px;
   }
@@ -835,6 +898,14 @@
 }
 
 @media (max-width: 767px) {
+  .match-top-table .mobile_heading th:first-child {
+    width: 65%;
+  }
+
+  .match-top-table .mobile_heading th:nth-child(2) {
+    width: 18%;
+  }
+
   .match-desktop-bets,
   .test-desktop-bets {
     display: none;
