@@ -3,15 +3,33 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { fetchBalance } from "../../store/actions/balance";
+import { fetchCasinoList } from "../../store/actions/casinoLive";
+import { CASINO_GAME_BY_CODE } from "../../config/casinoGames";
 import "../../styles/casino.css";
 
 const CasinoAdda = () => {
+    const router = useRouter();
     const [tabClicked, setTabClicked] = useState(false);
     const [initialLoad, setInitialLoad] = useState(true);
+    const [isHydrated, setIsHydrated] = useState(false);
+    const { balance } = useSelector((state: any) => state.balance || {});
+    const { casinoList } = useSelector((state: any) => state.casinoLive || {});
+
+    const ptsValue = isHydrated ? Number(balance || 0).toFixed(2) : "0.00";
 
     useEffect(() => {
         const timer = setTimeout(() => setInitialLoad(false), 400);
         return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        setIsHydrated(true);
+        fetchBalance();
+        fetchCasinoList();
     }, []);
 
     const games = [
@@ -32,6 +50,24 @@ const CasinoAdda = () => {
         setTimeout(() => setTabClicked(false), 350);
     };
 
+    const handleGameClick = (gameCode: string) => {
+        const config = CASINO_GAME_BY_CODE[gameCode];
+        const isUiReady = !!config?.isUiReady;
+
+        const isGameActive = !!casinoList?.find(
+            (item: any) =>
+                String(item?.name || "").toLowerCase() ===
+                String(config?.casinoListName || "").toLowerCase()
+        );
+
+        if (!isUiReady || !isGameActive) {
+            toast.info("Coming Soon");
+            return;
+        }
+
+        router.push(`/CasinoAdda/${gameCode}`);
+    };
+
     return (
         <div className="casino-page">
 
@@ -40,7 +76,11 @@ const CasinoAdda = () => {
                 <Link href="/home">  
                 <h1 className="casino-title">rolex12</h1>
                      </Link>
-                <p className="casino-balance">Pts: <span className="bal">1262.00</span></p>
+                <p className="casino-balance">
+                    Pts:
+                    <img src="/assets/images/wallet-icons.png" alt="coins" style={{ width: "16px", height: "16px" }} />
+                    <span className="bal">{ptsValue}</span>
+                </p>
             </header>
 
             <div className="casino-content">
@@ -65,10 +105,11 @@ const CasinoAdda = () => {
                 {/* Games */}
                 <div className="casino-grid-main">
                     {games.map((game, index) => (
-                        <Link 
+                        <button
                             key={index}
-                            href={`/CasinoAdda/${game.code}`}   // <— CHANGE ROUTE HERE IF NEEDED
+                            type="button"
                             className="casino-card-link"
+                            onClick={() => handleGameClick(game.code)}
                         >
                             <motion.div
                                 className="casino-card-main"
@@ -84,7 +125,7 @@ const CasinoAdda = () => {
                                     <p className="casino-card-title">{game.code}</p>
                                 </div>
                             </motion.div>
-                        </Link>
+                        </button>
                     ))}
                 </div>
             </div>

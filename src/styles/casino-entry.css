@@ -1,0 +1,162 @@
+.casino-entry-page {
+    width: 100%;
+    font-family: "Roboto Condensed", sans-serif;
+}
+
+.casino-entry-page .container.body {
+    width: 100%;
+    padding: 0;
+}
+
+.casino-entry-page .mrq.hidden-lg {
+    display: none;
+}
+
+.casino-entry-page .mrq .marquee-content {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.casino-entry-page .mrq #loginMarquee {
+    color: #4083a9;
+    display: block;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.casino-entry-page .main_container,
+.casino-entry-page .right_col,
+.casino-entry-page .site-wrapper,
+.casino-entry-page .site-content,
+.casino-entry-page .site-content__center,
+.casino-entry-page .game-lobby {
+    width: 100%;
+}
+
+.casino-entry-page .casino-row {
+    margin: 0 !important;
+}
+
+.casino-entry-page .title_new_at {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    background: #255f00;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.35;
+    padding: 6px;
+    margin: 0;
+}
+
+.casino-entry-page .title_new_at .pull-right {
+    margin-left: auto;
+}
+
+.casino-entry-page .btn_common {
+    display: inline-block;
+    color: #000;
+    background: #f0ad2d;
+    border: 1px solid #eea236;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 4px 8px;
+    text-decoration: none;
+    text-transform: none;
+}
+
+.casino-entry-page .lobby-inner {
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.casino-entry-page .game-grid-row {
+    margin: 0;
+}
+
+.casino-entry-page .casino-item {
+    margin-bottom: 5px;
+    padding-left: 0;
+    padding-right: 5px;
+}
+
+.casino-entry-page .casino-item a {
+    text-decoration: none;
+}
+
+.casino-entry-page .hover.ehover4 {
+    cursor: pointer;
+}
+
+.casino-entry-page .img-responsive {
+    width: 100%;
+    display: block;
+}
+
+.casino-entry-page .casino-thumb {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.casino-entry-page .casno-name-txt {
+    margin: 0;
+    background: #255f00;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.1;
+    font-weight: 400;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 5px;
+}
+
+@media (min-width: 768px) {
+    .casino-entry-page .casino-item {
+        width: 25%;
+        float: left;
+    }
+}
+
+@media (max-width: 767px) {
+    .casino-entry-page .mrq.hidden-lg {
+        display: block;
+        background: #edf1ea;
+        border-bottom: 1px solid #9dd27b;
+        margin: 0;
+        padding: 0;
+    }
+
+    .casino-entry-page .mrq.hidden-lg .marquee {
+        padding: 2px 0;
+    }
+
+    .casino-entry-page .casino-item {
+        width: 50%;
+        float: left;
+    }
+
+    .casino-entry-page .casno-name-txt {
+        font-size: 14px;
+        min-height: 36px;
+        padding: 6px 5px;
+    }
+
+    .casino-entry-page .title_new_at {
+        font-size: 16px;
+        line-height: 1.35;
+        padding: 6px;
+    }
+
+    .casino-entry-page .btn_common {
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+}

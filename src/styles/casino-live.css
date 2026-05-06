@@ -4,8 +4,9 @@
 
 .live-right {
     display: inline-flex;
-    gap: 10px;
-    position: relative;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
 }
 
 .live-right .balance {
@@ -14,9 +15,8 @@
     height: 30px;
     color: #aaafb5;
     font-size: 13px;
-    position: absolute;
-    left: -80%;
-    top: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .live-right .balance span {
@@ -54,15 +54,49 @@
     position: relative;
 }
 
+.min-wrapper {
+    position: relative;
+    height: auto;
+}
+
+/* Keep cards section below round id on all casino detail pages */
+.casino-page.live .min-wrapper {
+    position: relative !important;
+    height: auto !important;
+}
+
+.casino-page.live .casino-cards-box {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin-top: 6px;
+}
+
+@media (max-width: 767px) {
+    .casino-page.live .min-wrapper {
+        position: relative !important;
+        height: auto !important;
+    }
+
+    .casino-page.live .casino-cards-box {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+    }
+}
+
 /* -------------------------------------------------------------------
       CARDS BOX (TOGGLE SYSTEM FIXED)
 ------------------------------------------------------------------- */
 
 .casino-page.live .casino-cards-box {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
     background-color: rgba(0, 0, 0, 0.6);
     padding: 5px 30px 5px 5px;
     overflow: hidden;
@@ -74,6 +108,7 @@
     display: flex;
     flex-flow: column;
     gap: 5px;
+    margin-top: 6px;
 }
 
 /* Smooth animation for width + opacity */
@@ -478,33 +513,34 @@
 }
 
 .result-item {
-    /* padding: 5px 10px; */
-    border-radius: 4px;
+    border-radius: 50%;
     font-weight: 700;
     text-align: center;
     color: #fff;
-    width: 9%;
-    height: 25px;
-    line-height: 25px;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
     margin-top: 5px;
-    border-radius: 4px;
-    text-align: center;
-    background-color: #434343;
     cursor: pointer;
     font-weight: 600;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 13px;
-    flex-grow: 1;
+    font-size: 11px;
+    flex-shrink: 0;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    background-color: #434343;
 }
 
+/* Legacy color-only classes kept for any old usage */
 .result-a {
-    color: #ed4242;
+    background-color: #169731;
 }
 
 .result-b {
-    color: #fdcf13;
+    background-color: #d0021b;
 }
 
 /* ============================
@@ -660,13 +696,13 @@
     }
 
     .min-wrapper {
-        position: absolute;
+        position: relative;
         z-index: 99;
-        height: 50%;
+        height: auto;
     }
 
     .casino-cards-box {
-        top: 60% !important;
+        top: auto !important;
     }
 
     .casino-left-header {
@@ -706,7 +742,7 @@
     }
 
     .live-right .balance {
-        top: 15px;
+        white-space: nowrap;
     }
 
     .casino-page.live .casino-header {
@@ -804,6 +840,36 @@
     font-size: 11px;
 }
 
+.result-modal-body {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.result-modal-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 0;
+}
+
+.result-modal-row span:first-child {
+    color: #b6bfcc;
+    text-transform: capitalize;
+}
+
+.result-modal-row span:last-child {
+    color: #ffd24c;
+    text-align: right;
+    word-break: break-word;
+}
+
+.result-modal-loading {
+    color: #ffd24c;
+    padding-top: 10px;
+    font-size: 12px;
+}
+
 /* ANIMATION */
 @keyframes fadeIn {
     from {
@@ -815,4 +881,145 @@
         opacity: 1;
         transform: scale(1);
     }
+}
+
+
+/* ============================
+   RESULT POPUP — CARD CONTENT
+   ============================ */
+
+.result-popup-body {
+    padding: 8px 4px 12px;
+}
+
+.result-popup-round {
+    font-size: 11px;
+    color: #9aa0a6;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.result-popup-result-label {
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0 auto 12px;
+    width: 100%;
+}
+
+/* Players row (teen / dt) */
+.result-popup-players {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.result-popup-player {
+    flex: 1;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 8px 6px;
+}
+
+.result-popup-player.winner {
+    border-color: #fdcf13;
+    background: rgba(253, 207, 19, 0.08);
+}
+
+.result-player-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.result-trophy {
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+/* Cards row */
+.result-cards-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.result-card-img {
+    width: 36px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Single card (lucky7) */
+.result-popup-single-card {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+.result-popup-single-card .result-card-img {
+    width: 55px;
+    height: 78px;
+}
+
+/* Multi card (aaa, generic) */
+.result-popup-multi-card {
+    margin: 8px 0;
+    justify-content: center;
+}
+
+/* Andar Bahar section */
+.result-popup-ab-section {
+    margin-bottom: 10px;
+}
+
+.result-popup-ab-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #aaafb5;
+    margin-bottom: 6px;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.result-popup-ab-label.winner {
+    color: #fdcf13;
+}
+
+.result-ab-cards {
+    flex-wrap: wrap;
+}
+
+/* Description row */
+.result-desc-row {
+    font-size: 12px;
+    color: #b6bfcc;
+    text-align: center;
+    margin-top: 6px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    word-break: break-word;
+}
+
+.result-no-card {
+    color: #9aa0a6;
+    font-size: 14px;
 }

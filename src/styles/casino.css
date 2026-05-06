@@ -87,6 +87,14 @@
     margin-right: 50px;
 }
 
+.casino-page .casino-card-link {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
 /* 🌟 GAME CARD WRAPPER */
 .casino-page .casino-card-main {
     margin-right: 10px;
@@ -140,7 +148,20 @@
     }
 
     .casino-page .casino-card-main {
-        width: 46%;
+        width: 98%;
+        margin-right: 0;
+    }
+
+    .casino-page .casino-card-inner {
+        width: 70%;
+        display: block;
+    }
+
+    .casino-page .casino-card-inner img {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 205 / 105;
+        object-fit: cover;
     }
 }
 

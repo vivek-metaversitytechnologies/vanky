@@ -1,6 +1,6 @@
 export const menuIcons = [
   { title: "IN PLAY", image: "/assets/images/menu/inplay.webp", link: "/inplay", uppercase: true },
-  { title: "CASINO", image: "/assets/images/menu/casino.webp", link: "/CasinoAdda", uppercase: true },
+  { title: "CASINO", image: "/assets/images/menu/casino.webp", link: "/casino", uppercase: true },
   { title: "My Ledger", image: "/assets/images/menu/my-ledger.webp", link: "/ledger" },
   { title: "Account Statement", image: "/assets/images/menu/passbook.webp", link: "/accountStatement" },
   { title: "PROFILE", image: "/assets/images/menu/profile.webp", link: "/profile", uppercase: true },

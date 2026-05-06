@@ -78,3 +78,43 @@ export const stakeSettingsInitialState = {
   error: null as string | null,
   message: null as string | null,
 };
+
+export const casinoLiveInitialState = {
+  casinoList: [] as any[],
+  loadingCasinoList: false,
+  errorCasinoList: null as string | null,
+  lastCasinoListFetched: null as number | null,
+
+  meta: [] as any[],
+  runners: [] as any[],
+  extra: [] as any[],
+  roundId: null as string | null,
+  gameType: null as string | null,
+  loadingMeta: false,
+  errorMeta: null as string | null,
+  lastMetaFetched: null as number | null,
+
+  liability: [] as any[],
+  loadingLiability: false,
+  errorLiability: null as string | null,
+  lastLiabilityFetched: null as number | null,
+
+  userBets: [] as any[],
+  loadingUserBets: false,
+  errorUserBets: null as string | null,
+  lastUserBetsFetched: null as number | null,
+
+  lastResult: null as any,
+  loadingResult: false,
+  errorResult: null as string | null,
+  lastResultFetched: null as number | null,
+
+  lastResults: [] as any[],
+  loadingLastResults: false,
+  errorLastResults: null as string | null,
+  lastResultsFetched: null as number | null,
+
+  placingBet: false,
+  placeBetError: null as string | null,
+  placeBetSuccess: null as string | null,
+};

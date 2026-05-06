@@ -5,6 +5,7 @@ import { authActions } from "../store/reducers/auth";
 
 export const API_BASE_URL = "https://oddsapi.247idhub.com";
 export const URB_API_BASE_URL = "https://api.antpro999.net";
+export const CASINO_API_BASE_URL = "https://casino.rolex247.net";
 
 const withAuthToken = (config) => {
   const state = store.getState();
@@ -43,11 +44,17 @@ export const urbApiClient = axios.create({
   baseURL: URB_API_BASE_URL,
 });
 
+export const casinoApiClient = axios.create({
+  baseURL: CASINO_API_BASE_URL,
+});
+
 apiClient.interceptors.request.use(withAuthToken, Promise.reject);
 urbApiClient.interceptors.request.use(withAuthToken, Promise.reject);
+casinoApiClient.interceptors.request.use(withAuthToken, Promise.reject);
 
 apiClient.interceptors.response.use((response) => response, handleAuthError);
 
 urbApiClient.interceptors.response.use((response) => response, handleAuthError);
+casinoApiClient.interceptors.response.use((response) => response, handleAuthError);
 
 export default apiClient;

@@ -141,7 +141,7 @@ export default function Navbar({
           </li>
 
           <li>
-            <Link href="/CasinoAdda" className="nav-link" onClick={handleNavClick}>
+            <Link href="/casino" className="nav-link" onClick={handleNavClick}>
               <i className="fa-solid fa-gamepad"></i>
               Live Games
             </Link>

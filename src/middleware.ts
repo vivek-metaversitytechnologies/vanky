@@ -6,6 +6,16 @@ const PUBLIC_PATHS = ['/login'];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Normalize lowercase casinoAdda URLs to the existing route folder.
+  const isLowercaseCasinoAddaPath =
+    pathname.startsWith('/casinoadda') || pathname.startsWith('/casinoAdda');
+
+  if (isLowercaseCasinoAddaPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/casinoadda/i, '/CasinoAdda');
+    return NextResponse.redirect(url);
+  }
+
   const isStaticAsset =
     pathname.startsWith('/_next') ||
     pathname.startsWith('/assets') ||
