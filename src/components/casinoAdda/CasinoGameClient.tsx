@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -44,7 +43,8 @@ function getResultInfo(
   config?: { resultMap?: Record<string, { label: string; bg: string }> }
 ): { label: string; bg: string } {
   const key = String(result || "").trim();
-  const entry = config?.resultMap?.[key];
+  const normalizedNumberKey = String(Number.parseInt(key, 10));
+  const entry = config?.resultMap?.[key] || config?.resultMap?.[normalizedNumberKey];
   if (entry) return entry;
   // fallback
   if (key === "1" || key.toUpperCase() === "A") return { label: "A", bg: "#169731" };
@@ -306,6 +306,8 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
 
   const ptsValue = isHydrated ? Number(balance || 0).toFixed(2) : "0.00";
   const userId = isHydrated ? (user?.userId || "") : "";
+  const displayRoundId = isHydrated ? (roundId || "-") : "-";
+  const hydratedMeta = isHydrated ? meta : [];
 
   const tableId = useMemo(() => {
     const listName = config?.casinoListName;
@@ -342,7 +344,47 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
     });
   }, [gameCode, mergedRows]);
 
-  const autoTime = Number(Array.isArray(meta) ? meta?.[0]?.autotime || 0 : 0);
+  const rowsForRender = useMemo(() => (isHydrated ? displayRows : []), [displayRows, isHydrated]);
+  const resultsForRender = useMemo(
+    () => (isHydrated && Array.isArray(lastResults) ? lastResults : []),
+    [isHydrated, lastResults]
+  );
+  const betsForRender = useMemo(
+    () => (isHydrated && Array.isArray(userBets) ? userBets : []),
+    [isHydrated, userBets]
+  );
+
+  const autoTime = Number(Array.isArray(hydratedMeta) ? hydratedMeta?.[0]?.autotime || 0 : 0);
+
+  const videoUrl = useMemo(() => {
+    const row = Array.isArray(hydratedMeta) ? hydratedMeta?.[0] || {} : {};
+    const candidates = [
+      row?.tv,
+      row?.tvUrl,
+      row?.tvurl,
+      row?.video,
+      row?.videoUrl,
+      row?.stream,
+      row?.streamUrl,
+      row?.iframe,
+      row?.url,
+    ];
+    const found = candidates.find((item) => typeof item === "string" && item.startsWith("http"));
+    return found || "";
+  }, [hydratedMeta]);
+
+  const tvCards = useMemo(() => {
+    const row = Array.isArray(hydratedMeta) ? hydratedMeta?.[0] || {} : {};
+    const read = (upper: string, lower: string) => String((row as any)?.[upper] || (row as any)?.[lower] || "").trim();
+    return [
+      read("C1", "c1"),
+      read("C2", "c2"),
+      read("C3", "c3"),
+      read("C4", "c4"),
+      read("C5", "c5"),
+      read("C6", "c6"),
+    ];
+  }, [hydratedMeta]);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -406,11 +448,18 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
   };
 
   const openBetPopup = (runner: any, isBack: boolean) => {
+    const marketStatus = String(runner?.gstatus ?? "").toUpperCase();
+    const isSuspended =
+      marketStatus === "SUSPENDED" ||
+      marketStatus === "SUSPEND" ||
+      runner?.gstatus === 0 ||
+      runner?.gstatus === "0";
+
     const odds = isBack
       ? Number(runner?.backOdds || runner?.rate || 0)
       : Number(runner?.layOdds || runner?.rate || 0);
 
-    if (!odds || odds <= 0) {
+    if (isSuspended || !odds || odds <= 0) {
       toast.info("Market locked");
       return;
     }
@@ -464,8 +513,12 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
   };
 
   const renderOddButton = (runner: any, isBack: boolean) => {
-    const marketStatus = String(runner?.gstatus || "").toUpperCase();
-    const isSuspended = marketStatus === "SUSPENDED" || marketStatus === "SUSPEND";
+    const marketStatus = String(runner?.gstatus ?? "").toUpperCase();
+    const isSuspended =
+      marketStatus === "SUSPENDED" ||
+      marketStatus === "SUSPEND" ||
+      runner?.gstatus === 0 ||
+      runner?.gstatus === "0";
 
     const odds = isBack
       ? Number(runner?.backOdds || runner?.rate || 0)
@@ -473,7 +526,7 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
 
     if (isSuspended || !odds || odds <= 0) {
       return (
-        <button className="lay" disabled>
+        <button className={isBack ? "back" : "lay"} disabled>
           <i className="fa-solid fa-lock"></i>
         </button>
       );
@@ -485,6 +538,400 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
         onClick={() => openBetPopup(runner, isBack)}
       >
         {formatOdds(odds)}
+      </button>
+    );
+  };
+
+  const isRunnerLocked = (runner: any, isBack: boolean) => {
+    const marketStatus = String(runner?.gstatus ?? "").toUpperCase();
+    const odds = isBack
+      ? Number(runner?.backOdds || runner?.rate || 0)
+      : Number(runner?.layOdds || runner?.rate || 0);
+
+    return (
+      marketStatus === "SUSPENDED" ||
+      marketStatus === "SUSPEND" ||
+      runner?.gstatus === 0 ||
+      runner?.gstatus === "0" ||
+      !odds ||
+      odds <= 0
+    );
+  };
+
+  const lucky7RowsOrdered = useMemo(() => {
+    if (gameCode !== "ODLucky7") return [] as any[];
+    return rowsForRender;
+  }, [rowsForRender, gameCode]);
+
+  const getLucky7Runner = (keys: string[], fallbackIndex?: number) => {
+    const loweredKeys = keys.map((k) => k.toLowerCase());
+    const matched = lucky7RowsOrdered.find((row: any) => {
+      const name = String(row?.name || "").toLowerCase();
+      return loweredKeys.some((key) => name.includes(key));
+    });
+
+    if (matched) return matched;
+    if (typeof fallbackIndex === "number") return lucky7RowsOrdered[fallbackIndex];
+    return undefined;
+  };
+
+  const lucky7CardRows = useMemo(() => {
+    if (gameCode !== "ODLucky7") return [] as any[];
+
+    const cardRanks = ["a", "2", "3", "4", "5", "6", "7", "8", "9", "10", "j", "q", "k"];
+    const readRank = (name: string) => {
+      const raw = String(name || "").toLowerCase().replace(/card|cards|\s+/g, "");
+      if (raw === "1") return "a";
+      if (cardRanks.includes(raw)) return raw;
+      return "";
+    };
+
+    const ranked = rowsForRender
+      .map((row: any) => ({ row, rank: readRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => cardRanks.indexOf(a.rank) - cardRanks.indexOf(b.rank));
+
+    if (ranked.length > 0) return ranked;
+
+    return rowsForRender.slice(6).map((row: any, index: number) => ({
+      row,
+      rank: String(index + 1),
+    }));
+  }, [rowsForRender, gameCode]);
+
+  const renderLucky7Tile = (
+    runner: any,
+    className: string,
+    label: React.ReactNode,
+    accentClass: string
+  ) => {
+    if (!runner) {
+      return <div className={`lucky7-tile ${className} ${accentClass} disabled`} />;
+    }
+
+    const marketStatus = String(runner?.gstatus ?? "").toUpperCase();
+    const isLocked =
+      marketStatus === "SUSPENDED" ||
+      marketStatus === "SUSPEND" ||
+      runner?.gstatus === 0 ||
+      runner?.gstatus === "0" ||
+      Number(runner?.backOdds || runner?.rate || 0) <= 0;
+
+    const odds = Number(runner?.backOdds || runner?.rate || 0);
+
+    return (
+      <button
+        className={`lucky7-tile ${className} ${accentClass}${isLocked ? " locked" : ""}`}
+        disabled={isLocked}
+        onClick={() => openBetPopup(runner, true)}
+      >
+        <span className="lucky7-tile-odds">{formatOdds(odds)}</span>
+        <span className="lucky7-tile-label">{label}</span>
+        <span className="lucky7-tile-pnl">{Number(runner?.pnl || 0).toFixed(1)}</span>
+        {isLocked && (
+          <span className="lucky7-tile-lock">
+            <i className="fa-solid fa-lock"></i>
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  const dtRowsOrdered = useMemo(() => {
+    if (gameCode !== "ODdt20" && gameCode !== "ODDT202") return [] as any[];
+    return rowsForRender;
+  }, [rowsForRender, gameCode]);
+
+  const getDtRunner = (keys: string[], fallbackIndex?: number, excludes: string[] = []) => {
+    const loweredKeys = keys.map((k) => k.toLowerCase());
+    const loweredExcludes = excludes.map((k) => k.toLowerCase());
+
+    const matched = dtRowsOrdered.find((row: any) => {
+      const name = String(row?.name || "").toLowerCase();
+      const hasKey = loweredKeys.every((key) => name.includes(key));
+      const hasExcluded = loweredExcludes.some((key) => name.includes(key));
+      return hasKey && !hasExcluded;
+    });
+
+    if (matched) return matched;
+    if (typeof fallbackIndex === "number") return dtRowsOrdered[fallbackIndex];
+    return undefined;
+  };
+
+  const dtCardRanks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
+  const toCardRank = (name: string) => {
+    const n = String(name || "")
+      .toLowerCase()
+      .replace(/dragon|tiger|andar|bahar|card|cards|\s+/g, "")
+      .trim();
+
+    if (!n) return "";
+    if (n === "1") return "A";
+    if (n === "11") return "J";
+    if (n === "12") return "Q";
+    if (n === "13") return "K";
+
+    const upper = n.toUpperCase();
+    if (dtCardRanks.includes(upper)) return upper;
+    return "";
+  };
+
+  const dragonCardRows = useMemo(() => {
+    if (gameCode !== "ODdt20" && gameCode !== "ODDT202") return [] as any[];
+
+    const parsed = dtRowsOrdered
+      .filter((row: any) => String(row?.name || "").toLowerCase().includes("dragon"))
+      .map((row: any) => ({ row, rank: toCardRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => dtCardRanks.indexOf(a.rank) - dtCardRanks.indexOf(b.rank));
+
+    if (parsed.length > 0) return parsed;
+
+    return dtRowsOrdered.slice(8, 21).map((row: any, idx: number) => ({
+      row,
+      rank: dtCardRanks[idx] || String(idx + 1),
+    }));
+  }, [dtRowsOrdered, gameCode]);
+
+  const tigerCardRows = useMemo(() => {
+    if (gameCode !== "ODdt20" && gameCode !== "ODDT202") return [] as any[];
+
+    const parsed = dtRowsOrdered
+      .filter((row: any) => String(row?.name || "").toLowerCase().includes("tiger"))
+      .map((row: any) => ({ row, rank: toCardRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => dtCardRanks.indexOf(a.rank) - dtCardRanks.indexOf(b.rank));
+
+    if (parsed.length > 0) return parsed;
+
+    return dtRowsOrdered.slice(25, 38).map((row: any, idx: number) => ({
+      row,
+      rank: dtCardRanks[idx] || String(idx + 1),
+    }));
+  }, [dtRowsOrdered, gameCode]);
+
+  const renderDtTile = (
+    runner: any,
+    label: React.ReactNode,
+    className: string,
+    oddsOverride?: string | number
+  ) => {
+    if (!runner) {
+      return (
+        <div className={`dt-tile ${className} locked disabled`}>
+          <span className="dt-tile-odds">{oddsOverride ? formatOdds(oddsOverride) : "0"}</span>
+          <span className="dt-tile-label">{label}</span>
+          <span className="dt-tile-pnl">0.0</span>
+          <span className="dt-tile-lock">
+            <i className="fa-solid fa-lock"></i>
+          </span>
+        </div>
+      );
+    }
+
+    const locked = isRunnerLocked(runner, true);
+    const odds = oddsOverride ?? Number(runner?.backOdds || runner?.rate || 0);
+
+    return (
+      <button
+        className={`dt-tile ${className}${locked ? " locked" : ""}`}
+        disabled={locked}
+        onClick={() => openBetPopup(runner, true)}
+      >
+        <span className="dt-tile-odds">{formatOdds(odds)}</span>
+        <span className="dt-tile-label">{label}</span>
+        <span className="dt-tile-pnl">{Number(runner?.pnl || 0).toFixed(1)}</span>
+        {locked && (
+          <span className="dt-tile-lock">
+            <i className="fa-solid fa-lock"></i>
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  const aaaRowsOrdered = useMemo(() => {
+    if (gameCode !== "ODaaa") return [] as any[];
+    return rowsForRender;
+  }, [rowsForRender, gameCode]);
+
+  const getAaaRunner = (keys: string[], fallbackIndex?: number, excludes: string[] = []) => {
+    const loweredKeys = keys.map((k) => k.toLowerCase());
+    const loweredExcludes = excludes.map((k) => k.toLowerCase());
+
+    const matched = aaaRowsOrdered.find((row: any) => {
+      const name = String(row?.name || "").toLowerCase();
+      const hasKey = loweredKeys.every((key) => name.includes(key));
+      const hasExcluded = loweredExcludes.some((key) => name.includes(key));
+      return hasKey && !hasExcluded;
+    });
+
+    if (matched) return matched;
+    if (typeof fallbackIndex === "number") return aaaRowsOrdered[fallbackIndex];
+    return undefined;
+  };
+
+  const aaaCardRows = useMemo(() => {
+    if (gameCode !== "ODaaa") return [] as any[];
+
+    const parsed = aaaRowsOrdered
+      .filter((row: any) => {
+        const n = String(row?.name || "").toLowerCase();
+        return n.includes("card") || /\b(a|k|q|j|10|9|8|7|6|5|4|3|2)\b/.test(n);
+      })
+      .map((row: any) => ({ row, rank: toCardRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => dtCardRanks.indexOf(a.rank) - dtCardRanks.indexOf(b.rank));
+
+    if (parsed.length > 0) return parsed;
+
+    return aaaRowsOrdered.slice(9, 22).map((row: any, idx: number) => ({
+      row,
+      rank: dtCardRanks[idx] || String(idx + 1),
+    }));
+  }, [aaaRowsOrdered, gameCode]);
+
+  const renderAaaMainRow = (runner: any, label: string, oddsFallback: string) => {
+    const locked = !runner || isRunnerLocked(runner, true);
+    const odds = oddsFallback;
+    const pnl = runner ? Number(runner?.pnl || 0).toFixed(1) : "0.0";
+
+    return (
+      <div className={`aaa-main-row${locked ? " locked" : ""}`}>
+        <div className="aaa-main-left">
+          <span className="aaa-main-label">{label}</span>
+          <span className="aaa-main-pnl">{pnl}</span>
+        </div>
+        <button
+          className="aaa-main-right"
+          disabled={locked}
+          onClick={() => runner && openBetPopup(runner, true)}
+        >
+          <span>{odds}</span>
+          {locked && (
+            <span className="aaa-lock">
+              <i className="fa-solid fa-lock"></i>
+            </span>
+          )}
+        </button>
+      </div>
+    );
+  };
+
+  const renderAaaSmallTile = (
+    runner: any,
+    label: React.ReactNode,
+    oddsFallback: string,
+    className?: string
+  ) => {
+    const locked = !runner || isRunnerLocked(runner, true);
+    const pnl = runner ? Number(runner?.pnl || 0).toFixed(1) : "0.0";
+
+    return (
+      <button
+        className={`aaa-small-tile${className ? ` ${className}` : ""}${locked ? " locked" : ""}`}
+        disabled={locked}
+        onClick={() => runner && openBetPopup(runner, true)}
+      >
+        <div className="aaa-small-odds">{oddsFallback}</div>
+        <div className="aaa-small-label">{label}</div>
+        <div className="aaa-small-pnl">{pnl}</div>
+        {locked && (
+          <span className="aaa-lock">
+            <i className="fa-solid fa-lock"></i>
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  const abRowsOrdered = useMemo(() => {
+    if (gameCode !== "ODab20") return [] as any[];
+    return rowsForRender;
+  }, [rowsForRender, gameCode]);
+
+  const getAbRunner = (keys: string[], fallbackIndex?: number) => {
+    const lowered = keys.map((k) => k.toLowerCase());
+    const matched = abRowsOrdered.find((row: any) => {
+      const name = String(row?.name || "").toLowerCase();
+      return lowered.every((k) => name.includes(k));
+    });
+    if (matched) return matched;
+    if (typeof fallbackIndex === "number") return abRowsOrdered[fallbackIndex];
+    return undefined;
+  };
+
+  const abAndarRows = useMemo(() => {
+    if (gameCode !== "ODab20") return [] as any[];
+    const parsed = abRowsOrdered
+      .filter((row: any) => String(row?.name || "").toLowerCase().includes("andar"))
+      .map((row: any) => ({ row, rank: toCardRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => dtCardRanks.indexOf(a.rank) - dtCardRanks.indexOf(b.rank));
+
+    if (parsed.length >= 13) return parsed.slice(0, 13);
+
+    const base = abRowsOrdered.slice(1, 14).map((row: any, idx: number) => ({
+      row,
+      rank: dtCardRanks[idx] || String(idx + 1),
+    }));
+
+    const filled = [...base];
+    while (filled.length < 13) {
+      filled.push({ row: undefined, rank: dtCardRanks[filled.length] });
+    }
+    return filled;
+  }, [abRowsOrdered, gameCode]);
+
+  const abBaharRows = useMemo(() => {
+    if (gameCode !== "ODab20") return [] as any[];
+    const parsed = abRowsOrdered
+      .filter((row: any) => String(row?.name || "").toLowerCase().includes("bahar"))
+      .map((row: any) => ({ row, rank: toCardRank(row?.name || "") }))
+      .filter((item) => !!item.rank)
+      .sort((a, b) => dtCardRanks.indexOf(a.rank) - dtCardRanks.indexOf(b.rank));
+
+    if (parsed.length >= 13) return parsed.slice(0, 13);
+
+    const base = abRowsOrdered.slice(14, 27).map((row: any, idx: number) => ({
+      row,
+      rank: dtCardRanks[idx] || String(idx + 1),
+    }));
+
+    const filled = [...base];
+    while (filled.length < 13) {
+      filled.push({ row: undefined, rank: dtCardRanks[filled.length] });
+    }
+    return filled;
+  }, [abRowsOrdered, gameCode]);
+
+  const renderAbCardTile = (runner: any, rank: string) => {
+    const locked = !runner || isRunnerLocked(runner, true);
+    const pnl = runner ? Number(runner?.pnl || 0).toFixed(1) : "0.0";
+
+    return (
+      <button
+        className={`ab-card-tile${locked ? " locked" : ""}`}
+        disabled={locked}
+        onClick={() => runner && openBetPopup(runner, true)}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/images/card-close.png"
+          alt="card"
+          className="ab-card-img"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = "/assets/images/card-close.png";
+          }}
+        />
+        <div className="ab-card-rank">{rank}</div>
+        <div className="ab-card-pnl">{pnl}</div>
+        {locked && (
+          <span className="aaa-lock">
+            <i className="fa-solid fa-lock"></i>
+          </span>
+        )}
       </button>
     );
   };
@@ -515,91 +962,324 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
           <div className="lg:col-span-9">
             <div className="casino-left">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-0">
-                <div className="md:col-span-3">
-                  <div className="min-wrapper">
-                    <div className="casino-left-header">
-                      <span className="casino-game-title">
+                <div className="md:col-span-12">
+                  <div className="casino-video-box relative">
+                    <div className="casino-tv-overlay-head">
+                      <span className="casino-game-title tv-title-main">
                         {(config?.displayName || gameCode).toUpperCase()}
                       </span>
-                      <span className="casino-round-id">
-                        Round ID: {roundId || "-"}
+                      <span className="casino-round-id tv-title-round" suppressHydrationWarning>
+                        Round ID: {displayRoundId}
                       </span>
                     </div>
 
-                    <div className={`casino-cards-box ${cardsOpen ? "open" : "closed"}`}>
-                      <div className="cards-row">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                          <Image
-                            key={i}
-                            src="/assets/images/card-close.png"
-                            alt="card"
-                            width={30}
-                            height={30}
-                            className="card-img"
-                          />
-                        ))}
-                      </div>
+                    <div className="casino-tv-overlay-cards">
+                      <div className={`casino-cards-box ${cardsOpen ? "open" : "closed"}`}>
+                        <div className="cards-row">
+                          {tvCards.slice(0, 3).map((card, i) => (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              key={i}
+                              src={card ? `${CARD_BASE_URL}/${card}.jpg` : "/assets/images/card-close.png"}
+                              alt="card"
+                              className="card-img"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = "/assets/images/card-close.png";
+                              }}
+                            />
+                          ))}
+                        </div>
 
-                      <div className="cards-row">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                          <Image
-                            key={i + 3}
-                            src="/assets/images/card-close.png"
-                            alt="card"
-                            width={30}
-                            height={30}
-                            className="card-img"
-                          />
-                        ))}
-                      </div>
+                        <div className="cards-row">
+                          {tvCards.slice(3, 6).map((card, i) => (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              key={i + 3}
+                              src={card ? `${CARD_BASE_URL}/${card}.jpg` : "/assets/images/card-close.png"}
+                              alt="card"
+                              className="card-img"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = "/assets/images/card-close.png";
+                              }}
+                            />
+                          ))}
+                        </div>
 
-                      <span className="cards-toggle" onClick={() => setCardsOpen(!cardsOpen)}>
-                        <i className="fa-solid fa-grip-lines"></i>
-                      </span>
+                        <span className="cards-toggle" onClick={() => setCardsOpen(!cardsOpen)}>
+                          <i className="fa-solid fa-grip-lines"></i>
+                        </span>
+                      </div>
                     </div>
 
-                  </div>
-                </div>
-
-                <div className="md:col-span-9">
-                  <div className="casino-video-box relative">
                     <div className="casino-video-icons absolute">
                       <Link href="/CasinoAdda">
                         <div className="video-icon-circle">
                           <i className="fa-solid fa-house"></i>
                         </div>
                       </Link>
+                      <div
+                        className="video-icon-circle"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => toast.info("Rules will be available here.")}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            toast.info("Rules will be available here.");
+                          }
+                        }}
+                      >
+                        <i className="fa-solid fa-circle-info"></i>
+                      </div>
                     </div>
 
-                    <div className="casino-video-frame relative"></div>
-                    <div className="video-loader"></div>
+                    <div className="casino-video-frame relative">
+                      {videoUrl ? (
+                        <iframe
+                          src={videoUrl}
+                          title="Casino TV"
+                          allow="autoplay; fullscreen"
+                          allowFullScreen
+                        />
+                      ) : null}
+                    </div>
+                    {!videoUrl && <div className="video-loader"></div>}
                     <div className="countdown-circle">{Number.isFinite(autoTime) ? autoTime : 0}</div>
                   </div>
                 </div>
 
                 <div className="md:col-span-12">
                   <div className="live-casino-odds-panel">
-                    <ul className="panel-header">
-                      <li><b className="text-sm">Main</b></li>
-                      <li><b className="text-sm">Back</b></li>
-                      <li><b className="text-sm">Lay</b></li>
-                    </ul>
+                    {gameCode === "ODab20" ? (
+                      <div className="ab-odds-board">
+                        <div className="ab-two-cols">
+                          <div className="ab-col">
+                            <h5 className="ab-col-head">
+                              <span className="ab-title">Andar</span>
+                              <span className="ab-odds">1.96</span>
+                            </h5>
+                            <div className="ab-card-row">
+                              {abAndarRows.map(({ row, rank }) => (
+                                <React.Fragment key={`ab-andar-${row?.sid || rank}-${row?.mid || ""}`}>
+                                  {renderAbCardTile(row, rank)}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          </div>
 
-                    {displayRows.length > 0 ? (
-                      displayRows.map((runner: any) => (
-                        <ul className="player-row" key={`${runner.mid}-${runner.sid}`}>
-                          <li>
-                            <span className="player-name">{runner.name}</span>
-                            <div className="player-score">{Number(runner.pnl || 0).toFixed(2)}</div>
-                          </li>
+                          <div className="ab-col">
+                            <h5 className="ab-col-head">
+                              <span className="ab-title">Bahar</span>
+                              <span className="ab-odds">1.96</span>
+                            </h5>
+                            <div className="ab-card-row">
+                              {abBaharRows.map(({ row, rank }) => (
+                                <React.Fragment key={`ab-bahar-${row?.sid || rank}-${row?.mid || ""}`}>
+                                  {renderAbCardTile(row, rank)}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : gameCode === "ODaaa" ? (
+                      <div className="aaa-odds-board">
+                        <div className="aaa-main-rows">
+                          {renderAaaMainRow(getAaaRunner(["amar"], 0), "A. Amar", "2.00")}
+                          {renderAaaMainRow(getAaaRunner(["akbar"], 1), "B. Akbar", "3.00")}
+                          {renderAaaMainRow(getAaaRunner(["anthony"], 2), "C. Anthony", "4.00")}
+                        </div>
 
-                          <li className="bet-btn bet-back-btn">{renderOddButton(runner, true)}</li>
+                        <div className="aaa-option-groups">
+                          <div className="aaa-option-group">
+                            {renderAaaSmallTile(getAaaRunner(["even"], 3), "Even", "2.12")}
+                            {renderAaaSmallTile(getAaaRunner(["odd"], 4), "Odd", "1.83")}
+                          </div>
 
-                          <li className="bet-btn bet-lay-btn">{renderOddButton(runner, false)}</li>
-                        </ul>
-                      ))
+                          <div className="aaa-option-group">
+                            {renderAaaSmallTile(
+                              getAaaRunner(["black"], 5),
+                              <span className="lucky7-suit black">♠ ♣</span>,
+                              "1.97"
+                            )}
+                            {renderAaaSmallTile(
+                              getAaaRunner(["red"], 6),
+                              <span className="lucky7-suit red">♥ ♦</span>,
+                              "1.97"
+                            )}
+                          </div>
+
+                          <div className="aaa-option-group">
+                            {renderAaaSmallTile(getAaaRunner(["under", "7"], 7), "Under 7", "2.00")}
+                            {renderAaaSmallTile(getAaaRunner(["over", "7"], 8), "Over 7", "2.00")}
+                          </div>
+                        </div>
+
+                        <div className="aaa-card-strip">
+                          <div className="aaa-card-strip-odds">12.00</div>
+                          <div className="aaa-card-row">
+                            {aaaCardRows.map(({ row, rank }) => (
+                              <React.Fragment key={`aaa-${row?.sid || rank}-${row?.mid || ""}`}>
+                                {renderAaaSmallTile(row, rank, "12.00", "card")}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : gameCode === "ODdt20" || gameCode === "ODDT202" ? (
+                      <div className="dt20-odds-board">
+                        <div className="dt20-main-row">
+                          {renderDtTile(
+                            getDtRunner(["dragon"], 0, ["even", "odd", "spade", "club", "heart", "diamond", "black", "red"]),
+                            "Dragon",
+                            "main dragon",
+                            1.96
+                          )}
+                          {renderDtTile(getDtRunner(["tie"], 1), "Tie", "main tie-circle", 8)}
+                          {renderDtTile(
+                            getDtRunner(["tiger"], 2, ["even", "odd", "spade", "club", "heart", "diamond", "black", "red"]),
+                            "Tiger",
+                            "main tiger",
+                            1.96
+                          )}
+                        </div>
+
+                        <div className="dt20-pair-row">
+                          {renderDtTile(getDtRunner(["pair"], 3), "Pair", "main pair", 6)}
+                        </div>
+
+                        <div className="dt20-sides-row">
+                          <div className="dt20-side-box">
+                            <div className="dt20-side-head">
+                              <span className="dt20-side-title">Dragon</span>
+                              <span className="dt20-side-odds">2.10</span>
+                              <span className="dt20-side-odds">1.79</span>
+                              <span className="dt20-side-odds">1.95</span>
+                              <span className="dt20-side-odds">1.95</span>
+                            </div>
+
+                            <div className="dt20-side-four">
+                              {renderDtTile(getDtRunner(["dragon", "even"], 4), "Even", "small")}
+                              {renderDtTile(getDtRunner(["dragon", "odd"], 5), "Odd", "small")}
+                              {renderDtTile(getDtRunner(["dragon", "black"], 6), <span className="lucky7-suit black">♠ ♣</span>, "small")}
+                              {renderDtTile(getDtRunner(["dragon", "red"], 7), <span className="lucky7-suit red">♥ ♦</span>, "small")}
+                            </div>
+
+                            {dragonCardRows.length > 0 && (
+                              <>
+                                <div className="dt20-card-title">12</div>
+                                <div className="dt20-card-row">
+                                  {dragonCardRows.map(({ row, rank }) => (
+                                    <React.Fragment key={`dragon-${row?.sid || rank}-${row?.mid || ""}`}>
+                                      {renderDtTile(row, rank, "card")}
+                                    </React.Fragment>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          <div className="dt20-side-box">
+                            <div className="dt20-side-head">
+                              <span className="dt20-side-title">Tiger</span>
+                              <span className="dt20-side-odds">2.10</span>
+                              <span className="dt20-side-odds">1.79</span>
+                              <span className="dt20-side-odds">1.95</span>
+                              <span className="dt20-side-odds">1.95</span>
+                            </div>
+
+                            <div className="dt20-side-four">
+                              {renderDtTile(getDtRunner(["tiger", "even"], 21), "Even", "small")}
+                              {renderDtTile(getDtRunner(["tiger", "odd"], 22), "Odd", "small")}
+                              {renderDtTile(getDtRunner(["tiger", "black"], 23), <span className="lucky7-suit black">♠ ♣</span>, "small")}
+                              {renderDtTile(getDtRunner(["tiger", "red"], 24), <span className="lucky7-suit red">♥ ♦</span>, "small")}
+                            </div>
+
+                            {tigerCardRows.length > 0 && (
+                              <>
+                                <div className="dt20-card-title">12</div>
+                                <div className="dt20-card-row">
+                                  {tigerCardRows.map(({ row, rank }) => (
+                                    <React.Fragment key={`tiger-${row?.sid || rank}-${row?.mid || ""}`}>
+                                      {renderDtTile(row, rank, "card")}
+                                    </React.Fragment>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : gameCode === "ODLucky7" ? (
+                      <div className="lucky7-odds-board">
+                        <div className="lucky7-top-row">
+                          {renderLucky7Tile(getLucky7Runner(["low"], 0), "lucky7-wide", "LOW CARD", "low")}
+                          <div className="lucky7-center-card">7</div>
+                          {renderLucky7Tile(getLucky7Runner(["high"], 1), "lucky7-wide", "HIGH CARD", "high")}
+                        </div>
+
+                        <div className="lucky7-mid-row">
+                          {renderLucky7Tile(getLucky7Runner(["even"], 2), "", "Even", "neutral")}
+                          {renderLucky7Tile(getLucky7Runner(["odd"], 3), "", "Odd", "neutral")}
+                          {renderLucky7Tile(
+                            getLucky7Runner(["spade", "club", "black"], 4),
+                            "",
+                            <span className="lucky7-suit black">♠ ♣</span>,
+                            "neutral"
+                          )}
+                          {renderLucky7Tile(
+                            getLucky7Runner(["heart", "diamond", "red"], 5),
+                            "",
+                            <span className="lucky7-suit red">♥ ♦</span>,
+                            "neutral"
+                          )}
+                        </div>
+
+                        {lucky7CardRows.length > 0 && (
+                          <>
+                            <div className="lucky7-card-title">9</div>
+                            <div className="lucky7-card-row">
+                              {lucky7CardRows.map(({ row, rank }) => (
+                                <React.Fragment key={`${row?.sid || rank}-${row?.mid || ""}`}>
+                                  {renderLucky7Tile(
+                                    row,
+                                    "lucky7-card-tile",
+                                    rank.toUpperCase(),
+                                    "neutral"
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
                     ) : (
-                      <div className="mybets-empty">No odds available right now.</div>
+                      <>
+                        <ul className="panel-header">
+                          <li><b className="text-sm">Main</b></li>
+                          <li><b className="text-sm">Back</b></li>
+                          {gameCode !== "teenPatti" && <li><b className="text-sm">Lay</b></li>}
+                        </ul>
+
+                        {rowsForRender.length > 0 ? (
+                          rowsForRender.map((runner: any) => (
+                            <ul className="player-row" key={`${runner.mid}-${runner.sid}`}>
+                              <li>
+                                <span className="player-name">{runner.name}</span>
+                                <div className="player-score">{Number(runner.pnl || 0).toFixed(2)}</div>
+                              </li>
+
+                              <li className="bet-btn bet-back-btn">{renderOddButton(runner, true)}</li>
+
+                              {gameCode !== "teenPatti" && (
+                                <li className="bet-btn bet-lay-btn">{renderOddButton(runner, false)}</li>
+                              )}
+                            </ul>
+                          ))
+                        ) : (
+                          <div className="mybets-empty">No odds available right now.</div>
+                        )}
+                      </>
                     )}
                   </div>
 
@@ -672,17 +1352,15 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
           <div className="lg:col-span-3">
             <div className="casino-right flex flex-col gap-4">
               <div className="betting-box betting-last-results">
-                <h2 className="betting-title">LAST RESULTS</h2>
-
-              <div className="results-list">
-                  {Array.isArray(lastResults) && lastResults.length > 0 ? (
-                    lastResults.slice(0, 10).map((resultRow: any, index: number) => {
+                <ul className="results-list casino-last-result">
+                  {resultsForRender.length > 0 ? (
+                    resultsForRender.slice(0, 10).map((resultRow: any, index: number) => {
                       const info = getResultInfo(resultRow?.result, config);
                       return (
-                        <div
+                        <li
                           key={`${resultRow?.mid || index}`}
                           className="result-item"
-                          style={{ backgroundColor: info.bg }}
+                          style={{ color: info.bg === "#434343" ? "#fdcf13" : info.bg }}
                           onClick={() => handleOpenResultPopup(resultRow)}
                           role="button"
                           tabIndex={0}
@@ -694,13 +1372,13 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
                           }}
                         >
                           {info.label}
-                        </div>
+                        </li>
                       );
                     })
                   ) : (
                     <div className="mybets-empty">No results.</div>
                   )}
-                </div>
+                </ul>
               </div>
 
               <div className="betting-box betting-mybets">
@@ -713,8 +1391,8 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
                   <span>P/L</span>
                 </div>
 
-                {Array.isArray(userBets) && userBets.length > 0 ? (
-                  userBets.slice(0, 8).map((bet: any, index: number) => (
+                {betsForRender.length > 0 ? (
+                  betsForRender.slice(0, 8).map((bet: any, index: number) => (
                     <div className="mybets-header grid grid-cols-4" key={`${bet?.id || index}`}>
                       <span>{bet?.selectionName || "-"}</span>
                       <span>{Number(bet?.odds || 0).toFixed(2)}</span>

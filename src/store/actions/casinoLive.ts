@@ -250,6 +250,7 @@ export const placeCasinoBet = async (params: {
       userIp: "0.0.0.0",
       placeTime: getCurrentTimestamp(),
       matchId: String(params.matchId || params.tableId || ""),
+      casinoName: 2,
       deviceInfo: getDeviceInfo(),
     };
 

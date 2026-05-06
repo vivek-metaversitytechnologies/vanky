@@ -42,10 +42,12 @@ export const CASINO_GAMES: CasinoGameConfig[] = [
     casinoName: 1,
     popupType: "teen",
     resultMap: {
-      "1": { label: "A", bg: "#169731" },
-      "2": { label: "A", bg: "#169731" },
-      "3": { label: "B", bg: "#d0021b" },
-      "4": { label: "B", bg: "#d0021b" },
+      "1": { label: "A", bg: "#d0021b" },
+      "2": { label: "A", bg: "#d0021b" },
+      "3": { label: "B", bg: "#fdcf13" },
+      "4": { label: "B", bg: "#fdcf13" },
+      "A": { label: "A", bg: "#d0021b" },
+      "B": { label: "B", bg: "#fdcf13" },
     },
   },
   {
@@ -99,7 +101,7 @@ export const CASINO_GAMES: CasinoGameConfig[] = [
   },
   {
     code: "ODaaa",
-    displayName: "Anthony",
+    displayName: "Amar Akbar Anthony",
     casinoListName: "Amar Albar Anthony",
     metaPath: "/betfair_api/casino/data/meta-aaa",
     resultPath: "/betfair_api/casino/result/meta-aaa",
@@ -114,7 +116,7 @@ export const CASINO_GAMES: CasinoGameConfig[] = [
   },
   {
     code: "ODab20",
-    displayName: "Andar Bahar 2",
+    displayName: "Andar Bahar",
     casinoListName: "Andar Bahar",
     metaPath: "/betfair_api/casino/data/meta-ab20",
     resultPath: "/betfair_api/casino/result/meta-ab20",
@@ -129,7 +131,7 @@ export const CASINO_GAMES: CasinoGameConfig[] = [
   },
   {
     code: "ODDT202",
-    displayName: "Dragon Tiger 2",
+    displayName: "20-20 Dragon Tiger 2",
     casinoListName: "Dragon Tiger 2",
     metaPath: "/betfair_api/casino/data/meta-dt202",
     resultPath: "/betfair_api/casino/result/meta-dt202",

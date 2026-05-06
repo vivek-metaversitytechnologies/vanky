@@ -2,6 +2,11 @@
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+/* Hide Next.js dev tools floating button on casino pages to avoid parity drift in dev */
+.casino-page.live button[aria-label="Open Next.js Dev Tools"] {
+    display: none !important;
+}
+
 .live-right {
     display: inline-flex;
     align-items: center;
@@ -181,6 +186,8 @@
     background-color: black;
     display: block;
     height: 480px;
+    position: relative;
+    overflow: hidden;
 }
 
 .live-main {
@@ -200,6 +207,9 @@
 
 .panel-header {
     display: flex;
+    margin: 0;
+    padding: 6px 0;
+    background: #103f2a;
 }
 
 .panel-header li {
@@ -209,12 +219,14 @@
 
 .panel-header li b {
     color: #fff;
+    font-size: 14px;
+    line-height: 1;
 }
 
 .live-casino-odds-panel .player-row {
     display: flex;
-    margin-top: 8px;
-    gap: 1%;
+    margin-top: 2px;
+    gap: 0.5%;
 }
 
 .live-casino-odds-panel .player-row li {
@@ -224,14 +236,14 @@
     justify-content: space-around;
     width: 32%;
     padding: 4px;
-    border-radius: 4px;
+    border-radius: 0;
     overflow: hidden;
-    height: 32px;
+    height: 42px;
     cursor: pointer;
 }
 
 .live-casino-odds-panel .player-row li:nth-child(1) {
-    background-color: #3c444b85;
+    background-color: #092014;
     color: #aaafb5;
     position: relative;
 }
@@ -263,18 +275,585 @@
 }
 
 .bet-back-btn button {
-    background-color: #72bBEF40;
-    border: 2px solid #72BBEF;
+    background-color: #42474d;
+    border: 2px solid #48a7e8;
 }
 
 .bet-lay-btn button {
-    background-color: #f994BA40;
+    background-color: #42474d;
     border: 2px solid #d7d7d7;
     color: #d7d7d7;
 }
 
 .live-casino-odds-panel .player-row li:hover button {
     border-width: 1px !important;
+}
+
+.lucky7-odds-board {
+    background: #00391f;
+    padding: 6px;
+}
+
+.lucky7-top-row {
+    display: grid;
+    grid-template-columns: 1fr 72px 1fr;
+    gap: 6px;
+}
+
+.lucky7-mid-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.lucky7-center-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #7d7f79;
+    border: 1px solid #545453;
+    color: #1c1c1c;
+    font-size: 40px;
+    font-weight: 800;
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+.lucky7-tile {
+    position: relative;
+    border: 1px solid #696d66;
+    border-radius: 8px;
+    background: rgba(54, 59, 61, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 62px;
+    padding: 3px 4px;
+    color: #d4d7d9;
+}
+
+.lucky7-tile.low {
+    border: 3px solid #ef5151;
+    border-radius: 0;
+}
+
+.lucky7-tile.high {
+    border: 3px solid #0ad2a3;
+    border-radius: 0;
+}
+
+.lucky7-tile.lucky7-wide {
+    min-height: 86px;
+}
+
+.lucky7-tile-odds {
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.3;
+}
+
+.lucky7-tile-label {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.22;
+}
+
+.lucky7-tile-pnl {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    color: #197535;
+    opacity: 0.46;
+}
+
+.lucky7-tile-lock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.lucky7-suit {
+    font-size: 24px;
+    letter-spacing: 2px;
+}
+
+.lucky7-suit.black {
+    color: #1f1f1f;
+}
+
+.lucky7-suit.red {
+    color: #9d2020;
+}
+
+.lucky7-card-title {
+    text-align: center;
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    margin: 8px 0 5px;
+}
+
+.lucky7-card-row {
+    display: grid;
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.lucky7-card-tile {
+    min-height: 66px;
+    padding: 2px;
+}
+
+.lucky7-card-tile .lucky7-tile-odds {
+    display: none;
+}
+
+.lucky7-card-tile .lucky7-tile-label {
+    opacity: 0.66;
+    font-size: 24px;
+}
+
+.lucky7-card-tile .lucky7-tile-pnl {
+    opacity: 0.6;
+    font-size: 28px;
+}
+
+.lucky7-tile:disabled {
+    cursor: not-allowed;
+}
+
+.dt20-odds-board {
+    background: #00391f;
+    padding: 6px;
+}
+
+.dt20-main-row {
+    display: grid;
+    grid-template-columns: 1fr 76px 1fr;
+    gap: 0;
+    align-items: stretch;
+}
+
+.dt20-pair-row {
+    margin-top: 6px;
+}
+
+.dt-tile {
+    position: relative;
+    border: 1px solid #6a7068;
+    border-radius: 6px;
+    background: rgba(56, 60, 63, 0.9);
+    min-height: 74px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #d9dcdf;
+}
+
+.dt-tile.main .dt-tile-label {
+    font-size: 21px;
+}
+
+.dt-tile.main.tie-circle .dt-tile-label {
+    font-size: 19px;
+}
+
+.dt-tile.main.dragon {
+    border: 2px solid #e85353;
+    border-right: 0;
+    border-radius: 0;
+}
+
+.dt-tile.main.tiger {
+    border: 2px solid #c7a840;
+    border-left: 0;
+    border-radius: 0;
+}
+
+.dt-tile.main.tie-circle {
+    width: 76px;
+    height: 76px;
+    min-height: 76px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(19, 91, 72, 0.9);
+    margin-left: -14px;
+    margin-right: -14px;
+    z-index: 2;
+}
+
+.dt-tile.main.tie-circle .dt-tile-odds {
+    display: none;
+}
+
+.dt-tile.main.tie-circle .dt-tile-label {
+    opacity: 0.42;
+}
+
+.dt-tile.main.tie-circle .dt-tile-pnl {
+    font-size: 26px;
+}
+
+.dt-tile.main.pair {
+    width: 100%;
+    border-radius: 0;
+}
+
+.dt-tile-odds {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.28;
+}
+
+.dt-tile-label {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.24;
+}
+
+.dt-tile-pnl {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    color: #197535;
+    opacity: 0.48;
+}
+
+.dt-tile-lock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.dt20-sides-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.dt20-side-box {
+    background: #003b21;
+    border: 1px solid #0f6437;
+    padding: 4px;
+}
+
+.dt20-side-head {
+    display: grid;
+    grid-template-columns: 1fr repeat(4, auto);
+    gap: 8px;
+    align-items: center;
+    color: #d2d8d2;
+    padding: 0 2px 4px;
+}
+
+.dt20-side-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.dt20-side-odds {
+    font-size: 20px;
+    font-weight: 700;
+    opacity: 0.72;
+}
+
+.dt20-side-four {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.dt-tile.small {
+    min-height: 66px;
+}
+
+.dt-tile.small .dt-tile-odds {
+    display: none;
+}
+
+.dt20-card-title {
+    text-align: center;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 7px 0 5px;
+    line-height: 1;
+}
+
+.dt20-card-row {
+    display: grid;
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.dt-tile.card {
+    min-height: 68px;
+    padding: 2px;
+}
+
+.dt-tile.card .dt-tile-odds {
+    display: none;
+}
+
+.dt-tile.card .dt-tile-label {
+    font-size: 24px;
+    opacity: 0.64;
+}
+
+.dt-tile.card .dt-tile-pnl {
+    font-size: 30px;
+    opacity: 0.58;
+}
+
+.aaa-odds-board {
+    background: #00391f;
+    padding: 6px;
+}
+
+.aaa-main-rows {
+    display: grid;
+    gap: 6px;
+}
+
+.aaa-main-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 6px;
+}
+
+.aaa-main-left,
+.aaa-main-right {
+    position: relative;
+    background: rgba(56, 60, 63, 0.92);
+    border: 1px solid #6a7068;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+}
+
+.aaa-main-right {
+    justify-content: center;
+    color: #d8dddd;
+    font-size: 30px;
+    font-weight: 700;
+    opacity: 0.26;
+}
+
+.aaa-main-label {
+    color: #b7bbbe;
+    font-size: 23px;
+    font-weight: 700;
+    opacity: 0.28;
+}
+
+.aaa-main-pnl {
+    color: #197535;
+    font-size: 34px;
+    font-weight: 800;
+    opacity: 0.46;
+}
+
+.aaa-option-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.aaa-option-group {
+    background: #003b21;
+    border: 1px solid #0f6437;
+    padding: 4px;
+    display: grid;
+    gap: 6px;
+}
+
+.aaa-small-tile {
+    position: relative;
+    min-height: 74px;
+    background: rgba(56, 60, 63, 0.92);
+    border: 1px solid #6a7068;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.aaa-small-odds {
+    color: #d8dddd;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.26;
+}
+
+.aaa-small-label {
+    color: #b7bbbe;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.24;
+}
+
+.aaa-small-pnl {
+    color: #197535;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    opacity: 0.46;
+}
+
+.aaa-card-strip {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 6px;
+    align-items: start;
+}
+
+.aaa-card-strip-odds {
+    background: rgba(56, 60, 63, 0.92);
+    border: 1px solid #6a7068;
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8dddd;
+    font-size: 30px;
+    font-weight: 700;
+    opacity: 0.28;
+}
+
+.aaa-card-row {
+    display: grid;
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.aaa-small-tile.card {
+    min-height: 74px;
+}
+
+.aaa-small-tile.card .aaa-small-odds {
+    display: none;
+}
+
+.aaa-small-tile.card .aaa-small-label {
+    font-size: 28px;
+    opacity: 0.62;
+}
+
+.aaa-lock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.ab-odds-board {
+    background: #00391f;
+    padding: 6px;
+}
+
+.ab-two-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.ab-col {
+    background: #003b21;
+    border: 1px solid #0f6437;
+    padding: 4px;
+}
+
+.ab-col-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 6px;
+    color: #d84f4f;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.ab-col-head .ab-title {
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.ab-col-head .ab-odds {
+    font-size: 44px;
+    font-weight: 700;
+    color: #d84f4f;
+}
+
+.ab-card-row {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.ab-card-tile {
+    position: relative;
+    min-height: 98px;
+    border: 1px solid #6a7068;
+    background: rgba(56, 60, 63, 0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 4px;
+}
+
+.ab-card-img {
+    width: 52px;
+    height: 72px;
+    object-fit: cover;
+    opacity: 0.92;
+}
+
+.ab-card-rank {
+    color: #b7bbbe;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.62;
+    margin-top: 1px;
+}
+
+.ab-card-pnl {
+    color: #197535;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+    opacity: 0.5;
 }
 
 
@@ -294,14 +873,61 @@
 
 .casino-game-title {
     color: #fdcf13;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .casino-round-id {
-    font-size: 14px;
+    font-size: 12px;
     color: #ddd;
     font-weight: 600;
+}
+
+.casino-tv-overlay-head {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    right: auto;
+    transform: none;
+    z-index: 9;
+    width: auto;
+    display: inline-block;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    padding: 3px 10px 4px 8px;
+}
+
+.tv-title-main {
+    display: block;
+    text-align: left;
+    line-height: 1.1;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+
+.tv-title-round {
+    display: block;
+    text-align: left;
+    margin-top: 1px;
+    line-height: 1.1;
+    font-size: 10px;
+}
+
+.casino-tv-overlay-cards {
+    position: absolute;
+    left: 6px;
+    top: 44px;
+    z-index: 8;
+}
+
+.casino-tv-overlay-cards .casino-cards-box {
+    margin-top: 0;
+    background-color: rgba(0, 0, 0, 0.66);
+    width: 142px;
+    height: 108px;
+    padding: 4px 24px 4px 4px;
 }
 
 
@@ -352,17 +978,17 @@
 
 .casino-video-icons {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 44px;
+    right: 8px;
     display: flex;
     gap: 8px;
     z-index: 5;
-    flex-flow: row;
+    flex-flow: column;
 }
 
 .video-icon-circle {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: #1d1d1d;
     border: 1px solid #cccccc;
@@ -391,18 +1017,18 @@
 
 .countdown-circle {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 62px;
-    height: 62px;
+    bottom: 12px;
+    right: 16px;
+    width: 74px;
+    height: 74px;
     border-radius: 50%;
-    border: 4px solid #14b366;
+    border: 4px solid #8a8a8a;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 42px;
     font-weight: bold;
-    color: #14b366;
+    color: #f20000;
     background: rgba(0, 0, 0, 0.6);
 }
 
@@ -496,42 +1122,52 @@
 
 /* LAST RESULTS items */
 .results-list {
-    padding: 5px;
-    background: #333;
+    padding: 6px 6px;
+    margin: 0;
+    list-style: none;
+    background: #092719;
     position: relative;
-    background-color: rgba(0, 0, 0, .6);
     width: 100%;
     display: flex !important;
     display: -webkit-flex;
-    transition: 1s;
+    transition: .2s;
     overflow: hidden;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: center;
-    gap: 3px;
-
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
 }
 
 .result-item {
-    border-radius: 50%;
-    font-weight: 700;
+    border-radius: 5px;
     text-align: center;
     color: #fff;
     width: 26px;
     height: 26px;
     line-height: 26px;
-    margin-top: 5px;
+    margin-top: 0;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 11px;
+    font-size: 13px;
     flex-shrink: 0;
-    border: 0;
+    border: 1px solid #1c1c1c;
     outline: 0;
     padding: 0;
-    background-color: #434343;
+    background-color: #060606;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.result-item:hover {
+    filter: brightness(1.12);
+}
+
+.result-item:focus-visible {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
 /* Legacy color-only classes kept for any old usage */
@@ -684,6 +1320,18 @@
     border-bottom: 1px solid #2c2f33;
 }
 
+.betting-mybets .betting-title {
+    background: #009736;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.betting-last-results {
+    background: #0b2e20;
+    border: 1px solid #1b5136;
+}
+
 .mybets-empty {
     padding: 12px;
     color: #9aa0a6;
@@ -711,6 +1359,172 @@
 
     .casino-video-box {
         height: 350px;
+    }
+
+    .casino-tv-overlay-head {
+        padding: 3px 8px 4px 6px;
+    }
+
+    .casino-tv-overlay-cards {
+        top: 46px;
+        max-width: 80%;
+    }
+
+    .lucky7-top-row {
+        grid-template-columns: 1fr 52px 1fr;
+    }
+
+    .lucky7-center-card {
+        font-size: 28px;
+    }
+
+    .lucky7-tile.lucky7-wide {
+        min-height: 72px;
+    }
+
+    .lucky7-tile-odds {
+        font-size: 20px;
+    }
+
+    .lucky7-tile-label {
+        font-size: 14px;
+    }
+
+    .lucky7-tile-pnl {
+        font-size: 18px;
+    }
+
+    .lucky7-card-row {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .lucky7-card-tile {
+        min-height: 54px;
+    }
+
+    .lucky7-card-tile .lucky7-tile-label {
+        font-size: 18px;
+    }
+
+    .dt20-main-row {
+        grid-template-columns: 1fr 56px 1fr;
+    }
+
+    .dt-tile.main.tie-circle {
+        width: 56px;
+        height: 56px;
+        min-height: 56px;
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+
+    .dt20-sides-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dt20-side-title,
+    .dt20-side-odds {
+        font-size: 14px;
+    }
+
+    .dt20-card-row {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .aaa-main-row {
+        grid-template-columns: 1fr 84px;
+    }
+
+    .ab-two-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .ab-col-head {
+        font-size: 16px;
+    }
+
+    .ab-col-head .ab-title {
+        font-size: 26px;
+    }
+
+    .ab-col-head .ab-odds {
+        font-size: 28px;
+    }
+
+    .ab-card-row {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .ab-card-tile {
+        min-height: 76px;
+    }
+
+    .ab-card-img {
+        width: 36px;
+        height: 50px;
+    }
+
+    .ab-card-rank {
+        font-size: 14px;
+    }
+
+    .ab-card-pnl {
+        font-size: 15px;
+    }
+
+    .aaa-main-label {
+        font-size: 16px;
+    }
+
+    .aaa-main-pnl,
+    .aaa-small-pnl {
+        font-size: 20px;
+    }
+
+    .aaa-main-right,
+    .aaa-small-odds {
+        font-size: 17px;
+    }
+
+    .aaa-small-label {
+        font-size: 14px;
+    }
+
+    .aaa-option-groups {
+        grid-template-columns: 1fr;
+    }
+
+    .aaa-card-strip {
+        grid-template-columns: 64px 1fr;
+    }
+
+    .aaa-card-strip-odds {
+        min-height: 56px;
+        font-size: 18px;
+    }
+
+    .aaa-card-row {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .aaa-small-tile.card {
+        min-height: 56px;
+    }
+
+    .aaa-small-tile.card .aaa-small-label {
+        font-size: 20px;
+    }
+
+    .dt-tile-odds {
+        font-size: 20px;
+    }
+
+    .dt-tile-label {
+        font-size: 14px;
+    }
+
+    .dt-tile-pnl {
+        font-size: 20px;
     }
 
     .casino-page.live .casino-cards-box.open {
@@ -783,6 +1597,7 @@
 .rules-modal-box {
     max-height: calc(100vh - 50px);
     max-width: 90%;
+    width: 100%;
     background: #132b1d;
     border: 2px solid #2f4f2f;
     padding: 0;
