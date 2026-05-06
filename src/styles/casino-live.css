@@ -438,13 +438,14 @@
 
 .dt20-main-row {
     display: grid;
-    grid-template-columns: 1fr 76px 1fr;
+    grid-template-columns: 1fr 82px 1fr;
     gap: 0;
     align-items: stretch;
+    position: relative;
 }
 
 .dt20-pair-row {
-    margin-top: 6px;
+    margin-top: 4px;
 }
 
 .dt-tile {
@@ -482,15 +483,17 @@
 }
 
 .dt-tile.main.tie-circle {
-    width: 76px;
-    height: 76px;
-    min-height: 76px;
+    width: 82px;
+    height: 82px;
+    min-height: 82px;
     border-radius: 50%;
     border: 0;
     background: rgba(19, 91, 72, 0.9);
-    margin-left: -14px;
-    margin-right: -14px;
-    z-index: 2;
+    margin-left: 0;
+    margin-right: 0;
+    justify-self: center;
+    z-index: 3;
+    top: -2px;
 }
 
 .dt-tile.main.tie-circle .dt-tile-odds {
@@ -1407,15 +1410,16 @@
     }
 
     .dt20-main-row {
-        grid-template-columns: 1fr 56px 1fr;
+        grid-template-columns: 1fr 60px 1fr;
     }
 
     .dt-tile.main.tie-circle {
-        width: 56px;
-        height: 56px;
-        min-height: 56px;
-        margin-left: -8px;
-        margin-right: -8px;
+        width: 60px;
+        height: 60px;
+        min-height: 60px;
+        margin-left: 0;
+        margin-right: 0;
+        top: -1px;
     }
 
     .dt20-sides-row {
