@@ -21,11 +21,12 @@ export default function HeaderDesktop({
   const [navOpen, setNavOpen] = useState(false);
 
   const dropdownRef = useRef(null);
-  const reduxUserId = useSelector((state) => state.auth?.user?.userId);
+  const reduxUser = useSelector((state) => state.auth?.user);
+  const reduxUserId = reduxUser?.userId;
   const { balance, liability } = useSelector((state) => state.balance);
 
   const userInfo = {
-    id: isHydrated ? (reduxUserId || "-") : "-",
+    id: isHydrated ? (reduxUser?.username || reduxUser?.userId || "-") : "-",
     main: isHydrated ? Number(balance || 0).toFixed(2) : "0.00",
     expo: isHydrated ? Number(liability || 0).toFixed(2) : "0.00",
   };

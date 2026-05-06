@@ -305,7 +305,7 @@ export default function CasinoGameClient({ gameCode }: CasinoGameClientProps) {
   } = useSelector((state: any) => state.casinoLive || {});
 
   const ptsValue = isHydrated ? Number(balance || 0).toFixed(2) : "0.00";
-  const userId = isHydrated ? (user?.userId || "") : "";
+  const userId = isHydrated ? (user?.username || user?.userId || "") : "";
   const displayRoundId = isHydrated ? (roundId || "-") : "-";
   const hydratedMeta = isHydrated ? meta : [];
 

@@ -13,7 +13,7 @@ export default function Navbar({
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showRulesModal, setShowRulesModal] = useState(false);
-  const { isAuthenticated } = useSelector((state) => state.auth || {});
+  const { isAuthenticated, user } = useSelector((state) => state.auth || {});
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -52,7 +52,7 @@ export default function Navbar({
         <div className="header-titlebar">
           <div className="mob-user">
             <i className="fa-solid fa-user-secret"></i>
-            <span className="badge-text">C125 (DEMO)</span>
+            <span className="badge-text">{user?.username || user?.userId || "Guest"}</span>
           </div>
 
           <span className="close-mob-nav" onClick={onClose}>x</span>
